@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>R.M.Phase1 Final Fix</title>
+    <title>Code001 - Secret Dunia</title>
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; }
         body.dark-mode { background: #1a1a1a; }
@@ -14,8 +14,12 @@
         .note-item div { color: #000 !important; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; }
         .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
-        .mode-toggle { position: fixed; top: 10px; left: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 12px; font-size: 0.55rem; font-weight: bold; cursor: pointer; opacity: 0.8; }
-        .main-title { color: var(--pink); margin: 5px 0; font-size: 1.6rem; font-weight: bold; }
+        
+        /* Top Navigation Buttons */
+        .top-nav { position: fixed; top: 10px; left: 10px; right: 10px; display: flex; gap: 8px; z-index: 1000; }
+        .nav-btn { background: var(--pink); color: white; border: none; padding: 6px 12px; border-radius: 12px; font-size: 0.55rem; font-weight: bold; cursor: pointer; opacity: 0.9; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         .card { background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 10px; border: 1px solid white; position: relative; }
         .status-bar { background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 10px; font-size: 0.62rem; border-left: 5px solid var(--green); text-align: left; }
@@ -43,7 +47,12 @@
 </head>
 <body onmousedown="resetInactivityTimer()" onkeydown="resetInactivityTimer()">
 
-<button class="mode-toggle" onclick="toggleTheme()">LIGHT/DARK</button>
+<div class="top-nav">
+    <button class="nav-btn" onclick="toggleTheme()">DARK/LIGHT</button>
+    <button class="nav-btn" id="music-btn" onclick="handleMusic()">MUSIC: OFF</button>
+</div>
+
+<iframe id="music-player" style="display:none" width="0" height="0" src="" frameborder="0" allow="autoplay"></iframe>
 
 <div class="container">
     <h2 class="main-title">Secret Dunia</h2>
@@ -84,6 +93,13 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwaQXyxkqRmBEDsLc4fr9LU818OlQNgsqqZRQ3idxVlIDcxoQIihf5xMKLtohudvP8w/exec';
     
+    // Music Playlist (Indian Songs Nisha for)
+    const playlist = [
+        "https://www.youtube.com/embed/videoseries?list=PLw-f7QzSbeu9p4H2_oK0Yn7l39E7X3_9X&autoplay=1", // Love Songs
+        "https://www.youtube.com/embed/videoseries?list=PL_XAn4v3fV7W6R8Bf5I5G4S_Qd0lV2p6j&autoplay=1"  // Chill Songs
+    ];
+    let musicState = 0; // 0: Off, 1: Play, 2: Next
+
     const hubButtons = [
         { name: "Ai Assistant", link: "https://gemini.google.com/app", pass: "786" },
         { name: "WhatsApp Hub", link: "https://wa.me/923059763620", pass: "786" },
@@ -99,6 +115,24 @@
     let currentUser = "", isPrivateMode = false, isUnlocked = false, inactivityTimer, totalMessages = 0, myLastSeen = -1;
 
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    
+    function handleMusic() {
+        const player = document.getElementById('music-player');
+        const btn = document.getElementById('music-btn');
+        musicState = (musicState + 1) % 3;
+
+        if (musicState === 1) {
+            player.src = playlist[0];
+            btn.innerText = "MUSIC: PLAYING 🎵";
+        } else if (musicState === 2) {
+            player.src = playlist[1];
+            btn.innerText = "MUSIC: NEXT ⏭️";
+        } else {
+            player.src = "";
+            btn.innerText = "MUSIC: OFF 🔇";
+        }
+    }
+
     function updateFriendshipYear() { document.getElementById('friendship-tag').innerHTML = `Friendship: ${new Date().getFullYear() - 2015} Years`; }
     function resetInactivityTimer() { clearTimeout(inactivityTimer); if(currentUser) inactivityTimer = setTimeout(() => { location.reload(); }, 300000); }
 
@@ -110,29 +144,12 @@
             currentUser = n;
             document.getElementById('login-screen').style.display='none';
             document.getElementById('dashboard').style.display='block';
-            
-            // Foran update karo status database mein
-            const statusToSet = isPrivateMode ? "Private Mode" : "Online";
-            updateStatus(statusToSet, myLastSeen);
-            
+            updateStatus(isPrivateMode ? "Private Mode" : "Online", myLastSeen);
             await refreshData();
             updateFriendshipYear(); resetInactivityTimer();
             setInterval(refreshData, 5000);
         } else { alert("Wrong Password!"); }
     }
-
-    function checkPrivateStatus() {
-        if(isPrivateMode) {
-            alert("Not allowed in Private Mode!");
-            document.getElementById('note-input').blur();
-        }
-    }
-
-    window.addEventListener('beforeunload', function() {
-        if (currentUser && !isPrivateMode) {
-            updateStatus("Offline", myLastSeen);
-        }
-    });
 
     async function refreshData() {
         try {
@@ -141,29 +158,17 @@
             let sHtml = ""; let otherSeen = 0, otherName = "";
             
             data.onlineUsers.forEach(u => {
-                let nameUpper = u.name.toUpperCase();
-                let isMe = nameUpper.includes(currentUser);
+                let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) { otherSeen = u.seenCount; otherName = u.name; }
                 else { if(myLastSeen === -1 || u.seenCount > myLastSeen) myLastSeen = u.seenCount; }
                 
-                let dotClass = "dot-offline";
-                let statusToDisplay = u.status;
-
-                // SPECIAL FIX: Force "Private Mode" text if database says so OR if it's ME and I am in private mode
-                if (statusToDisplay === "Private Mode" || (isMe && isPrivateMode)) {
-                    statusToDisplay = "Private Mode";
-                    dotClass = "dot-offline";
-                } else if (statusToDisplay === "Online") {
-                    dotClass = "dot-online";
-                } else {
-                    dotClass = "dot-offline";
-                }
+                let dotClass = (u.status === "Online") ? "dot-online" : "dot-offline";
+                let statusToDisplay = (isMe && isPrivateMode) ? "Private Mode" : u.status;
 
                 sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${statusToDisplay}</span><span><small>${u.time}</small> ${isMe ? `<button class="off-btn" onclick="location.reload()">OFF</button>` : ''}</span></div>`;
             });
             document.getElementById('status-container').innerHTML = sHtml;
 
-            // Rest of the logic (Badge, History etc.)
             let history = data.history || [];
             totalMessages = history.length;
             let badge = document.getElementById('unread-badge');
@@ -180,6 +185,7 @@
                 if(totalMessages > myLastSeen) { myLastSeen = totalMessages; updateStatus("Online", totalMessages); }
                 let hHtml = ""; history.slice().reverse().forEach(h => {
                     let c = h.name.toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
+                    // Date extracted from u.time logic if needed, but here we use script's formatted time
                     hHtml += `<div class="note-item ${c}"><div>${h.note}</div><span class="note-meta">${h.name} • ${h.time}</span></div>`;
                 });
                 document.getElementById('notes-display').innerHTML = hHtml;
@@ -189,7 +195,7 @@
             hubButtons.forEach(btn => { bHtml += `<div class="hub-btn" onclick="enterRoom('${btn.name}')">${btn.name}</div>`; });
             document.getElementById('hub-grid').innerHTML = bHtml;
 
-        } catch(e) { console.log("Refresh Error"); }
+        } catch(e) {}
     }
 
     async function unlockHistory() {
@@ -228,6 +234,7 @@
     }
 
     function closeHistory() { isUnlocked = false; document.getElementById('history-area').style.display = 'none'; document.getElementById('unlock-btn').style.display = 'block'; }
+    function checkPrivateStatus() { if(isPrivateMode) { alert("Not allowed in Private Mode!"); document.getElementById('note-input').blur(); } }
 </script>
 </body>
 </html>
