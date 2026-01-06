@@ -13,7 +13,6 @@
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; }
         .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
         
-        /* Top Buttons */
         .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .mode-toggle { left: 10px; }
         #silent-btn { right: 10px; }
@@ -21,9 +20,15 @@
         .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         
-        .countdown-container { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; }
-        .cd-row { font-size: 0.75rem; color: #000; font-weight: bold; margin: 4px 0; }
-        .cd-label { color: var(--pink); font-size: 0.65rem; }
+        /* Specific Event Box Changes */
+        .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
+        .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; }
+        .cd-label { color: #d63384; font-size: 0.95rem; font-weight: bold; display: block; } /* Event Name Bada aur Bold */
+        .cd-time { color: #555; font-size: 0.7rem; display: block; margin-top: 2px; } /* Time chota */
+        .cd-meta-row { display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+        .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; } /* Name tag */
+        .del-ev-btn { background: none; border: none; color: #ffbcbc; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 0 5px; }
+
         .btn-add-event { background: var(--pink); color: white; border: none; padding: 8px 18px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-bottom: 15px; }
 
         .card { background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 10px; border: 1px solid white; position: relative; }
@@ -42,9 +47,7 @@
         .note-meta { font-size: 0.55rem; color: #777; margin-top: 4px; display: block; text-align: right; }
         .react-badge { font-size: 0.75rem; background: white; border-radius: 8px; padding: 2px 4px; position: absolute; bottom: -8px; right: 10px; border: 1px solid #eee; }
 
-        /* Auto-Expanding Textarea */
         textarea { width: 85%; border: none; background: transparent; padding: 8px 5px; resize: none; outline: none; font-size: 0.95rem; min-height: 20px; max-height: 60px; overflow-y: auto; line-height: 1.2; }
-        
         .close-btn { position: absolute; top: 5px; right: 10px; background: #eee; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
         
         .btn-main { background: var(--pink); color: white; border: none; padding: 12px; border-radius: 20px; font-weight: bold; width: 100%; cursor: pointer; }
@@ -192,19 +195,41 @@
 
     function updateLiveCountdowns() {
         let html = "";
-        savedCountdowns.forEach(c => {
+        savedCountdowns.forEach((c) => {
             let target = new Date(c.date).getTime();
             let now = new Date().getTime();
             let diff = target - now;
+            let timeText = "";
             if (diff > 0) {
                 let d = Math.floor(diff / (1000 * 60 * 60 * 24));
                 let h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 let m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 let s = Math.floor((diff % (1000 * 60)) / 1000);
-                html += `<div class="cd-row"><span class="cd-label">${c.label}:</span> ${d}d ${h}h ${m}m ${s}s</div>`;
-            } else { html += `<div class="cd-row"><span class="cd-label">${c.label}:</span> Finished!</div>`; }
+                timeText = `${d}d ${h}h ${m}m ${s}s`;
+            } else { timeText = "Finished!"; }
+            
+            html += `<div class="cd-row">
+                        <span class="cd-label">${c.label}</span>
+                        <span class="cd-time">${timeText}</span>
+                        <div class="cd-meta-row">
+                            <span class="cd-user">by ${c.user || 'Admin'}</span>
+                            <button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.date}', '${c.user}')">x</button>
+                        </div>
+                    </div>`;
         });
         document.getElementById('countdown-area').innerHTML = html || "No Events";
+    }
+
+    async function removeEvent(label, date, creator) {
+        // Strict Security: Only creator can delete
+        if(!creator || !currentUser.includes(creator.toUpperCase())) {
+            alert("Sirf " + creator + " hi is event ko khatam kar sakte hain!");
+            return;
+        }
+        if(confirm("Khatam kar dein ye event?")) {
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"removeCountdown", label:label, date:date})});
+            setTimeout(refreshData, 1000);
+        }
     }
 
     function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => { location.reload(); }, 500); }
@@ -215,16 +240,21 @@
         const msg = input.value.trim(); 
         if(!msg || isPrivateMode) return; 
         input.value = ""; 
-        input.style.height = "auto"; // Reset height after send
+        input.style.height = "auto"; 
         await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:msg})}); 
         refreshData(); 
+    }
+
+    function addCountdownPrompt() { 
+        let l = prompt("Event Ka Naam:"); 
+        let d = prompt("Date (Format: 2026-02-14 18:30):"); 
+        if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
     }
 
     function enterRoom(r) { let b = hubButtons.find(x => x.name === r); let p = prompt("Hub Key:"); if(p == sheetPass.HubPass) window.location.href = b.link; }
     function unlockHistory() { let p = prompt("History Key:"); if(p == sheetPass.HistoryPass) { isUnlocked = true; document.getElementById('unlock-btn').style.display='none'; document.getElementById('history-area').style.display='block'; refreshData(); } }
     function closeHistory() { isUnlocked = false; document.getElementById('history-area').style.display='none'; document.getElementById('unlock-btn').style.display='block'; }
     function reactPrompt(u, n) { let r = prompt("React: 1:❤️ 2:😂 3:👍"); let e = r=="1"?"❤️":r=="2"?"😂":r=="3"?"👍":""; if(e) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addReaction", msgUser:u, msgNote:n, reaction:e})}); }
-    function addCountdownPrompt() { let l = prompt("Label:"); let d = prompt("Date (YYYY-MM-DD HH:MM):"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l})}); }
     function resetInactivityTimer() {}
 </script>
 </body>
