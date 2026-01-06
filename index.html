@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>R.M.Phase1 Final Fix</title>
+    <title>Secret Dunia - R.M.</title>
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; }
         body.dark-mode { background: #1a1a1a; }
@@ -14,7 +14,7 @@
         .note-item div { color: #000 !important; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; }
         .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
-        .mode-toggle { position: fixed; top: 10px; left: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 12px; font-size: 0.55rem; font-weight: bold; cursor: pointer; opacity: 0.8; }
+        .mode-toggle { position: fixed; top: 10px; left: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; opacity: 0.8; }
         .main-title { color: var(--pink); margin: 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         .card { background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 10px; border: 1px solid white; position: relative; }
@@ -34,7 +34,7 @@
         .btn-main { background: var(--pink); color: white; border: none; padding: 10px; border-radius: 20px; font-weight: bold; width: 100%; cursor: pointer; font-size: 0.85rem; }
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .hub-btn { background: #fff0f3; border: 1px solid #ffd1dc; padding: 10px 4px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; font-weight: bold; color: #d63384; position: relative; }
-        .close-btn { position: absolute; top: 5px; right: 10px; background: #eee; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 0.6rem; }
+        .close-btn { position: absolute; top: 5px; right: 10px; background: #eee; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 0.6rem; z-index: 10; }
         input { width: 85%; padding: 10px; margin: 8px 0; border-radius: 20px; border: 1px solid #eee; text-align: center; outline: none; }
         .friendship-tag { font-size: 0.65rem; color: #888; margin-top: 15px; font-weight: bold; border-top: 1px solid #ffd1dc; padding-top: 8px; }
         .signature-line { font-size: 0.6rem; color: #555; margin-top: 5px; font-style: italic; }
@@ -47,8 +47,9 @@
 
 <div class="container">
     <h2 class="main-title">Secret Dunia</h2>
+    
     <div id="login-screen" class="card">
-        <span class="welcome-msg" style="color:var(--pink); font-weight:bold; font-size:1.1rem;">Welcome</span>
+        <span style="color:var(--pink); font-weight:bold; font-size:1.1rem;">Welcome</span>
         <input type="text" id="u-name" placeholder="User Name">
         <input type="password" id="u-pass" placeholder="Enter Key">
         <div style="font-size:0.75rem; color:#888; margin-bottom:12px;">
@@ -58,7 +59,7 @@
     </div>
 
     <div id="dashboard">
-        <span class="nisha-note">Nisha ye sub ap k Liye banaya or ye ap k Liye hi rahy ga hamesha.</span>
+        <span class="nisha-note">N sb wada yaad rakhna hai hamesah.</span>
         <div class="status-bar" id="status-container">Syncing...</div>
         
         <div class="card" style="padding: 10px;">
@@ -82,7 +83,7 @@
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyCG27C3piGX_fgSEMdkkp6SvWJzgyInEOvXKaGXErfb4zywaGsUkhgLJrXxlNn4X3M/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzt2tklF5gUcQt0MplKmOOtZD-hIabMMvdpyvQI589RfyUN7mPopMEmte_oaBTt-kM/exec'; // <--- Yahan apna script URL lazmi lagayen
     
     const hubButtons = [
         { name: "Ai Assistant", link: "https://gemini.google.com/app", pass: "786" },
@@ -112,10 +113,11 @@
             document.getElementById('dashboard').style.display='block';
             
             const statusToSet = isPrivateMode ? "Private Mode" : "Online";
-            updateStatus(statusToSet, myLastSeen);
+            await updateStatus(statusToSet, myLastSeen);
             
             await refreshData();
-            updateFriendshipYear(); resetInactivityTimer();
+            updateFriendshipYear(); 
+            resetInactivityTimer();
             setInterval(refreshData, 5000);
         } else { alert("Wrong Password!"); }
     }
@@ -127,12 +129,6 @@
         }
     }
 
-    window.addEventListener('beforeunload', function() {
-        if (currentUser && !isPrivateMode) {
-            updateStatus("Offline", myLastSeen);
-        }
-    });
-
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
@@ -143,27 +139,22 @@
                 let nameUpper = u.name.toUpperCase();
                 let isMe = nameUpper.includes(currentUser);
                 if(!isMe) { otherSeen = u.seenCount; otherName = u.name; }
-                else { if(myLastSeen === -1 || u.seenCount > myLastSeen) myLastSeen = u.seenCount; }
+                else { if(myLastSeen === -1) myLastSeen = u.seenCount; }
                 
-                let dotClass = "dot-offline";
+                let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
                 let statusToDisplay = u.status;
 
-                if (statusToDisplay === "Private Mode" || (isMe && isPrivateMode)) {
-                    statusToDisplay = "Private Mode";
-                    dotClass = "dot-offline";
-                } else if (statusToDisplay === "Online") {
-                    dotClass = "dot-online";
-                } else {
-                    dotClass = "dot-offline";
-                }
-
-                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${statusToDisplay}</span><span><small>${u.time}</small> ${isMe ? `<button class="off-btn" onclick="location.reload()">OFF</button>` : ''}</span></div>`;
+                sHtml += `<div class="user-row">
+                    <span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${statusToDisplay}</span>
+                    <span><small>${u.time}</small> ${isMe ? `<button class="off-btn" onclick="location.reload()">OFF</button>` : ''}</span>
+                </div>`;
             });
             document.getElementById('status-container').innerHTML = sHtml;
 
             let history = data.history || [];
             totalMessages = history.length;
             let badge = document.getElementById('unread-badge');
+            
             if(totalMessages > 0) {
                 let lastMsg = history[totalMessages - 1];
                 if(lastMsg.name.toUpperCase().includes(currentUser)) {
@@ -174,8 +165,12 @@
             }
 
             if(!isPrivateMode && isUnlocked) {
-                if(totalMessages > myLastSeen) { myLastSeen = totalMessages; updateStatus("Online", totalMessages); }
-                let hHtml = ""; history.slice().reverse().forEach(h => {
+                if(totalMessages > myLastSeen) { 
+                    myLastSeen = totalMessages; 
+                    updateStatus("Online", totalMessages); 
+                }
+                let hHtml = ""; 
+                history.slice().reverse().forEach(h => {
                     let c = h.name.toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
                     hHtml += `<div class="note-item ${c}"><div>${h.note}</div><span class="note-meta">${h.name} • ${h.time}</span></div>`;
                 });
@@ -183,7 +178,9 @@
             }
 
             let bHtml = "";
-            hubButtons.forEach(btn => { bHtml += `<div class="hub-btn" onclick="enterRoom('${btn.name}')">${btn.name}</div>`; });
+            hubButtons.forEach(btn => { 
+                bHtml += `<div class="hub-btn" onclick="enterRoom('${btn.name}')">${btn.name}</div>`; 
+            });
             document.getElementById('hub-grid').innerHTML = bHtml;
 
         } catch(e) { console.log("Refresh Error"); }
@@ -203,7 +200,11 @@
     }
 
     function updateStatus(s, count) {
-        return fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, isPrivateMode:isPrivateMode, seenCount:count})});
+        return fetch(scriptURL, {
+            method:'POST', 
+            mode:'no-cors', 
+            body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, isPrivateMode:isPrivateMode, seenCount:count})
+        });
     }
 
     async function sendNote() {
@@ -212,7 +213,8 @@
         if(!msg) return;
         document.getElementById('note-input').value = "Sending...";
         await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:msg})});
-        document.getElementById('note-input').value = ""; refreshData();
+        document.getElementById('note-input').value = ""; 
+        refreshData();
     }
 
     async function enterRoom(roomName) {
