@@ -20,14 +20,13 @@
         .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         
-        /* Specific Event Box Changes */
         .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
-        .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; }
-        .cd-label { color: #d63384; font-size: 0.95rem; font-weight: bold; display: block; } /* Event Name Bada aur Bold */
-        .cd-time { color: #555; font-size: 0.7rem; display: block; margin-top: 2px; } /* Time chota */
-        .cd-meta-row { display: flex; align-items: center; gap: 5px; margin-top: 2px; }
-        .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; } /* Name tag */
-        .del-ev-btn { background: none; border: none; color: #ffbcbc; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 0 5px; }
+        .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; display: flex; justify-content: space-between; align-items: flex-start; }
+        .cd-info { flex-grow: 1; }
+        .cd-label { color: #d63384; font-size: 0.95rem; font-weight: bold; display: block; }
+        .cd-time { color: #555; font-size: 0.7rem; display: block; margin-top: 2px; }
+        .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; display: block; margin-top: 2px; }
+        .del-ev-btn { background: none; border: none; color: #ffbcbc; cursor: pointer; font-size: 0.9rem; font-weight: bold; padding: 0 5px; margin-left: 10px; }
 
         .btn-add-event { background: var(--pink); color: white; border: none; padding: 8px 18px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-bottom: 15px; }
 
@@ -209,20 +208,19 @@
             } else { timeText = "Finished!"; }
             
             html += `<div class="cd-row">
-                        <span class="cd-label">${c.label}</span>
-                        <span class="cd-time">${timeText}</span>
-                        <div class="cd-meta-row">
-                            <span class="cd-user">by ${c.user || 'Admin'}</span>
-                            <button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.date}', '${c.user}')">x</button>
+                        <div class="cd-info">
+                            <span class="cd-label">${c.label}</span>
+                            <span class="cd-time">${timeText}</span>
+                            <span class="cd-user">by ${c.user || 'Unknown'}</span>
                         </div>
+                        <button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.date}', '${c.user}')">x</button>
                     </div>`;
         });
         document.getElementById('countdown-area').innerHTML = html || "";
     }
 
     async function removeEvent(label, date, creator) {
-        // Strict Security: Only creator can delete
-        if(!creator || !currentUser.includes(creator.toUpperCase())) {
+        if(!creator || !currentUser.toUpperCase().includes(creator.toUpperCase())) {
             alert("Sirf " + creator + " hi is event ko khatam kar sakte hain!");
             return;
         }
