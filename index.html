@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - R.M. Original Style</title>
+    <title>Secret Dunia - A1</title>
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; }
         body.dark-mode { background: #1a1a1a; }
@@ -103,6 +103,15 @@
     
     let currentUser = "", isPrivateMode = false, isUnlocked = false, sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], myLastSeen = -1;
 
+    // Helper function for Date Format (Simple)
+    function formatSimpleDate(dateStr) {
+        if(!dateStr) return "";
+        const d = new Date(dateStr);
+        if(isNaN(d)) return dateStr;
+        const options = { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true };
+        return d.toLocaleString('en-GB', options).replace(',', '');
+    }
+
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
     function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
 
@@ -110,12 +119,10 @@
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
         isPrivateMode = document.getElementById('is-private').checked;
-        
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
             sheetPass = data.passwords;
-
             if((n.includes("AWAIS") && p == sheetPass.LoginPassAwais) || (n.includes("NISHA") && p == sheetPass.LoginPassNisha)) {
                 currentUser = n;
                 document.getElementById('login-screen').style.display='none';
@@ -139,7 +146,9 @@
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) { otherSeen = u.seenCount; otherName = u.name; }
                 let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
-                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${u.time}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
+                // Status Time Format Fixed
+                let cleanTime = formatSimpleDate(u.time);
+                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${cleanTime}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
             });
             document.getElementById('status-container').innerHTML = sHtml;
 
@@ -164,7 +173,9 @@
             if(isUnlocked) {
                 let hHtml = ""; history.slice().reverse().forEach(h => {
                     let side = h.name.toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
-                    hHtml += `<div class="note-item ${side}"><div>${h.note}</div><span class="note-meta">${h.name} • ${h.time}</span></div>`;
+                    // History Time Format Fixed
+                    let msgTime = formatSimpleDate(h.time);
+                    hHtml += `<div class="note-item ${side}"><div>${h.note}</div><span class="note-meta">${h.name} • ${msgTime}</span></div>`;
                 });
                 document.getElementById('notes-display').innerHTML = hHtml;
                 if(history.length > myLastSeen) { myLastSeen = history.length; updateStatus("Online", history.length); }
