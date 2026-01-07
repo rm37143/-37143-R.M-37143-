@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A1</title>
+    <title>Secret Dunia - A2</title>
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; }
         body.dark-mode { background: #1a1a1a; }
@@ -103,7 +103,6 @@
     
     let currentUser = "", isPrivateMode = false, isUnlocked = false, sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], myLastSeen = -1;
 
-    // Helper function for Date Format (Simple)
     function formatSimpleDate(dateStr) {
         if(!dateStr) return "";
         const d = new Date(dateStr);
@@ -146,7 +145,6 @@
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) { otherSeen = u.seenCount; otherName = u.name; }
                 let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
-                // Status Time Format Fixed
                 let cleanTime = formatSimpleDate(u.time);
                 sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${cleanTime}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
             });
@@ -163,7 +161,7 @@
             let badge = document.getElementById('unread-badge');
             if(history.length > 0) {
                 let lastMsg = history[history.length-1];
-                if(lastMsg.name.toUpperCase().includes(currentUser)) {
+                if(String(lastMsg.name).toUpperCase().includes(currentUser)) {
                     badge.innerHTML = (otherSeen >= history.length) ? `✅ ${otherName} Seen` : `⏳ Sent`;
                 } else {
                     badge.innerHTML = (history.length > myLastSeen) ? `💌 New Message` : `✅ All Read`;
@@ -172,10 +170,11 @@
 
             if(isUnlocked) {
                 let hHtml = ""; history.slice().reverse().forEach(h => {
-                    let side = h.name.toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
-                    // History Time Format Fixed
+                    let side = String(h.name).toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
                     let msgTime = formatSimpleDate(h.time);
-                    hHtml += `<div class="note-item ${side}"><div>${h.note}</div><span class="note-meta">${h.name} • ${msgTime}</span></div>`;
+                    // Fixed: Ensuring h.note is treated as a clean string
+                    let cleanNote = typeof h.note === 'object' ? JSON.stringify(h.note) : String(h.note);
+                    hHtml += `<div class="note-item ${side}"><div>${cleanNote}</div><span class="note-meta">${h.name} • ${msgTime}</span></div>`;
                 });
                 document.getElementById('notes-display').innerHTML = hHtml;
                 if(history.length > myLastSeen) { myLastSeen = history.length; updateStatus("Online", history.length); }
