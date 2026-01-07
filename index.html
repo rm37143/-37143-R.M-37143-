@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A2</title>
+    <title>Secret Dunia - A2 Locked</title>
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; }
         body.dark-mode { background: #1a1a1a; }
@@ -64,11 +64,11 @@
     
     <div id="login-screen" class="card">
         <input type="text" id="u-name" placeholder="User Name">
-        <input type="password" id="u-pass" placeholder="Enter Key">
+        <input type="password" id="u-pass" placeholder="Enter Key" onkeypress="if(event.key === 'Enter') checkAuth()">
         <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; font-size: 0.8rem; color: #666;">
             <input type="checkbox" id="is-private" style="width: 16px; margin: 0;"> <span>Private Mode</span>
         </div>
-        <button class="btn-main" onclick="checkAuth()">Enter World</button>
+        <button class="btn-main" id="login-btn" onclick="checkAuth()">Enter World</button>
     </div>
 
     <div id="dashboard">
@@ -117,7 +117,16 @@
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
+        const btn = document.getElementById('login-btn');
         isPrivateMode = document.getElementById('is-private').checked;
+
+        if(!n || !p) { alert("Please enter name and key!"); return; }
+
+        // Start Connecting Status
+        btn.innerText = "Connecting...";
+        btn.disabled = true;
+        btn.style.opacity = "0.7";
+
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
@@ -129,8 +138,18 @@
                 updateStatus("Online", -1);
                 setInterval(refreshData, 5000);
                 setInterval(updateLiveCountdowns, 1000);
-            } else { alert("Wrong Password!"); }
-        } catch (e) { alert("Connection Error!"); }
+            } else { 
+                alert("Wrong Password!"); 
+                btn.innerText = "Enter World";
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            }
+        } catch (e) { 
+            alert("Connection Error!"); 
+            btn.innerText = "Enter World";
+            btn.disabled = false;
+            btn.style.opacity = "1";
+        }
     }
 
     async function refreshData() {
@@ -172,7 +191,6 @@
                 let hHtml = ""; history.slice().reverse().forEach(h => {
                     let side = String(h.name).toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
                     let msgTime = formatSimpleDate(h.time);
-                    // Fixed: Ensuring h.note is treated as a clean string
                     let cleanNote = typeof h.note === 'object' ? JSON.stringify(h.note) : String(h.note);
                     hHtml += `<div class="note-item ${side}"><div>${cleanNote}</div><span class="note-meta">${h.name} • ${msgTime}</span></div>`;
                 });
