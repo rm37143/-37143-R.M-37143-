@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A7 Music Locked</title>
+    <title>Secret Dunia - A8 Smart MP3</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; }
         body.dark-mode { background: #1a1a1a; }
-        .dark-mode .card { background: rgba(45, 45, 45, 0.9); border: 1px solid #444; color: white; }
+        .dark-mode .card, .dark-mode .music-card { background: rgba(45, 45, 45, 0.9); border: 1px solid #444; color: white; }
         .dark-mode .status-bar { background: #333; color: #ddd; }
-        .dark-mode textarea, .dark-mode .music-card { color: white; background: #2d2d2d; border-color: #444; }
+        .dark-mode textarea { color: white; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; }
         .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
         .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -18,6 +18,15 @@
         #silent-btn { right: 10px; }
         .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
+        
+        /* Music Player UI */
+        .music-card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
+        .song-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #fff5f7; font-size: 0.75rem; }
+        .mini-player-bar { display: none; background: #f8f9fa; border-radius: 10px; padding: 5px 10px; margin-top: 8px; align-items: center; gap: 10px; border: 1px solid #eee; }
+        .play-pause-btn { background: var(--blue); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.6rem; }
+        .song-name-scroll { flex-grow: 1; font-size: 0.65rem; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; }
+        .stop-btn-small { background: #ff4d4d; color: white; border: none; border-radius: 5px; padding: 2px 6px; font-size: 0.55rem; cursor: pointer; }
+
         .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
         .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; display: flex; justify-content: space-between; align-items: center; }
         .cd-info { flex-grow: 1; }
@@ -44,12 +53,6 @@
         .hub-btn { background: #fff0f3; border: 1px solid #ffd1dc; padding: 10px 4px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; font-weight: bold; color: #d63384; }
         #dashboard { display: none; }
         input { width: 85%; padding: 12px; margin: 8px 0; border-radius: 20px; border: 1px solid #eee; text-align: center; outline: none; }
-        
-        /* Music Player CSS */
-        .music-card { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border-left: 5px solid var(--blue); text-align: left; }
-        .song-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #fcfcfc; font-size: 0.75rem; }
-        .play-btn { background: var(--blue); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 0.7rem; line-height: 1; }
-        #yt-player-container { margin-top: 10px; border-radius: 12px; overflow: hidden; display: none; background: #000; }
     </style>
 </head>
 <body>
@@ -73,15 +76,18 @@
         <span class="nisha-note">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
         
         <div class="music-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <b style="color: var(--blue); font-size: 0.9rem;">🎵 Music Playlist</b>
-                <button class="btn-add-event" style="margin:0; padding:4px 10px; background:var(--blue);" onclick="addSongPrompt()">+ Add Song</button>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <b style="color: var(--blue); font-size: 0.8rem;">🎵 Smart Playlist</b>
+                <button class="btn-add-event" style="margin:0; padding:4px 8px; background:var(--blue); font-size:0.6rem;" onclick="addSongPrompt()">+ Add MP3</button>
             </div>
-            <div id="playlist-area" style="max-height: 100px; overflow-y: auto;"></div>
-            <div id="yt-player-container">
-                <iframe id="music-iframe" width="100%" height="60" src="" frameborder="0" allow="autoplay"></iframe>
-                <button class="off-btn" style="width:100%; border-radius: 0;" onclick="stopMusic()">Stop Music ⏹️</button>
+            <div id="playlist-area" style="max-height: 80px; overflow-y: auto; margin-top: 5px;"></div>
+            
+            <div class="mini-player-bar" id="smart-player">
+                <button class="play-pause-btn" id="play-pause" onclick="togglePlay()">⏸</button>
+                <div class="song-name-scroll" id="now-playing-title">Playing...</div>
+                <button class="stop-btn-small" onclick="stopMusic()">STOP</button>
             </div>
+            <audio id="global-audio" onended="stopMusic()"></audio>
         </div>
 
         <div class="countdown-container" id="countdown-area"></div>
@@ -108,7 +114,6 @@
     
     let currentUser = "", isPrivateMode = false, isUnlocked = false, sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], myLastSeen = -1;
 
-    // --- [3A] Auth & Connection ---
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
@@ -125,12 +130,15 @@
                 setInterval(refreshData, 5000);
                 setInterval(updateLiveCountdowns, 1000);
             } else { alert("Wrong Key!"); }
-        } catch (e) { alert("Error connecting!"); }
+        } catch (e) { alert("Error!"); }
     }
 
-    function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => { location.reload(); }, 500); }
+    function logout() { 
+        stopMusic(); // Login screen par jate hi music band
+        updateStatus("Offline", myLastSeen); 
+        setTimeout(() => { location.reload(); }, 500); 
+    }
 
-    // --- [3B] Core Sync ---
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
@@ -139,10 +147,39 @@
             savedCountdowns = data.countdowns || [];
             savedPlaylist = data.playlist || [];
             
-            renderStatus(data.onlineUsers);
-            renderMessages(data.history);
-            renderPlaylist();
+            // Render Status
+            let sHtml = ""; let otherSeen = 0, otherName = "";
+            data.onlineUsers.forEach(u => {
+                let isMe = u.name.toUpperCase().includes(currentUser);
+                if(!isMe) { otherSeen = parseInt(u.seenCount) || 0; otherName = u.name; }
+                let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
+                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${formatSimpleDate(u.time)}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
+            });
+            document.getElementById('status-container').innerHTML = sHtml;
+
+            // Messages & Badges
+            let history = data.history || [];
+            if(history.length > lastMsgCount) {
+                if(!isSilent && lastMsgCount !== 0 && !history[history.length-1].name.toUpperCase().includes(currentUser)) document.getElementById('notif-sound').play();
+                lastMsgCount = history.length;
+            }
+            if(history.length > 0) {
+                let lastMsg = history[history.length-1];
+                let isMine = String(lastMsg.name).toUpperCase().includes(currentUser);
+                document.getElementById('unread-badge').innerHTML = isMine ? (otherSeen >= history.length ? `✅ ${otherName} Seen` : `⏳ Sent`) : (history.length > myLastSeen ? `💌 New Message` : `✅ All Read`);
+            }
+
+            if(isUnlocked) {
+                let hHtml = ""; history.slice().reverse().forEach(h => {
+                    let side = String(h.name).toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
+                    hHtml += `<div class="note-item ${side}"><div>${String(h.note)}</div><span class="note-meta">${h.name} • ${formatSimpleDate(h.time)}</span></div>`;
+                });
+                document.getElementById('notes-display').innerHTML = hHtml;
+                if(history.length > myLastSeen) { myLastSeen = history.length; updateStatus("Online", history.length); }
+            }
             
+            renderPlaylist();
+
             let bHtml = ""; ["Ai Assistant", "WhatsApp Hub", "Chat Room 1", "Chat Room 2", "Protected Text", "Video Room", "Pinterest", "Mega Storage"].forEach(name => {
                 bHtml += `<div class="hub-btn" onclick="enterRoom('${name}')">${name}</div>`;
             });
@@ -150,100 +187,74 @@
         } catch(e) {}
     }
 
-    function renderStatus(users) {
-        let sHtml = ""; let otherSeen = 0, otherName = "";
-        users.forEach(u => {
-            let isMe = u.name.toUpperCase().includes(currentUser);
-            if(!isMe) { otherSeen = parseInt(u.seenCount) || 0; otherName = u.name; }
-            let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
-            sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${formatSimpleDate(u.time)}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
-        });
-        document.getElementById('status-container').innerHTML = sHtml;
-        window.otherSeen = otherSeen; window.otherName = otherName;
-    }
-
-    function renderMessages(history) {
-        if(!history) return;
-        if(history.length > lastMsgCount) {
-            if(!isSilent && lastMsgCount !== 0 && !history[history.length-1].name.toUpperCase().includes(currentUser)) document.getElementById('notif-sound').play();
-            lastMsgCount = history.length;
-        }
-        if(history.length > 0) {
-            let lastMsg = history[history.length-1];
-            let isMine = String(lastMsg.name).toUpperCase().includes(currentUser);
-            document.getElementById('unread-badge').innerHTML = isMine ? (window.otherSeen >= history.length ? `✅ ${window.otherName} Seen` : `⏳ Sent`) : (history.length > myLastSeen ? `💌 New Message` : `✅ All Read`);
-        }
-        if(isUnlocked) {
-            let hHtml = ""; history.slice().reverse().forEach(h => {
-                let side = String(h.name).toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
-                hHtml += `<div class="note-item ${side}"><div>${String(h.note)}</div><span class="note-meta">${h.name} • ${formatSimpleDate(h.time)}</span></div>`;
-            });
-            document.getElementById('notes-display').innerHTML = hHtml;
-            if(history.length > myLastSeen) { myLastSeen = history.length; updateStatus("Online", history.length); }
-        }
-    }
-
-    // --- [3C] Music Logic (A7) ---
+    // --- SMART MUSIC LOGIC ---
     function renderPlaylist() {
         let html = "";
         savedPlaylist.forEach(s => {
             html += `<div class="song-row">
                 <span><b>${s.title}</b> <small>(${s.user})</small></span>
                 <div>
-                    <button class="play-btn" onclick="playMusic('${s.url}')">▶</button>
-                    <button class="del-ev-btn" onclick="removeSong('${s.url}')">×</button>
+                    <button class="play-btn" style="background:none; border:none; color:var(--blue); cursor:pointer;" onclick="playMusic('${s.url}', '${s.title}')">▶</button>
+                    <button class="del-ev-btn" style="padding:0 5px;" onclick="removeSong('${s.url}')">×</button>
                 </div>
             </div>`;
         });
-        document.getElementById('playlist-area').innerHTML = html || "No songs in playlist.";
+        document.getElementById('playlist-area').innerHTML = html || "No songs yet.";
     }
 
-    function playMusic(url) {
-        let videoId = "";
-        if(url.includes("v=")) videoId = url.split("v=")[1].split("&")[0];
-        else if(url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1];
-        if(videoId) {
-            document.getElementById('yt-player-container').style.display = "block";
-            document.getElementById('music-iframe').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-        } else { alert("Link valid nahi hai!"); }
+    function playMusic(url, title) {
+        const audio = document.getElementById('global-audio');
+        audio.src = url;
+        audio.play().catch(() => alert("Error playing MP3 URL"));
+        document.getElementById('now-playing-title').innerText = title;
+        document.getElementById('smart-player').style.display = "flex";
+        document.getElementById('play-pause').innerText = "⏸";
+    }
+
+    function togglePlay() {
+        const audio = document.getElementById('global-audio');
+        const btn = document.getElementById('play-pause');
+        if (audio.paused) { audio.play(); btn.innerText = "⏸"; } 
+        else { audio.pause(); btn.innerText = "▶"; }
     }
 
     function stopMusic() {
-        document.getElementById('music-iframe').src = "";
-        document.getElementById('yt-player-container').style.display = "none";
+        const audio = document.getElementById('global-audio');
+        audio.pause();
+        audio.src = "";
+        document.getElementById('smart-player').style.display = "none";
     }
 
     async function addSongPrompt() {
-        let t = prompt("Song ka naam:");
-        let u = prompt("YouTube Link (URL):");
+        let t = prompt("Song Name:");
+        let u = prompt("Direct MP3 URL:");
         if(t && u) {
             await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})});
-            alert("Song add ho gaya! Sync ho raha hai...");
             setTimeout(refreshData, 1000);
         }
     }
 
     async function removeSong(url) {
-        if(confirm("Ye song delete kar dein?")) {
+        if(confirm("Delete song?")) {
             await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"removeSong", url:url})});
             setTimeout(refreshData, 1000);
         }
     }
 
-    // --- [3D] Handlers ---
+    // --- OTHER HANDLERS ---
     function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
-    
+    function handleMsgInput(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNote(); } }
     async function sendNote() { 
         let input = document.getElementById('note-input');
-        let m = input.value.trim(); if(!m || isPrivateMode) return;
+        let m = input.value.trim(); if(!m) return;
         input.value = ""; input.style.height = "auto";
         await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
-        setTimeout(refreshData, 1000);
+        setTimeout(refreshData, 500);
     }
-
-    function handleMsgInput(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNote(); } }
-    function enterRoom(r) { if(prompt("Hub Key:") == sheetPass.HubPass) alert("Redirecting to " + r); }
+    function enterRoom(r) { if(prompt("Hub Key:") == sheetPass.HubPass) alert("Redirecting..."); }
     function unlockHistory() { if(prompt("History Key:") == sheetPass.HistoryPass) { isUnlocked = true; document.getElementById('unlock-btn').style.display='none'; document.getElementById('history-area').style.display='block'; refreshData(); } }
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
 
     function updateLiveCountdowns() {
         let html = "";
@@ -258,8 +269,8 @@
     }
 
     async function removeEvent(label, creator) {
-        if(creator && creator !== "Unknown" && !currentUser.includes(creator.toUpperCase())) { alert("Sirf creator hi delete kar sakta hai!"); return; }
-        if(confirm("Event delete kar dein?")) {
+        if(creator && !currentUser.includes(creator.toUpperCase())) { alert("Permission Denied"); return; }
+        if(confirm("Delete event?")) {
             await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"removeCountdown", label:label, user:creator})});
             setTimeout(refreshData, 1500);
         }
@@ -273,28 +284,13 @@
     function formatSimpleDate(dateStr) {
         if(!dateStr) return "";
         let d = new Date(dateStr);
-        if(isNaN(d.getTime())) {
-            let parts = dateStr.split(/[\/\s:]/);
-            if(parts.length >= 2) {
-                let day = parseInt(parts[0]);
-                let month = parseInt(parts[1]) - 1;
-                let year = parts[2] && parts[2].length === 4 ? parseInt(parts[2]) : new Date().getFullYear();
-                d = new Date(year, month, day);
-            }
-        }
-        if(isNaN(d.getTime())) return dateStr; 
-        let day = String(d.getDate()).padStart(2, '0');
+        if(isNaN(d.getTime())) return dateStr;
         let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        let monthName = months[d.getMonth()];
         let hours = d.getHours();
-        let minutes = String(d.getMinutes()).padStart(2, '0');
         let ampm = hours >= 12 ? 'pm' : 'am';
         hours = hours % 12 || 12;
-        return `${day} ${monthName}, ${hours}:${minutes}${ampm}`;
+        return `${d.getDate()} ${months[d.getMonth()]}, ${hours}:${String(d.getMinutes()).padStart(2, '0')}${ampm}`;
     }
-
-    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
 </script>
 </body>
 </html>
