@@ -3,46 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4 Locked</title>
+    <title>Secret Dunia - A5</title>
     <style>
-        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; }
-        body.dark-mode { background: #1a1a1a; }
-        .dark-mode .card { background: rgba(45, 45, 45, 0.9); border: 1px solid #444; color: white; }
-        .dark-mode .status-bar { background: #333; color: #ddd; }
+        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.85); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #2d3436; }
+        body.dark-mode { background: #121212; color: white; }
+        .dark-mode .card, .dark-mode .status-bar, .dark-mode .countdown-container { background: rgba(30, 30, 30, 0.9); border: 1px solid #333; color: #eee; }
         .dark-mode textarea { color: white; }
-        body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; }
-        .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
-        .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .mode-toggle { left: 10px; }
-        #silent-btn { right: 10px; }
-        .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
-        .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
-        .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
-        .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; display: flex; justify-content: space-between; align-items: center; }
-        .cd-info { flex-grow: 1; }
-        .cd-label { color: #d63384; font-size: 0.95rem; font-weight: bold; display: block; }
-        .cd-time { color: #555; font-size: 0.75rem; display: block; margin-top: 2px; font-family: monospace; font-weight: bold; }
-        .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; display: block; margin-top: 2px; }
-        .del-ev-btn { background: #fff0f3; border: 1px solid #ffd1dc; color: #ff85a2; cursor: pointer; font-size: 1rem; line-height: 1; padding: 2px 8px; border-radius: 8px; margin-left: 10px; }
-        .btn-add-event { background: var(--pink); color: white; border: none; padding: 8px 18px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-bottom: 15px; }
-        .card { background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 10px; border: 1px solid white; position: relative; }
-        .status-bar { background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 10px; font-size: 0.62rem; border-left: 5px solid var(--green); text-align: left; }
-        .user-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #f9f9f9; }
-        .dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .dot-online { background: var(--green); box-shadow: 0 0 5px var(--green); }
-        .dot-offline { background: var(--grey); }
-        .off-btn { background:#ff4d4d; color:white; border:none; border-radius:6px; padding:2px 8px; font-size:0.6rem; cursor:pointer; }
-        textarea { width: 100%; border: none; background: transparent; padding: 8px 5px; resize: none; outline: none; font-size: 0.95rem; min-height: 20px; max-height: 80px; overflow-y: auto; text-align: center; }
-        .btn-main { background: var(--pink); color: white; border: none; padding: 12px; border-radius: 20px; font-weight: bold; width: 100%; cursor: pointer; }
-        .history-box { height: 320px; overflow-y: auto; text-align: left; padding: 5px; }
-        .note-item { margin-bottom: 10px; padding: 10px 15px; border-radius: 18px; position: relative; max-width: 85%; line-height: 1.4; font-size: 0.9rem; clear: both; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .note-awais { background-color: #ffe0e9 !important; border-bottom-right-radius: 2px; float: right; color: #000; } 
-        .note-nisha { background-color: #e3f2fd !important; border-bottom-left-radius: 2px; float: left; color: #000; }
-        .note-meta { font-size: 0.55rem; color: #777; margin-top: 4px; display: block; text-align: right; }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .hub-btn { background: #fff0f3; border: 1px solid #ffd1dc; padding: 10px 4px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; font-weight: bold; color: #d63384; }
-        #dashboard { display: none; }
-        input { width: 85%; padding: 12px; margin: 8px 0; border-radius: 20px; border: 1px solid #eee; text-align: center; outline: none; }
+        
+        body { background: linear-gradient(135deg, #fce4ec 0%, #ffe1e9 100%); font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.4s; overflow-x: hidden; }
+        .container { width: 100%; max-width: 420px; text-align: center; animation: fadeIn 0.8s ease; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .mode-toggle, #silent-btn { position: fixed; top: 12px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 8px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(255,133,162,0.3); transition: 0.2s; }
+        .mode-toggle:active, #silent-btn:active { transform: scale(0.9); }
+        .mode-toggle { left: 12px; }
+        #silent-btn { right: 12px; }
+
+        .main-title { color: var(--pink); margin: 45px 0 5px 0; font-size: 1.8rem; letter-spacing: -1px; }
+        .nisha-note { color: #d63384; font-size: 0.75rem; font-style: italic; margin-bottom: 15px; display: block; opacity: 0.8; }
+        
+        .countdown-container { background: white; border-radius: 20px; padding: 15px; margin-bottom: 12px; border: 1px solid #ffd1dc; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .cd-row { margin-bottom: 12px; border-bottom: 1px solid rgba(255,133,162,0.1); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .cd-label { color: #d63384; font-size: 0.9rem; font-weight: 700; display: block; }
+        .cd-time { color: #444; font-size: 0.8rem; font-family: 'Courier New', monospace; font-weight: bold; background: #fff0f3; padding: 2px 6px; border-radius: 5px; }
+        
+        .status-bar { background: #fff; padding: 12px; border-radius: 15px; margin-bottom: 12px; font-size: 0.65rem; border-left: 6px solid var(--green); text-align: left; transition: 0.3s; }
+        .typing { color: var(--green); font-weight: bold; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+        .card { background: var(--glass); backdrop-filter: blur(10px); border-radius: 25px; padding: 18px; box-shadow: 0 8px 32px rgba(0,0,0,0.05); margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.7); }
+        textarea { width: 100%; border: none; background: transparent; padding: 10px; resize: none; outline: none; font-size: 1rem; text-align: center; }
+        
+        .btn-main { background: var(--pink); color: white; border: none; padding: 14px; border-radius: 25px; font-weight: bold; width: 100%; cursor: pointer; box-shadow: 0 6px 15px rgba(255,133,162,0.4); }
+        
+        .history-box { height: 350px; overflow-y: auto; padding-right: 5px; scroll-behavior: smooth; }
+        .note-item { margin-bottom: 12px; padding: 12px 16px; border-radius: 20px; font-size: 0.95rem; max-width: 80%; clear: both; animation: popIn 0.3s ease; }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .note-awais { background: #ffe0e9; float: right; border-bottom-right-radius: 4px; color: #333; }
+        .note-nisha { background: #e3f2fd; float: left; border-bottom-left-radius: 4px; color: #333; }
+        
+        .btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .hub-btn { background: white; border: 1px solid #ffd1dc; padding: 12px 5px; border-radius: 15px; cursor: pointer; font-size: 0.7rem; font-weight: bold; color: #d63384; transition: 0.2s; }
+        .hub-btn:hover { background: var(--pink); color: white; }
     </style>
 </head>
 <body>
@@ -51,77 +54,58 @@
 <button id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
 
 <div class="container">
-    <h2 class="main-title">Secret Dunia</h2>
+    <h1 class="main-title">Secret Dunia <small style="font-size: 0.6rem; vertical-align: middle;">vA5</small></h1>
     
     <div id="login-screen" class="card">
-        <input type="text" id="u-name" placeholder="User Name">
-        <input type="password" id="u-pass" placeholder="Enter Key" onkeypress="if(event.key === 'Enter') checkAuth()">
-        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; font-size: 0.8rem; color: #666;">
-            <input type="checkbox" id="is-private" style="width: 16px; margin: 0;"> <span>Private Mode</span>
-        </div>
-        <button class="btn-main" id="login-btn" onclick="checkAuth()">Enter World</button>
+        <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; border-radius:20px; border:1px solid #eee; margin-bottom:10px; text-align:center;">
+        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; border-radius:20px; border:1px solid #eee; margin-bottom:10px; text-align:center;">
+        <button class="btn-main" onclick="checkAuth()">Open World ✨</button>
     </div>
 
-    <div id="dashboard">
+    <div id="dashboard" style="display:none;">
         <span class="nisha-note">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
         <div class="countdown-container" id="countdown-area"></div>
-        <button class="btn-add-event" onclick="addCountdownPrompt()">+ Add Event</button>
-        <div class="status-bar" id="status-container">Syncing Status...</div>
-        <div class="card" style="padding: 10px;">
-            <textarea id="note-input" placeholder="Type message & press Enter..." rows="1" onkeydown="handleMsgInput(event)" oninput="this.style.height='auto'; this.style.height=(this.scrollHeight)+'px';"></textarea>
+        <button class="btn-add-event" style="background:none; color:var(--pink); border:2px dashed var(--pink); width:100%; border-radius:15px; padding:8px; margin-bottom:15px; font-weight:bold; cursor:pointer;" onclick="addCountdownPrompt()">+ Add New Event</button>
+        
+        <div class="status-bar" id="status-container">Connecting...</div>
+        
+        <div class="card" style="padding: 5px;">
+            <textarea id="note-input" placeholder="Likho kuch..." rows="1" onkeydown="handleTyping(event)" oninput="autoHeight(this)"></textarea>
         </div>
-        <div class="card" style="padding: 10px;">
-            <div id="unread-badge" style="font-size:0.65rem; color:var(--pink); font-weight:bold; margin-bottom: 5px;">Checking...</div>
-            <button id="unlock-btn" class="btn-main" style="background:var(--dark);" onclick="unlockHistory()">Unlock Messages 🔒</button>
+
+        <div class="card">
+            <div id="unread-badge" style="font-size:0.7rem; color:var(--pink); font-weight:bold; margin-bottom: 8px;">Syncing...</div>
+            <button id="unlock-btn" class="btn-main" style="background:var(--dark);" onclick="unlockHistory()">Unlock Secret History 🔒</button>
             <div id="history-area" style="display:none;">
                 <div class="history-box" id="notes-display"></div>
             </div>
         </div>
-        <div class="card" style="padding: 10px;"><div class="btn-grid" id="hub-grid"></div></div>
+        
+        <div class="btn-grid" id="hub-grid"></div>
     </div>
 </div>
 
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbx78vLDyTsXQpup4Ein-xdQMQcuMkp7a8YDZKnPNEfmQeH6qTus9Aeu-3KMT_oDxhyf/exec';
-    
-    let currentUser = "", isPrivateMode = false, isUnlocked = false, sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], myLastSeen = -1;
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwr94Q6U1MXU6SQrWufjnSZzSIu0sWKGwA-kvdwWes0ZxHXLWxaYM3-nqumItKoq8Lk/exec';
+    let currentUser = "", isUnlocked = false, sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], myLastSeen = -1, typingTimer;
 
-    // --- FIXED DATE PARSER ---
     function formatSimpleDate(dateStr) {
         if(!dateStr) return "";
         let d = new Date(dateStr);
-        // Agar date string ISO nahi hai to manually parse karein (mostly for Status sheet)
         if(isNaN(d.getTime())) {
-            // Check if string is like 07/01/2026
             let parts = dateStr.split(/[\/\s:]/);
-            if(parts.length >= 2) {
-                let day = parseInt(parts[0]);
-                let month = parseInt(parts[1]) - 1;
-                let year = parts[2] && parts[2].length === 4 ? parseInt(parts[2]) : new Date().getFullYear();
-                d = new Date(year, month, day);
-            }
+            if(parts.length >= 2) { d = new Date(new Date().getFullYear(), parseInt(parts[1])-1, parseInt(parts[0])); }
         }
-        if(isNaN(d.getTime())) return dateStr; 
-
-        let day = String(d.getDate()).padStart(2, '0');
+        if(isNaN(d.getTime())) return dateStr;
         let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        let monthName = months[d.getMonth()];
-        let hours = d.getHours();
-        let minutes = String(d.getMinutes()).padStart(2, '0');
-        let ampm = hours >= 12 ? 'pm' : 'am';
-        hours = hours % 12 || 12;
-        return `${day} ${monthName}, ${hours}:${minutes}${ampm}`;
+        return `${d.getDate()} ${months[d.getMonth()]}, ${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, '0')}${d.getHours() >= 12 ? 'pm' : 'am'}`;
     }
-
-    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
-        if(!n || !p) return;
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
@@ -137,19 +121,25 @@
         } catch (e) { alert("Error!"); }
     }
 
+    function handleTyping(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNote(); return; }
+        clearTimeout(typingTimer);
+        updateStatus("Typing...", myLastSeen);
+        typingTimer = setTimeout(() => { updateStatus("Online", myLastSeen); }, 3000);
+    }
+
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            sheetPass = data.passwords;
             savedCountdowns = data.countdowns || [];
             
             let sHtml = ""; let otherSeen = 0, otherName = "";
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) { otherSeen = parseInt(u.seenCount) || 0; otherName = u.name; }
-                let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
-                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${formatSimpleDate(u.time)}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
+                let dotClass = u.status.includes("Online") ? "dot-online" : (u.status.includes("Typing") ? "dot-online typing" : "dot-offline");
+                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${formatSimpleDate(u.time)}</small></span></div>`;
             });
             document.getElementById('status-container').innerHTML = sHtml;
 
@@ -184,43 +174,27 @@
         let html = "";
         savedCountdowns.forEach((c) => {
             let diff = new Date(c.date).getTime() - new Date().getTime();
-            let timeText = diff > 0 ? 
-                Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m "+Math.floor((diff%(1000*60))/1000)+"s" 
-                : "Finished!";
-            html += `<div class="cd-row"><div class="cd-info"><span class="cd-label">${c.label}</span><span class="cd-time">${timeText}</span><span class="cd-user">by ${c.user || 'Unknown'}</span></div><button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.user}')">×</button></div>`;
+            let timeText = diff > 0 ? Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m "+Math.floor((diff%(1000*60))/1000)+"s" : "Finished!";
+            html += `<div class="cd-row"><div class="cd-info"><span class="cd-label">${c.label}</span><span class="cd-time">${timeText}</span></div><button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.user}')">×</button></div>`;
         });
         document.getElementById('countdown-area').innerHTML = html;
     }
 
-    async function removeEvent(label, creator) {
-        if(creator && creator !== "Unknown" && !currentUser.includes(creator.toUpperCase())) {
-            alert("Only " + creator + " can delete this!"); return;
-        }
-        if(confirm("Delete this event?")) {
-            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"removeCountdown", label:label, user:creator})});
-            setTimeout(refreshData, 1500);
-        }
-    }
-
-    function addCountdownPrompt() { 
-        let l = prompt("Event Name:"); let d = prompt("Date (YYYY-MM-DD HH:MM):"); 
-        if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
-    }
-
-    function handleMsgInput(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNote(); } }
-    function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => { location.reload(); }, 500); }
-    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
-    
     async function sendNote() { 
         let input = document.getElementById('note-input');
-        let m = input.value.trim(); if(!m || isPrivateMode) return;
+        let m = input.value.trim(); if(!m) return;
         input.value = ""; input.style.height = "auto";
         await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
         setTimeout(refreshData, 1000);
     }
 
-    function enterRoom(r) { if(prompt("Hub Key:") == sheetPass.HubPass) alert("Redirecting..."); }
+    function autoHeight(el) { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
     function unlockHistory() { if(prompt("History Key:") == sheetPass.HistoryPass) { isUnlocked = true; document.getElementById('unlock-btn').style.display='none'; document.getElementById('history-area').style.display='block'; refreshData(); } }
+    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
+    function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("Date (YYYY-MM-DD HH:MM):"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
+    function enterRoom(r) { if(prompt("Hub Key:") == sheetPass.HubPass) alert("Redirecting..."); }
 </script>
 </body>
 </html>
