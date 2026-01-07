@@ -21,12 +21,12 @@
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         
         .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
-        .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; display: flex; justify-content: space-between; align-items: flex-start; }
+        .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; display: flex; justify-content: space-between; align-items: center; }
         .cd-info { flex-grow: 1; }
         .cd-label { color: #d63384; font-size: 0.95rem; font-weight: bold; display: block; }
         .cd-time { color: #555; font-size: 0.7rem; display: block; margin-top: 2px; }
         .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; display: block; margin-top: 2px; }
-        .del-ev-btn { background: none; border: none; color: #ffbcbc; cursor: pointer; font-size: 0.9rem; font-weight: bold; padding: 0 5px; margin-left: 10px; }
+        .del-ev-btn { background: #fff0f3; border: 1px solid #ffd1dc; color: #ff85a2; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 2px 8px; border-radius: 8px; margin-left: 10px; }
 
         .btn-add-event { background: var(--pink); color: white; border: none; padding: 8px 18px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-bottom: 15px; }
 
@@ -58,7 +58,7 @@
         .signature-line { font-size: 0.6rem; color: #555; margin-top: 10px; font-style: italic; }
     </style>
 </head>
-<body onmousedown="resetInactivityTimer()">
+<body>
 
 <button class="mode-toggle" onclick="toggleTheme()">🌓 MODE</button>
 <button id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
@@ -106,7 +106,8 @@
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzgh3nJIYWFUGn9EZ0i5gFLvYGsMhAjnA58Y37ebt6Ut88H9fyMubiT1ZVahsBAKooz/exec';
+    // Updated Script URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzFc9lPXDzNhjTTmqgfXAlC-FEqTTUZ__j5HfFB6p5HTmPiHAC4RzLzgbHajNsNLeLO/exec';
     
     const hubButtons = [
         { name: "Ai Assistant", link: "https://gemini.google.com/app" },
@@ -148,7 +149,7 @@
             const res = await fetch(scriptURL);
             const data = await res.json();
             sheetPass = data.passwords;
-            savedCountdowns = data.countdowns;
+            savedCountdowns = data.countdowns || [];
             
             let sHtml = ""; let otherSeen = 0, otherName = "";
             data.onlineUsers.forEach(u => {
@@ -220,7 +221,8 @@
     }
 
     async function removeEvent(label, date, creator) {
-        if(!creator || !currentUser.toUpperCase().includes(creator.toUpperCase())) {
+        // Strict Security Check
+        if(creator && creator !== "Unknown" && !currentUser.toUpperCase().includes(creator.toUpperCase())) {
             alert("Sirf " + creator + " hi is event ko khatam kar sakte hain!");
             return;
         }
@@ -245,8 +247,11 @@
 
     function addCountdownPrompt() { 
         let l = prompt("Event Ka Naam:"); 
-        let d = prompt("Date (Format: 2026-02-14 18:30):"); 
-        if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
+        let d = prompt("Date (Example: 2026-02-14 18:30):"); 
+        if(l && d) {
+            fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
+            setTimeout(refreshData, 1500);
+        }
     }
 
     function enterRoom(r) { let b = hubButtons.find(x => x.name === r); let p = prompt("Hub Key:"); if(p == sheetPass.HubPass) window.location.href = b.link; }
