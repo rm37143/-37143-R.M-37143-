@@ -20,19 +20,16 @@
         .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         
-        /* --- EVENT BOX SAFETY LOCK START --- */
+        /* --- EVENT BOX SAFETY LOCK --- */
         .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
         .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; display: flex; justify-content: space-between; align-items: center; }
-        .cd-info { flex-grow: 1; }
         .cd-label { color: #d63384; font-size: 0.95rem; font-weight: bold; display: block; }
         .cd-time { color: #555; font-size: 0.7rem; display: block; margin-top: 2px; font-family: monospace; }
         .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; display: block; margin-top: 2px; }
         .del-ev-btn { background: #fff0f3; border: 1px solid #ffd1dc; color: #ff85a2; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 2px 8px; border-radius: 8px; margin-left: 10px; }
         .btn-add-event { background: var(--pink); color: white; border: none; padding: 8px 18px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-bottom: 15px; }
-        /* --- EVENT BOX SAFETY LOCK END --- */
 
         .card { background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 10px; border: 1px solid white; position: relative; }
-        
         .status-bar { background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 10px; font-size: 0.62rem; border-left: 5px solid var(--green); text-align: left; }
         .user-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #f9f9f9; }
         .dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
@@ -103,15 +100,20 @@
     
     let currentUser = "", isPrivateMode = false, isUnlocked = false, sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], myLastSeen = -1;
 
-    // --- DATE FIX: DD/MM/YYYY FORMAT FOR STATUS BAR ---
+    // --- FORCED DD/MM/YYYY FIX ---
     function formatSimpleDate(dateStr) {
         if(!dateStr) return "";
         const d = new Date(dateStr);
         if(isNaN(d)) return dateStr;
-        return new Intl.DateTimeFormat('en-GB', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit', hour12: true
-        }).format(d).replace(',', '');
+        let day = String(d.getDate()).padStart(2, '0');
+        let month = String(d.getMonth() + 1).padStart(2, '0');
+        let year = d.getFullYear();
+        let hours = d.getHours();
+        let minutes = String(d.getMinutes()).padStart(2, '0');
+        let ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; 
+        return `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
     }
 
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
@@ -121,8 +123,7 @@
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
         const btn = document.getElementById('login-btn');
-        isPrivateMode = document.getElementById('is-private').checked;
-        if(!n || !p) { alert("Please enter name and key!"); return; }
+        if(!n || !p) { alert("Enter name and key!"); return; }
         btn.innerText = "Connecting..."; btn.disabled = true;
         try {
             const res = await fetch(scriptURL);
@@ -136,7 +137,7 @@
                 setInterval(refreshData, 5000);
                 setInterval(updateLiveCountdowns, 1000);
             } else { alert("Wrong Password!"); btn.innerText = "Enter World"; btn.disabled = false; }
-        } catch (e) { alert("Connection Error!"); btn.innerText = "Enter World"; btn.disabled = false; }
+        } catch (e) { alert("Error!"); btn.innerText = "Enter World"; btn.disabled = false; }
     }
 
     async function refreshData() {
@@ -150,8 +151,7 @@
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) { otherSeen = u.seenCount; otherName = u.name; }
                 let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
-                let cleanTime = formatSimpleDate(u.time);
-                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${cleanTime}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
+                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${formatSimpleDate(u.time)}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
             });
             document.getElementById('status-container').innerHTML = sHtml;
             let history = data.history || [];
@@ -173,9 +173,7 @@
             if(isUnlocked) {
                 let hHtml = ""; history.slice().reverse().forEach(h => {
                     let side = String(h.name).toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
-                    let msgTime = formatSimpleDate(h.time);
-                    let cleanNote = typeof h.note === 'object' ? JSON.stringify(h.note) : String(h.note);
-                    hHtml += `<div class="note-item ${side}"><div>${cleanNote}</div><span class="note-meta">${h.name} • ${msgTime}</span></div>`;
+                    hHtml += `<div class="note-item ${side}"><div>${String(h.note)}</div><span class="note-meta">${h.name} • ${formatSimpleDate(h.time)}</span></div>`;
                 });
                 document.getElementById('notes-display').innerHTML = hHtml;
                 if(history.length > myLastSeen) { myLastSeen = history.length; updateStatus("Online", history.length); }
@@ -190,49 +188,40 @@
 
     function handleMsgInput(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNote(); } }
 
-    /* --- EVENT BOX LOGIC SAFETY LOCK START --- */
+    /* --- EVENT BOX LOGIC FIXED --- */
     function updateLiveCountdowns() {
         let html = "";
         savedCountdowns.forEach((c) => {
             let diff = new Date(c.date).getTime() - new Date().getTime();
-            let timeText = "";
-            if(diff > 0) {
-                let d = Math.floor(diff/(1000*60*60*24));
-                let h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-                let m = Math.floor((diff%(1000*60*60))/(1000*60));
-                let s = Math.floor((diff%(1000*60))/1000);
-                timeText = `${d}d ${h}h ${m}m ${s}s`;
-            } else { timeText = "Finished!"; }
+            let timeText = diff > 0 ? 
+                Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m "+Math.floor((diff%(1000*60))/1000)+"s" 
+                : "Finished!";
             html += `<div class="cd-row"><div class="cd-info"><span class="cd-label">${c.label}</span><span class="cd-time">${timeText}</span><span class="cd-user">by ${c.user || 'Unknown'}</span></div><button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.date}', '${c.user}')">x</button></div>`;
         });
         document.getElementById('countdown-area').innerHTML = html;
     }
 
     async function removeEvent(label, date, creator) {
-        let cleanCreator = creator ? creator.toUpperCase() : "UNKNOWN";
-        if(creator && creator !== "Unknown" && !currentUser.toUpperCase().includes(cleanCreator) && !cleanCreator.includes(currentUser.toUpperCase())) {
+        if(creator && creator !== "Unknown" && !currentUser.includes(creator.toUpperCase())) {
             alert("Sirf " + creator + " hi ise khatam kar sakte hain!"); return;
         }
-        if(confirm("Delete this Event?")) {
+        if(confirm("Delete?")) {
             await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"removeCountdown", label:label, date:date})});
             setTimeout(refreshData, 1500);
         }
     }
 
     function addCountdownPrompt() { 
-        let l = prompt("Event Name:"); 
-        let d = prompt("Date (YYYY-MM-DD HH:MM):"); 
+        let l = prompt("Name:"); let d = prompt("Date (YYYY-MM-DD HH:MM):"); 
         if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
     }
-    /* --- EVENT BOX LOGIC SAFETY LOCK END --- */
 
     function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => { location.reload(); }, 500); }
     function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
     
     async function sendNote() { 
         let input = document.getElementById('note-input');
-        let m = input.value.trim(); 
-        if(!m || isPrivateMode) return;
+        let m = input.value.trim(); if(!m || isPrivateMode) return;
         input.value = ""; input.style.height = "auto";
         await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
         setTimeout(refreshData, 1000);
