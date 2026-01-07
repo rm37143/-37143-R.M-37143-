@@ -9,6 +9,7 @@
         body.dark-mode { background: #1a1a1a; }
         .dark-mode .card { background: rgba(45, 45, 45, 0.9); border: 1px solid #444; color: white; }
         .dark-mode .status-bar { background: #333; color: #ddd; }
+        .dark-mode textarea { color: white; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; }
         .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
         
@@ -21,10 +22,11 @@
         
         .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
         .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; display: flex; justify-content: space-between; align-items: center; }
-        .cd-label { color: #d63384; font-size: 0.95rem; font-weight: bold; }
-        .cd-time { color: #555; font-size: 0.7rem; }
-        .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; }
-        .del-ev-btn { background: #fff0f3; border: 1px solid #ffd1dc; color: #ff85a2; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 2px 8px; border-radius: 8px; }
+        .cd-info { flex-grow: 1; }
+        .cd-label { color: #d63384; font-size: 0.95rem; font-weight: bold; display: block; }
+        .cd-time { color: #555; font-size: 0.7rem; display: block; margin-top: 2px; }
+        .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; display: block; margin-top: 2px; }
+        .del-ev-btn { background: #fff0f3; border: 1px solid #ffd1dc; color: #ff85a2; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 2px 8px; border-radius: 8px; margin-left: 10px; }
 
         .btn-add-event { background: var(--pink); color: white; border: none; padding: 8px 18px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-bottom: 15px; }
 
@@ -39,12 +41,11 @@
         
         .history-box { height: 320px; overflow-y: auto; text-align: left; padding: 5px; }
         .note-item { margin-bottom: 10px; padding: 10px 15px; border-radius: 18px; position: relative; max-width: 85%; line-height: 1.4; font-size: 0.9rem; clear: both; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .note-awais { background-color: #ffe0e9; border-bottom-right-radius: 2px; float: right; color: #000; } 
-        .note-nisha { background-color: #e3f2fd; border-bottom-left-radius: 2px; float: left; color: #000; }
+        .note-awais { background-color: #ffe0e9 !important; border-bottom-right-radius: 2px; float: right; color: #000; } 
+        .note-nisha { background-color: #e3f2fd !important; border-bottom-left-radius: 2px; float: left; color: #000; }
         .note-meta { font-size: 0.55rem; color: #777; margin-top: 4px; display: block; text-align: right; }
-        .react-badge { font-size: 0.75rem; background: white; border-radius: 8px; padding: 2px 4px; position: absolute; bottom: -8px; right: 10px; border: 1px solid #eee; }
-
-        textarea { width: 85%; border: none; background: transparent; padding: 8px 5px; resize: none; outline: none; font-size: 0.95rem; min-height: 20px; }
+        
+        textarea { width: 85%; border: none; background: transparent; padding: 8px 5px; resize: none; outline: none; font-size: 0.95rem; min-height: 20px; max-height: 60px; overflow-y: auto; }
         .btn-main { background: var(--pink); color: white; border: none; padding: 12px; border-radius: 20px; font-weight: bold; width: 100%; cursor: pointer; }
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .hub-btn { background: #fff0f3; border: 1px solid #ffd1dc; padding: 10px 4px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; font-weight: bold; color: #d63384; }
@@ -64,8 +65,8 @@
     <div id="login-screen" class="card">
         <input type="text" id="u-name" placeholder="User Name">
         <input type="password" id="u-pass" placeholder="Enter Key">
-        <div style="margin: 10px 0; font-size: 0.8rem; color: #666;">
-            <input type="checkbox" id="is-private"> <span>Private Mode</span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; font-size: 0.8rem; color: #666;">
+            <input type="checkbox" id="is-private" style="width: 16px; margin: 0;"> <span>Private Mode</span>
         </div>
         <button class="btn-main" onclick="checkAuth()">Enter World</button>
     </div>
@@ -79,11 +80,11 @@
         <div class="status-bar" id="status-container">Syncing Status...</div>
         
         <div class="card" style="padding: 10px; display: flex; align-items: center;">
-            <textarea id="note-input" placeholder="Write a Message..." rows="1"></textarea>
-            <span onclick="sendNote()" style="cursor:pointer; color: var(--pink); font-size: 1.3rem;">🚀</span>
+            <textarea id="note-input" placeholder="Write a Message..." rows="1" oninput="this.style.height='auto'; this.style.height=(this.scrollHeight)+'px';"></textarea>
+            <span onclick="sendNote()" style="cursor:pointer; color: var(--pink); font-size: 1.3rem; margin-left: 5px;">🚀</span>
         </div>
 
-        <div class="card">
+        <div class="card" style="padding: 10px;">
             <div id="unread-badge" style="font-size:0.65rem; color:var(--pink); font-weight:bold; margin-bottom: 5px;">Checking...</div>
             <button id="unlock-btn" class="btn-main" style="background:var(--dark);" onclick="unlockHistory()">Unlock Messages 🔒</button>
             <div id="history-area" style="display:none;">
@@ -91,34 +92,39 @@
             </div>
         </div>
 
-        <div class="card"><div class="btn-grid" id="hub-grid"></div></div>
+        <div class="card" style="padding: 10px;"><div class="btn-grid" id="hub-grid"></div></div>
     </div>
 </div>
 
+<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxJJzjOnEQQB4k7lg5UxUq2Nys5Dbv3J-G56LYEKCeJmetlPJPj7Ir9_80rvKnKWWhj/exec';
-    let currentUser = "", isPrivateMode = false, isUnlocked = false, sheetPass = {}, lastMsgCount = 0, myLastSeen = -1;
+    
+    let currentUser = "", isPrivateMode = false, isUnlocked = false, sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], myLastSeen = -1;
 
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { let b = document.getElementById('silent-btn'); b.innerHTML = b.innerHTML.includes("🔕") ? "🔔 SOUND" : "🔕 SILENT"; }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
         isPrivateMode = document.getElementById('is-private').checked;
         
-        const res = await fetch(scriptURL);
-        const data = await res.json();
-        sheetPass = data.passwords;
+        try {
+            const res = await fetch(scriptURL);
+            const data = await res.json();
+            sheetPass = data.passwords;
 
-        if((n.includes("AWAIS") && p == sheetPass.LoginPassAwais) || (n.includes("NISHA") && p == sheetPass.LoginPassNisha)) {
-            currentUser = n;
-            document.getElementById('login-screen').style.display='none';
-            document.getElementById('dashboard').style.display='block';
-            updateStatus("Online", -1);
-            setInterval(refreshData, 5000);
-            setInterval(updateLiveCountdowns, 1000);
-        } else { alert("Wrong Password!"); }
+            if((n.includes("AWAIS") && p == sheetPass.LoginPassAwais) || (n.includes("NISHA") && p == sheetPass.LoginPassNisha)) {
+                currentUser = n;
+                document.getElementById('login-screen').style.display='none';
+                document.getElementById('dashboard').style.display='block';
+                updateStatus("Online", -1);
+                setInterval(refreshData, 5000);
+                setInterval(updateLiveCountdowns, 1000);
+            } else { alert("Wrong Password!"); }
+        } catch (e) { alert("Connection Error!"); }
     }
 
     async function refreshData() {
@@ -126,8 +132,8 @@
             const res = await fetch(scriptURL);
             const data = await res.json();
             sheetPass = data.passwords;
+            savedCountdowns = data.countdowns || [];
             
-            // Status bar with OFF button and Seen logic
             let sHtml = ""; let otherSeen = 0, otherName = "";
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
@@ -137,8 +143,14 @@
             });
             document.getElementById('status-container').innerHTML = sHtml;
 
-            // Seen Receipts logic
             let history = data.history || [];
+            if(history.length > lastMsgCount) {
+                if(!isSilent && lastMsgCount !== 0 && !history[history.length-1].name.toUpperCase().includes(currentUser)) {
+                    document.getElementById('notif-sound').play();
+                }
+                lastMsgCount = history.length;
+            }
+
             let badge = document.getElementById('unread-badge');
             if(history.length > 0) {
                 let lastMsg = history[history.length-1];
@@ -157,26 +169,40 @@
                 document.getElementById('notes-display').innerHTML = hHtml;
                 if(history.length > myLastSeen) { myLastSeen = history.length; updateStatus("Online", history.length); }
             }
-            
-            // Hub Buttons
+
             let bHtml = ""; 
             ["Ai Assistant", "WhatsApp Hub", "Chat Room 1", "Chat Room 2", "Protected Text", "Video Room", "Pinterest", "Mega Storage"].forEach(name => {
                 bHtml += `<div class="hub-btn" onclick="enterRoom('${name}')">${name}</div>`;
             });
             document.getElementById('hub-grid').innerHTML = bHtml;
-            
-            window.savedCountdowns = data.countdowns || [];
         } catch(e) {}
     }
 
     function updateLiveCountdowns() {
         let html = "";
-        (window.savedCountdowns || []).forEach((c) => {
+        savedCountdowns.forEach((c) => {
             let diff = new Date(c.date).getTime() - new Date().getTime();
-            let timeText = diff > 0 ? Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m" : "Finished!";
-            html += `<div class="cd-row"><div><span class="cd-label">${c.label}</span><br><span class="cd-time">${timeText}</span><br><span class="cd-user">by ${c.user || 'Unknown'}</span></div><button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.date}', '${c.user}')">x</button></div>`;
+            let timeText = "";
+            if(diff > 0) {
+                let d = Math.floor(diff/(1000*60*60*24));
+                let h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+                let m = Math.floor((diff%(1000*60*60))/(1000*60));
+                let s = Math.floor((diff%(1000*60))/1000);
+                timeText = `${d}d ${h}h ${m}m ${s}s`;
+            } else { timeText = "Finished!"; }
+            html += `<div class="cd-row"><div class="cd-info"><span class="cd-label">${c.label}</span><span class="cd-time">${timeText}</span><span class="cd-user">by ${c.user || 'Unknown'}</span></div><button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.date}', '${c.user}')">x</button></div>`;
         });
         document.getElementById('countdown-area').innerHTML = html;
+    }
+
+    async function removeEvent(label, date, creator) {
+        if(creator && creator !== "Unknown" && !currentUser.includes(creator.toUpperCase())) {
+            alert("Sirf " + creator + " hi ise khatam kar sakte hain!"); return;
+        }
+        if(confirm("Delete?")) {
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"removeCountdown", label:label, date:date})});
+            setTimeout(refreshData, 1000);
+        }
     }
 
     function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => { location.reload(); }, 500); }
@@ -188,11 +214,11 @@
         if(!m || isPrivateMode) return;
         input.value = "";
         await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
-        refreshData();
+        setTimeout(refreshData, 1000);
     }
 
     function addCountdownPrompt() { 
-        let l = prompt("Event Name:"); let d = prompt("Date (YYYY-MM-DD HH:MM):"); 
+        let l = prompt("Name:"); let d = prompt("Date (YYYY-MM-DD HH:MM):"); 
         if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
     }
 
