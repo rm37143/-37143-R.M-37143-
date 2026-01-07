@@ -24,7 +24,7 @@
         .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; display: flex; justify-content: space-between; align-items: center; }
         .cd-info { flex-grow: 1; }
         .cd-label { color: #d63384; font-size: 0.95rem; font-weight: bold; display: block; }
-        .cd-time { color: #555; font-size: 0.7rem; display: block; margin-top: 2px; }
+        .cd-time { color: #555; font-size: 0.7rem; display: block; margin-top: 2px; font-family: monospace; }
         .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; display: block; margin-top: 2px; }
         .del-ev-btn { background: #fff0f3; border: 1px solid #ffd1dc; color: #ff85a2; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 2px 8px; border-radius: 8px; margin-left: 10px; }
 
@@ -118,11 +118,8 @@
         const p = document.getElementById('u-pass').value.trim();
         const btn = document.getElementById('login-btn');
         isPrivateMode = document.getElementById('is-private').checked;
-
         if(!n || !p) { alert("Please enter name and key!"); return; }
-        btn.innerText = "Connecting...";
-        btn.disabled = true;
-
+        btn.innerText = "Connecting..."; btn.disabled = true;
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
@@ -134,9 +131,7 @@
                 updateStatus("Online", -1);
                 setInterval(refreshData, 5000);
                 setInterval(updateLiveCountdowns, 1000);
-            } else { 
-                alert("Wrong Password!"); btn.innerText = "Enter World"; btn.disabled = false;
-            }
+            } else { alert("Wrong Password!"); btn.innerText = "Enter World"; btn.disabled = false; }
         } catch (e) { alert("Connection Error!"); btn.innerText = "Enter World"; btn.disabled = false; }
     }
 
@@ -146,7 +141,6 @@
             const data = await res.json();
             sheetPass = data.passwords;
             savedCountdowns = data.countdowns || [];
-            
             let sHtml = ""; let otherSeen = 0, otherName = "";
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
@@ -156,7 +150,6 @@
                 sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${cleanTime}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
             });
             document.getElementById('status-container').innerHTML = sHtml;
-
             let history = data.history || [];
             if(history.length > lastMsgCount) {
                 if(!isSilent && lastMsgCount !== 0 && !history[history.length-1].name.toUpperCase().includes(currentUser)) {
@@ -164,7 +157,6 @@
                 }
                 lastMsgCount = history.length;
             }
-
             let badge = document.getElementById('unread-badge');
             if(history.length > 0) {
                 let lastMsg = history[history.length-1];
@@ -174,7 +166,6 @@
                     badge.innerHTML = (history.length > myLastSeen) ? `💌 New Message` : `✅ All Read`;
                 }
             }
-
             if(isUnlocked) {
                 let hHtml = ""; history.slice().reverse().forEach(h => {
                     let side = String(h.name).toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
@@ -185,7 +176,6 @@
                 document.getElementById('notes-display').innerHTML = hHtml;
                 if(history.length > myLastSeen) { myLastSeen = history.length; updateStatus("Online", history.length); }
             }
-
             let bHtml = ""; 
             ["Ai Assistant", "WhatsApp Hub", "Chat Room 1", "Chat Room 2", "Protected Text", "Video Room", "Pinterest", "Mega Storage"].forEach(name => {
                 bHtml += `<div class="hub-btn" onclick="enterRoom('${name}')">${name}</div>`;
@@ -194,18 +184,20 @@
         } catch(e) {}
     }
 
-    function handleMsgInput(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendNote();
-        }
-    }
+    function handleMsgInput(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNote(); } }
 
     function updateLiveCountdowns() {
         let html = "";
         savedCountdowns.forEach((c) => {
             let diff = new Date(c.date).getTime() - new Date().getTime();
-            let timeText = diff > 0 ? Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m" : "Finished!";
+            let timeText = "";
+            if(diff > 0) {
+                let d = Math.floor(diff/(1000*60*60*24));
+                let h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+                let m = Math.floor((diff%(1000*60*60))/(1000*60));
+                let s = Math.floor((diff%(1000*60))/1000);
+                timeText = `${d}d ${h}h ${m}m ${s}s`;
+            } else { timeText = "Finished!"; }
             html += `<div class="cd-row"><div class="cd-info"><span class="cd-label">${c.label}</span><span class="cd-time">${timeText}</span><span class="cd-user">by ${c.user || 'Unknown'}</span></div><button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.date}', '${c.user}')">x</button></div>`;
         });
         document.getElementById('countdown-area').innerHTML = html;
@@ -228,8 +220,7 @@
         let input = document.getElementById('note-input');
         let m = input.value.trim(); 
         if(!m || isPrivateMode) return;
-        input.value = "";
-        input.style.height = "auto";
+        input.value = ""; input.style.height = "auto";
         await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
         setTimeout(refreshData, 1000);
     }
@@ -238,7 +229,6 @@
         let l = prompt("Name:"); let d = prompt("Date (YYYY-MM-DD HH:MM):"); 
         if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
     }
-
     function enterRoom(r) { if(prompt("Hub Key:") == sheetPass.HubPass) alert("Redirecting..."); }
     function unlockHistory() { if(prompt("History Key:") == sheetPass.HistoryPass) { isUnlocked = true; document.getElementById('unlock-btn').style.display='none'; document.getElementById('history-area').style.display='block'; refreshData(); } }
 </script>
