@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A5 Premium</title>
+    <title>Secret Dunia - A5 Premium Locked</title>
     <style>
-        /* Modern Premium Palette */
         :root {
             --primary: #ff758c;
             --secondary: #ff7eb3;
@@ -13,165 +12,129 @@
             --glass: rgba(255, 255, 255, 0.25);
             --card-bg: rgba(255, 255, 255, 0.9);
             --text-dark: #4a4a4a;
+            --pink: #ff85a2; --green: #2ecc71; --grey: #bdc3c7;
         }
 
         body.dark-mode {
             background: #121212;
-            --card-bg: rgba(40, 40, 40, 0.95);
+            --card-bg: rgba(45, 45, 45, 0.95);
             --text-dark: #efefef;
         }
 
         body {
             background: var(--bg-light);
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 15px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            overflow-x: hidden;
-            transition: 0.5s;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 10px; min-height: 100vh;
+            display: flex; justify-content: center; overflow-x: hidden; transition: 0.5s;
         }
 
-        /* Floating Hearts Animation */
-        .heart {
-            position: fixed;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 20px;
-            pointer-events: none;
-            z-index: 0;
-            animation: float 6s linear infinite;
-        }
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-        }
+        /* Floating Hearts */
+        .heart { position: fixed; color: rgba(255, 255, 255, 0.5); font-size: 20px; pointer-events: none; z-index: 0; animation: float 6s linear infinite; }
+        @keyframes float { 0% { transform: translateY(100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
 
-        .container { width: 100%; max-width: 420px; z-index: 10; }
+        .container { width: 100%; max-width: 400px; z-index: 10; text-align: center; }
 
-        /* Premium Glass Card */
         .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 25px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
-            animation: slideUp 0.8s ease-out;
+            background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 25px;
+            padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.3); animation: slideUp 0.8s ease-out; color: var(--text-dark);
         }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .main-title { color: white; font-size: 2rem; font-weight: bold; margin: 40px 0 5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .nisha-note { color: white; font-size: 0.75rem; font-style: italic; margin-bottom: 20px; display: block; opacity: 0.9; }
 
-        .main-title { 
-            color: white; 
-            font-size: 2.2rem; 
-            font-weight: 700; 
-            margin: 40px 0 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        /* Modern Inputs */
         input, textarea {
-            width: 100%;
-            background: rgba(255,255,255,0.5);
-            border: 1px solid #ddd;
-            border-radius: 15px;
-            padding: 12px;
-            margin: 10px 0;
-            outline: none;
-            box-sizing: border-box;
-            transition: 0.3s;
+            width: 100%; background: rgba(255,255,255,0.8); border: 1px solid #eee;
+            border-radius: 15px; padding: 12px; margin: 8px 0; outline: none; box-sizing: border-box; text-align: center;
         }
-        input:focus { border-color: var(--primary); background: white; }
 
         .btn-main {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 50px;
-            width: 100%;
-            font-weight: bold;
+            background: var(--primary); color: white; border: none; padding: 14px;
+            border-radius: 50px; width: 100%; font-weight: bold; cursor: pointer; transition: 0.3s;
             box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
-            cursor: pointer;
-            transition: 0.3s;
         }
         .btn-main:active { transform: scale(0.95); }
 
-        /* Message Bubbles */
-        .note-item {
-            padding: 12px 16px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            max-width: 80%;
-            font-size: 0.9rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .note-awais { background: #ffdee9; align-self: flex-end; float: right; border-bottom-right-radius: 4px; color: #333; }
-        .note-nisha { background: #e0f2fe; align-self: flex-start; float: left; border-bottom-left-radius: 4px; color: #333; }
+        /* Dashboard Elements */
+        .status-bar { background: rgba(255,255,255,0.5); padding: 10px; border-radius: 15px; font-size: 0.65rem; text-align: left; margin-bottom: 10px; }
+        .user-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .dot-online { background: var(--green); box-shadow: 0 0 5px var(--green); }
+        .dot-offline { background: var(--grey); }
 
-        /* Countdown Style */
-        .countdown-container {
-            background: rgba(255,255,255,0.8);
-            border-radius: 20px;
-            padding: 15px;
-            border-left: 6px solid var(--primary);
-        }
-        .cd-time { font-size: 1.1rem; color: var(--primary); font-weight: bold; }
-        
-        .mode-toggle { 
-            position: fixed; top: 15px; left: 15px; background: white; border-radius: 15px; border: none; padding: 8px 15px; font-size: 0.7rem; font-weight: bold;
-        }
+        .history-box { height: 300px; overflow-y: auto; text-align: left; padding: 5px; display: flex; flex-direction: column; }
+        .note-item { margin-bottom: 10px; padding: 10px 15px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; clear: both; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .note-awais { background: #ffe0e9; align-self: flex-end; border-bottom-right-radius: 2px; color: #000; } 
+        .note-nisha { background: #e3f2fd; align-self: flex-start; border-bottom-left-radius: 2px; color: #000; }
+        .note-meta { font-size: 0.55rem; color: #777; margin-top: 4px; display: block; }
+
+        .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; text-align: left; border-left: 5px solid var(--primary); }
+        .cd-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .cd-label { color: var(--primary); font-weight: bold; font-size: 0.9rem; }
+        .cd-time { font-family: monospace; font-weight: bold; font-size: 0.8rem; }
+
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .hub-btn { background: white; border: 1px solid #ffd1dc; padding: 10px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; font-weight: bold; color: var(--primary); }
+
+        .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: white; color: var(--primary); border: none; padding: 6px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: bold; cursor: pointer; }
+        .mode-toggle { left: 10px; }
+        #silent-btn { right: 10px; }
     </style>
 </head>
 <body>
 
 <div id="hearts-container"></div>
-
-<button class="mode-toggle" onclick="toggleTheme()">🌓 THEME</button>
+<button class="mode-toggle" onclick="toggleTheme()">🌓 MODE</button>
+<button id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
 
 <div class="container">
-    <h1 class="main-title">Secret Dunia</h1>
-    <p style="color: white; opacity: 0.9; margin-bottom: 20px;">For the most special person ❤️</p>
-
+    <h2 class="main-title">Secret Dunia</h2>
+    
     <div id="login-screen" class="card">
-        <input type="text" id="u-name" placeholder="Who are you?">
-        <input type="password" id="u-pass" placeholder="Secret Key" onkeypress="if(event.key === 'Enter') checkAuth()">
-        <button class="btn-main" onclick="checkAuth()">Enter Our World</button>
+        <p style="font-size: 0.8rem; margin-bottom: 15px;">Enter your key to open the gift 🎁</p>
+        <input type="text" id="u-name" placeholder="User Name">
+        <input type="password" id="u-pass" placeholder="Enter Key" onkeypress="if(event.key === 'Enter') checkAuth()">
+        <button class="btn-main" onclick="checkAuth()">Open Our World</button>
     </div>
 
     <div id="dashboard" style="display:none;">
-        <div class="card countdown-container" id="countdown-area">
-            </div>
+        <span class="nisha-note">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
         
+        <div class="countdown-container" id="countdown-area"></div>
+        <button class="btn-main" style="padding: 8px; font-size: 0.7rem; margin-bottom: 10px;" onclick="addCountdownPrompt()">+ Add Event</button>
+
+        <div class="status-bar" id="status-container">Syncing...</div>
+
         <div class="card" style="padding: 10px;">
-            <div id="status-container"></div>
+            <textarea id="note-input" placeholder="Type a message..." rows="1" onkeydown="handleMsgInput(event)"></textarea>
+            <button class="btn-main" style="padding: 8px; border-radius: 10px;" onclick="sendNote()">Send Message</button>
         </div>
 
-        <div class="card">
-            <textarea id="note-input" placeholder="Write something sweet..." rows="1" onkeydown="handleMsgInput(event)"></textarea>
-            <button class="btn-main" style="padding: 10px;" onclick="sendNote()">Send Message</button>
-        </div>
-
-        <div id="history-section" class="card">
-            <button id="unlock-btn" class="btn-main" style="background:#444;" onclick="unlockHistory()">🔒 View Secret Memories</button>
+        <div class="card" style="padding: 10px;">
+            <div id="unread-badge" style="font-size:0.65rem; color:var(--primary); font-weight:bold; margin-bottom: 5px;">Checking...</div>
+            <button id="unlock-btn" class="btn-main" style="background:#444;" onclick="unlockHistory()">Unlock Memories 🔒</button>
             <div id="history-area" style="display:none;">
-                <div id="notes-display" style="height: 300px; overflow-y: auto;"></div>
+                <div class="history-box" id="notes-display"></div>
             </div>
         </div>
+
+        <div class="card" style="padding: 10px;"><div class="btn-grid" id="hub-grid"></div></div>
     </div>
 </div>
 
+<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
 <script>
-    // Animation: Floating Hearts
+    // --- CONFIGURATION ---
+    const scriptURL = 'MERA_APPS_SCRIPT_URL_YAHAN_DALEIN'; // APNA URL YAHA DALEIN
+    
+    let currentUser = "", isUnlocked = false, sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], myLastSeen = -1;
+
+    // Heart Animation
     function createHeart() {
         const heart = document.createElement('div');
-        heart.innerHTML = '❤️';
-        heart.classList.add('heart');
+        heart.innerHTML = '❤️'; heart.classList.add('heart');
         heart.style.left = Math.random() * 100 + 'vw';
         heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
         document.getElementById('hearts-container').appendChild(heart);
@@ -179,14 +142,110 @@
     }
     setInterval(createHeart, 800);
 
-    // Yahan purana wala pura script (checkAuth, refreshData, etc.) paste karein.
-    // Jo functions aapke A4 mein thay, wo sab same yahan kaam karenge.
-    
-    // Bas 'toggleTheme' mein ye add karein:
-    function toggleTheme() { 
-        document.body.classList.toggle('dark-mode'); 
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
+
+    async function checkAuth() {
+        const n = document.getElementById('u-name').value.toUpperCase().trim();
+        const p = document.getElementById('u-pass').value.trim();
+        if(!n || !p) return;
+        try {
+            const res = await fetch(scriptURL);
+            const data = await res.json();
+            sheetPass = data.passwords;
+            if((n.includes("AWAIS") && p == sheetPass.LoginPassAwais) || (n.includes("NISHA") && p == sheetPass.LoginPassNisha)) {
+                currentUser = n;
+                document.getElementById('login-screen').style.display='none';
+                document.getElementById('dashboard').style.display='block';
+                updateStatus("Online", -1);
+                setInterval(refreshData, 5000);
+                setInterval(updateLiveCountdowns, 1000);
+            } else { alert("Incorrect Key!"); }
+        } catch (e) { alert("Error connecting to server!"); }
+    }
+
+    function formatSimpleDate(dateStr) {
+        if(!dateStr) return "";
+        let d = new Date(dateStr);
+        if(isNaN(d.getTime())) return dateStr;
+        let day = String(d.getDate()).padStart(2, '0');
+        let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        let hours = d.getHours();
+        let minutes = String(d.getMinutes()).padStart(2, '0');
+        let ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12 || 12;
+        return `${day} ${months[d.getMonth()]}, ${hours}:${minutes}${ampm}`;
+    }
+
+    async function refreshData() {
+        try {
+            const res = await fetch(scriptURL);
+            const data = await res.json();
+            sheetPass = data.passwords;
+            savedCountdowns = data.countdowns || [];
+            
+            let sHtml = ""; let otherSeen = 0, otherName = "";
+            data.onlineUsers.forEach(u => {
+                let isMe = u.name.toUpperCase().includes(currentUser);
+                if(!isMe) { otherSeen = parseInt(u.seenCount) || 0; otherName = u.name; }
+                let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
+                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b></span><span><small>${formatSimpleDate(u.time)}</small></span></div>`;
+            });
+            document.getElementById('status-container').innerHTML = sHtml;
+
+            let history = data.history || [];
+            if(history.length > lastMsgCount) {
+                if(!isSilent && lastMsgCount !== 0 && !history[history.length-1].name.toUpperCase().includes(currentUser)) document.getElementById('notif-sound').play();
+                lastMsgCount = history.length;
+            }
+            if(history.length > 0) {
+                let lastMsg = history[history.length-1];
+                let isMine = String(lastMsg.name).toUpperCase().includes(currentUser);
+                document.getElementById('unread-badge').innerHTML = isMine ? (otherSeen >= history.length ? `✅ Seen` : `⏳ Sent`) : (history.length > myLastSeen ? `💌 New Message` : `✅ Read`);
+            }
+
+            if(isUnlocked) {
+                let hHtml = ""; history.slice().reverse().forEach(h => {
+                    let side = String(h.name).toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
+                    hHtml += `<div class="note-item ${side}"><div>${String(h.note)}</div><span class="note-meta">${formatSimpleDate(h.time)}</span></div>`;
+                });
+                document.getElementById('notes-display').innerHTML = hHtml;
+                if(history.length > myLastSeen) { myLastSeen = history.length; updateStatus("Online", history.length); }
+            }
+            
+            let bHtml = ""; ["Ai Assistant", "WhatsApp Hub", "Chat Room", "Video Room", "Storage"].forEach(name => {
+                bHtml += `<div class="hub-btn" onclick="enterRoom('${name}')">${name}</div>`;
+            });
+            document.getElementById('hub-grid').innerHTML = bHtml;
+        } catch(e) {}
+    }
+
+    function updateLiveCountdowns() {
+        let html = "";
+        savedCountdowns.forEach((c) => {
+            let diff = new Date(c.date).getTime() - new Date().getTime();
+            let timeText = diff > 0 ? Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m" : "Finished!";
+            html += `<div class="cd-row"><span class="cd-label">${c.label}</span><span class="cd-time">${timeText}</span></div>`;
+        });
+        document.getElementById('countdown-area').innerHTML = html || "No events planned.";
+    }
+
+    async function sendNote() { 
+        let input = document.getElementById('note-input');
+        let m = input.value.trim(); if(!m) return;
+        input.value = "";
+        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
+        setTimeout(refreshData, 1000);
+    }
+
+    function handleMsgInput(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNote(); } }
+    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
+    function unlockHistory() { if(prompt("Memories Key:") == sheetPass.HistoryPass) { isUnlocked = true; document.getElementById('unlock-btn').style.display='none'; document.getElementById('history-area').style.display='block'; refreshData(); } }
+    function enterRoom(r) { if(prompt("Enter Hub Key:") == sheetPass.HubPass) alert("Access Granted to " + r); }
+    function addCountdownPrompt() { 
+        let l = prompt("Event Name:"); let d = prompt("Date (YYYY-MM-DD):"); 
+        if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
     }
 </script>
-
 </body>
 </html>
