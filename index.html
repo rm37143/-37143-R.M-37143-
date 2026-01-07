@@ -20,6 +20,7 @@
         .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         
+        /* --- EVENT BOX SAFETY LOCK START --- */
         .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
         .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; display: flex; justify-content: space-between; align-items: center; }
         .cd-info { flex-grow: 1; }
@@ -27,8 +28,8 @@
         .cd-time { color: #555; font-size: 0.7rem; display: block; margin-top: 2px; font-family: monospace; }
         .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; display: block; margin-top: 2px; }
         .del-ev-btn { background: #fff0f3; border: 1px solid #ffd1dc; color: #ff85a2; cursor: pointer; font-size: 0.8rem; font-weight: bold; padding: 2px 8px; border-radius: 8px; margin-left: 10px; }
-
         .btn-add-event { background: var(--pink); color: white; border: none; padding: 8px 18px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-bottom: 15px; }
+        /* --- EVENT BOX SAFETY LOCK END --- */
 
         .card { background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 10px; border: 1px solid white; position: relative; }
         
@@ -186,6 +187,7 @@
 
     function handleMsgInput(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNote(); } }
 
+    /* --- EVENT BOX LOGIC SAFETY LOCK START --- */
     function updateLiveCountdowns() {
         let html = "";
         savedCountdowns.forEach((c) => {
@@ -198,20 +200,29 @@
                 let s = Math.floor((diff%(1000*60))/1000);
                 timeText = `${d}d ${h}h ${m}m ${s}s`;
             } else { timeText = "Finished!"; }
+            // Added creator matching fix in display
             html += `<div class="cd-row"><div class="cd-info"><span class="cd-label">${c.label}</span><span class="cd-time">${timeText}</span><span class="cd-user">by ${c.user || 'Unknown'}</span></div><button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.date}', '${c.user}')">x</button></div>`;
         });
         document.getElementById('countdown-area').innerHTML = html;
     }
 
     async function removeEvent(label, date, creator) {
-        if(creator && creator !== "Unknown" && !currentUser.includes(creator.toUpperCase())) {
+        // Fix: Ensure creator name matches currentUser even if creator is partial
+        let cleanCreator = creator ? creator.toUpperCase() : "UNKNOWN";
+        if(creator && creator !== "Unknown" && !currentUser.toUpperCase().includes(cleanCreator) && !cleanCreator.includes(currentUser.toUpperCase())) {
             alert("Sirf " + creator + " hi ise khatam kar sakte hain!"); return;
         }
-        if(confirm("Delete?")) {
+        if(confirm("Delete this Event?")) {
             await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"removeCountdown", label:label, date:date})});
             setTimeout(refreshData, 1000);
         }
     }
+
+    function addCountdownPrompt() { 
+        let l = prompt("Event Name:"); let d = prompt("Date (YYYY-MM-DD HH:MM):"); 
+        if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
+    }
+    /* --- EVENT BOX LOGIC SAFETY LOCK END --- */
 
     function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => { location.reload(); }, 500); }
     function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
@@ -225,10 +236,6 @@
         setTimeout(refreshData, 1000);
     }
 
-    function addCountdownPrompt() { 
-        let l = prompt("Name:"); let d = prompt("Date (YYYY-MM-DD HH:MM):"); 
-        if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
-    }
     function enterRoom(r) { if(prompt("Hub Key:") == sheetPass.HubPass) alert("Redirecting..."); }
     function unlockHistory() { if(prompt("History Key:") == sheetPass.HistoryPass) { isUnlocked = true; document.getElementById('unlock-btn').style.display='none'; document.getElementById('history-area').style.display='block'; refreshData(); } }
 </script>
