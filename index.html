@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A3 Locked</title>
+    <title>Secret Dunia - A4 Locked</title>
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; }
         body.dark-mode { background: #1a1a1a; }
@@ -56,8 +56,8 @@
 </head>
 <body>
 
-<button class="mode-toggle" onclick="toggleTheme()" 🌓 MODE</button>
-<button id="silent-btn" onclick="toggleSilent()" 🔕 SILENT</button>
+<button class="mode-toggle" onclick="toggleTheme()">🌓 MODE</button>
+<button id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
 
 <div class="container">
     <h2 class="main-title">Secret Dunia</h2>
@@ -111,7 +111,7 @@
     }
 
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ?  🔕 SILENT" :  🔔 SOUND"; }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
@@ -171,7 +171,7 @@
                 if(String(lastMsg.name).toUpperCase().includes(currentUser)) {
                     badge.innerHTML = (otherSeen >= history.length) ? `✅ ${otherName} Seen` : `⏳ Sent`;
                 } else {
-                    badge.innerHTML = (history.length > myLastSeen) ?  💌 New Message` : `✅ All Read`;
+                    badge.innerHTML = (history.length > myLastSeen) ? `💌 New Message` : `✅ All Read`;
                 }
             }
 
