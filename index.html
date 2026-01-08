@@ -3,59 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4 Pro Max</title>
+    <title>Secret Dunia - A4 Final Pro</title>
     <style>
-        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.98); --green: #2ecc71; --blue: #34b7f1; --dark: #121212; --wa-bg: #e5ddd5; }
+        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --blue: #34b7f1; --dark: #1a1a1a; }
+        body { background: #fce4ec; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; padding-bottom: 85px; transition: 0.3s; overflow-x: hidden; }
+        body.dark-mode { background: #121212; color: white; }
+        .dark-mode .card, .dark-mode .music-card, .dark-mode .countdown-item { background: #222; border-color: #444; color: white; }
         
-        body { background: #fce4ec; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow-x: hidden; transition: 0.3s; }
-        body.dark-mode { background: var(--dark); color: white; }
-        body.dark-mode .bottom-bar { background: #222; }
-        body.dark-mode .chat-input { color: white; background: transparent; }
+        .container { width: 100%; max-width: 400px; margin: auto; text-align: center; }
+        .card, .music-card { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-        /* Dashboard & Layout */
-        .container { width: 100%; max-width: 400px; margin: auto; padding: 10px; box-sizing: border-box; }
-        .card { background: var(--glass); border-radius: 15px; padding: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        
-        /* High Speed Chat Window */
+        /* WhatsApp Chat System */
         #chat-window { 
             position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 400px; height: 0; overflow: hidden;
-            background: var(--wa-bg); border-radius: 20px 20px 0 0; 
-            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #e5ddd5; border-radius: 20px 20px 0 0; transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column; z-index: 1000;
         }
-        #chat-window.open { height: 80vh; border-top: 1px solid #ddd; }
-        
-        .chat-header { background: #075e54; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        #chat-window.open { height: 75vh; border-top: 2px solid #ddd; }
+        .chat-header { background: #075e54; color: white; padding: 12px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         #notes-display { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
 
-        /* WhatsApp Bubble Style */
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.9rem; position: relative; line-height: 1.4; box-shadow: 0 1px 1px rgba(0,0,0,0.1); word-wrap: break-word; }
+        /* Date Divider */
+        .date-badge { align-self: center; background: #d1e4f3; color: #555; padding: 5px 15px; border-radius: 10px; font-size: 0.7rem; font-weight: bold; margin: 10px 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+        /* Bubble Styles */
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.9rem; position: relative; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-wrap: break-word; }
         .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
         .msg-them { align-self: flex-start; background: #fff; border-bottom-left-radius: 2px; }
-        
-        .msg-meta { font-size: 0.65rem; color: #777; display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 3px; }
-        .tick { font-size: 0.85rem; color: #999; font-weight: bold; }
+        .msg-meta { font-size: 0.65rem; color: #777; display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 4px; }
+        .tick { font-size: 0.85rem; color: #999; }
         .tick-blue { color: var(--blue); }
-        
-        .media-content { width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; display: block; max-height: 250px; object-fit: cover; }
+        .media-msg { width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; }
 
-        /* Fixed Bottom Bar */
+        /* Bottom Bar */
         .bottom-bar { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 400px; background: #f0f0f0; padding: 10px 15px;
-            display: flex; align-items: center; gap: 12px; box-sizing: border-box; z-index: 1001;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            width: 100%; max-width: 400px; background: #f0f0f0; padding: 10px;
+            display: flex; align-items: center; gap: 10px; z-index: 1001; box-sizing: border-box;
         }
-        .input-container { flex: 1; background: white; border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; }
-        .chat-input { flex: 1; border: none; outline: none; font-size: 1rem; padding: 8px 0; }
-        .btn-send { background: #075e54; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1.2rem; }
+        .input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; }
+        .chat-input { flex: 1; border: none; outline: none; font-size: 1rem; padding: 8px 0; background: transparent; }
+        .btn-round { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
 
-        /* Extra UI Elements */
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .online { background: var(--green); box-shadow: 0 0 5px var(--green); }
-        .offline { background: #bbb; }
-        .mode-btn { position: fixed; top: 15px; right: 15px; z-index: 1002; background: var(--pink); border: none; color: white; padding: 8px; border-radius: 50%; cursor: pointer; }
+        /* Hub Buttons Grid */
+        .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .hub-btn { background: white; border: 1px solid #ffd1dc; padding: 12px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; color: #d63384; cursor: pointer; transition: 0.2s; }
+        .hub-btn:active { transform: scale(0.95); background: #fff0f3; }
+        
+        .mode-btn { position: fixed; top: 15px; right: 15px; z-index: 1002; background: var(--pink); color: white; border: none; padding: 8px; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -63,191 +59,190 @@
 <button class="mode-btn" onclick="document.body.classList.toggle('dark-mode')">🌓</button>
 
 <div class="container">
-    <div id="login-screen" class="card" style="margin-top: 50px;">
-        <h2 style="color:var(--pink); margin-bottom:20px;">Secret Dunia</h2>
-        <input type="text" id="u-name" placeholder="User Name" style="width:90%; padding:12px; margin:8px; border-radius:10px; border:1px solid #ddd; outline:none; text-align:center;">
-        <input type="password" id="u-pass" placeholder="Enter Key" style="width:90%; padding:12px; margin:8px; border-radius:10px; border:1px solid #ddd; outline:none; text-align:center;">
-        <button onclick="checkAuth()" style="width:95%; background:var(--pink); color:white; border:none; padding:14px; border-radius:25px; font-weight:bold; margin-top:15px; cursor:pointer;">Enter World</button>
+    <h2 style="color:var(--pink); margin-top: 40px;">Secret Dunia</h2>
+
+    <div id="login-screen" class="card">
+        <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px; border-radius:10px; border:1px solid #ddd; text-align:center;">
+        <input type="password" id="u-pass" placeholder="Secret Key" style="width:85%; padding:12px; margin:8px; border-radius:10px; border:1px solid #ddd; text-align:center;">
+        <button onclick="checkAuth()" style="width:90%; background:var(--pink); color:white; border:none; padding:14px; border-radius:25px; font-weight:bold; margin-top:10px; cursor:pointer;">Enter Now</button>
     </div>
 
     <div id="dashboard" style="display:none;">
-        <div class="card" id="status-bar" style="font-size:0.75rem; text-align:left; padding:10px;">
-            Syncing Status...
+        <div class="card" id="status-display" style="text-align:left; font-size:0.7rem;">Syncing status...</div>
+
+        <div class="music-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:bold; font-size:0.8rem;">🎵 Secret Playlist</span>
+                <button onclick="addSong()" style="font-size:0.6rem; background:var(--blue); color:white; border:none; padding:3px 8px; border-radius:5px;">+ Add</button>
+            </div>
+            <div id="playlist-list" style="max-height:100px; overflow-y:auto; margin-top:8px; text-align:left;"></div>
         </div>
+
+        <div id="countdown-area"></div>
+        <button onclick="addEvent()" style="background:var(--pink); color:white; border:none; padding:10px 20px; border-radius:15px; font-weight:bold; font-size:0.8rem; margin:10px 0;">+ New Event</button>
 
         <div id="chat-window">
             <div class="chat-header">
-                <span id="chat-partner">Secret Chat</span>
+                <span id="chat-with-who">Loading...</span>
                 <span onclick="toggleChat()" style="cursor:pointer; font-size:1.2rem;">✕</span>
             </div>
             <div id="notes-display"></div>
         </div>
 
         <div class="bottom-bar">
-            <div class="input-container">
+            <div class="input-box">
                 <span style="cursor:pointer; font-size:1.4rem;" onclick="toggleChat()">💬</span>
-                <label for="media-input" style="cursor:pointer; font-size:1.4rem;">📎</label>
-                <input type="file" id="media-input" hidden onchange="handleFileUpload(this)" accept="image/*,video/*">
-                <input type="text" id="note-input" class="chat-input" placeholder="Type a message" onkeydown="if(event.key==='Enter') sendNote()">
+                <label for="img-in" style="cursor:pointer; font-size:1.4rem;">📎</label>
+                <input type="file" id="img-in" hidden onchange="uploadFile(this)" accept="image/*,video/*">
+                <input type="text" id="note-input" class="chat-input" placeholder="Type a message" onkeydown="if(event.key==='Enter') sendMsg()">
             </div>
-            <button class="btn-send" onclick="sendNote()">➤</button>
+            <button class="btn-round" onclick="sendMsg()">➤</button>
         </div>
+
+        <div class="hub-grid" id="hub-buttons"></div>
     </div>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzWIVnzwnOlQ4jgJ7JWfUNUjiULBAcWG6amNSUvr0eae66o-0dXSoWgkqojiOzd_hxZ/exec';
-    let currentUser = "", myLastSeen = 0, isChatOpen = false, savedHistory = [], otherUserSeen = 0;
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxwfgo7O9YZelY9SYVNq55JuEHBYSc8tnqGGrjx0nfSWhib0GaI-HUQdLMS3ifpkz0O/exec';
+    let currentUser = "", savedHistory = [], isChatOpen = false, lastDateHeader = "";
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
         if(!n || !p) return;
-        
-        try {
-            const res = await fetch(scriptURL);
-            const data = await res.json();
-            if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
-                currentUser = n;
-                document.getElementById('login-screen').style.display='none';
-                document.getElementById('dashboard').style.display='block';
-                updateStatus("Online", -1);
-                setInterval(refreshData, 3000);
-            } else { alert("Wrong Key!"); }
-        } catch(e) { alert("Connection Error!"); }
+        const res = await fetch(scriptURL);
+        const data = await res.json();
+        if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
+            currentUser = n;
+            document.getElementById('login-screen').style.display='none';
+            document.getElementById('dashboard').style.display='block';
+            updateStatus("Online", -1);
+            setInterval(refresh, 4000);
+            loadHub();
+        } else { alert("Key Incorrect!"); }
     }
 
     function toggleChat() {
         isChatOpen = !isChatOpen;
-        const win = document.getElementById('chat-window');
-        win.classList.toggle('open', isChatOpen);
-        if(isChatOpen) {
-            setTimeout(scrollToBottom, 300);
-            updateStatus("Online", savedHistory.length);
+        document.getElementById('chat-window').classList.toggle('open', isChatOpen);
+        if(isChatOpen) { 
+            setTimeout(() => {
+                const d = document.getElementById('notes-display');
+                d.scrollTop = d.scrollHeight;
+            }, 300);
+            updateStatus("Online", savedHistory.length); 
         }
     }
 
-    function scrollToBottom() {
-        const d = document.getElementById('notes-display');
-        d.scrollTop = d.scrollHeight;
-    }
-
-    async function sendNote() {
+    async function sendMsg() {
         const input = document.getElementById('note-input');
-        const m = input.value.trim();
-        if(!m) return;
-
-        // Instant Visual (High Speed)
+        const m = input.value.trim(); if(!m) return;
         const tempId = "msg-" + Date.now();
-        renderMessage({name: currentUser, note: m, time: new Date(), id: tempId, isTemp: true}, true);
-        input.value = "";
-        scrollToBottom();
-
-        // Background Send
+        renderMsg({name: currentUser, note: m, time: new Date(), isTemp: true, id: tempId}, true);
+        input.value = ""; 
+        document.getElementById('notes-display').scrollTop = document.getElementById('notes-display').scrollHeight;
         await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})});
+    }
+
+    function renderMsg(h, isNew = false) {
+        const display = document.getElementById('notes-display');
+        const d = new Date(h.time);
+        const dateStr = d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
         
-        // Update Tick to Double (Sent)
-        const tempMsg = document.getElementById(tempId);
-        if(tempMsg) tempMsg.querySelector('.tick').innerHTML = "✓✓";
-    }
+        // Date Separator
+        if(dateStr !== lastDateHeader) {
+            display.insertAdjacentHTML('beforeend', `<div class="date-badge">${dateStr}</div>`);
+            lastDateHeader = dateStr;
+        }
 
-    async function handleFileUpload(input) {
-        const file = input.files[0];
-        if(!file) return;
-
-        renderMessage({name: currentUser, note: "Uploading Media...", time: new Date(), isTemp: true}, true);
-        scrollToBottom();
-
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            const base64 = e.target.result.split(',')[1];
-            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({
-                action: "uploadMedia", name: currentUser, type: file.type, base64: base64
-            })});
-            input.value = "";
-            refreshData();
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function renderMessage(h, append = false) {
         const isMe = h.name.toUpperCase().includes(currentUser);
-        const side = isMe ? "msg-me" : "msg-them";
-        const ticks = isMe ? `<span class="tick">${h.isTemp ? '✓' : '✓✓'}</span>` : "";
-        
-        let content = h.note;
-        if(content.startsWith("MEDIA:")) {
-            const url = content.replace("MEDIA:", "");
-            content = `<img src="${url}" class="media-content" onclick="window.open('${url}')">`;
+        let noteContent = h.note;
+        if(noteContent.startsWith("MEDIA:")) {
+            const url = noteContent.replace("MEDIA:", "");
+            noteContent = `<img src="${url}" class="media-msg" onclick="window.open('${url}')">`;
         }
 
         const html = `
-            <div class="msg ${side}" id="${h.id || ''}">
-                <div>${content}</div>
-                <div class="msg-meta">${formatTime(h.time)} ${ticks}</div>
+            <div class="msg ${isMe ? 'msg-me' : 'msg-them'}" id="${h.id || ''}">
+                <div>${noteContent}</div>
+                <div class="msg-meta">
+                    ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} 
+                    <span class="tick">${isMe ? (h.isTemp ? '✓' : '✓✓') : ''}</span>
+                </div>
             </div>`;
-        
-        const display = document.getElementById('notes-display');
-        if(append) display.insertAdjacentHTML('beforeend', html);
-        else display.insertAdjacentHTML('beforeend', html);
+        display.insertAdjacentHTML('beforeend', html);
     }
 
-    async function refreshData() {
+    async function refresh() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
             
-            // Online Status & Partner Name
-            let statusHtml = "";
+            // Status update
+            let sHtml = ""; let partnerSeen = 0;
             data.onlineUsers.forEach(u => {
                 const isPartner = !u.name.toUpperCase().includes(currentUser);
-                if(isPartner) {
-                    otherUserSeen = u.seenCount;
-                    document.getElementById('chat-partner').innerText = u.name;
-                }
-                const dotClass = u.status === "Online" ? "online" : "offline";
-                statusHtml += `<div><span class="status-dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</div>`;
+                if(isPartner) { partnerSeen = u.seenCount; document.getElementById('chat-with-who').innerText = u.name; }
+                sHtml += `<div><b>${u.name}</b>: ${u.status}</div>`;
             });
-            document.getElementById('status-bar').innerHTML = statusHtml;
+            document.getElementById('status-display').innerHTML = sHtml;
 
-            // Chat Update
-            if(data.history.length !== savedHistory.length || true) {
+            // Chat refresh
+            if(data.history.length !== savedHistory.length) {
                 const display = document.getElementById('notes-display');
-                const wasAtBottom = display.scrollHeight - display.scrollTop <= display.clientHeight + 50;
-                
-                display.innerHTML = "";
+                display.innerHTML = ""; lastDateHeader = "";
                 savedHistory = data.history;
-                
                 data.history.forEach((h, idx) => {
-                    renderMessage(h);
-                    // Blue Tick Logic
-                    if(idx + 1 <= otherUserSeen) {
+                    renderMsg(h);
+                    if(idx + 1 <= partnerSeen) {
                         const ticks = display.querySelectorAll('.tick');
                         if(ticks[idx]) ticks[idx].classList.add('tick-blue');
                     }
                 });
-
-                if(isChatOpen && wasAtBottom) scrollToBottom();
-                if(isChatOpen && data.history.length > myLastSeen) {
-                    myLastSeen = data.history.length;
-                    updateStatus("Online", myLastSeen);
-                }
+                if(isChatOpen) display.scrollTop = display.scrollHeight;
             }
+
+            // Playlist & Countdown
+            renderList(data.playlist);
+            renderEvents(data.countdowns);
         } catch(e) {}
     }
 
-    function updateStatus(s, count) { 
-        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); 
+    function loadHub() {
+        const btns = ["Ai Assistant", "WhatsApp Hub", "Chat Rooms", "Pinterest", "Video Room", "Mega Drive", "Protected Text", "Settings"];
+        let h = ""; btns.forEach(b => h += `<div class="hub-btn" onclick="alert('Opening ${b}...')">${b}</div>`);
+        document.getElementById('hub-buttons').innerHTML = h;
     }
 
-    function formatTime(d) {
-        const date = new Date(d);
-        let h = date.getHours();
-        let m = date.getMinutes();
-        let ampm = h >= 12 ? 'pm' : 'am';
-        h = h % 12 || 12;
-        return h + ":" + String(m).padStart(2, '0') + ampm;
+    function renderList(list) {
+        let h = ""; (list || []).forEach(s => h += `<div style="font-size:0.7rem; border-bottom:1px solid #eee; padding:4px 0;">🎵 ${s.title} <small>(${s.user})</small></div>`);
+        document.getElementById('playlist-list').innerHTML = h || "Empty.";
     }
+
+    function renderEvents(list) {
+        let h = ""; (list || []).forEach(e => {
+            const days = Math.floor((new Date(e.date) - new Date())/(1000*60*60*24));
+            h += `<div class="card" style="text-align:left; font-size:0.75rem;"><b>${e.label}</b>: <span style="color:var(--pink)">${days > 0 ? days+' days left' : 'Finished'}</span></div>`;
+        });
+        document.getElementById('countdown-area').innerHTML = h;
+    }
+
+    async function uploadFile(input) {
+        const file = input.files[0]; if(!file) return;
+        renderMsg({name: currentUser, note: "Uploading...", time: new Date(), isTemp: true}, true);
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const base64 = e.target.result.split(',')[1];
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64})});
+            refresh();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function updateStatus(s, c) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:c})}); }
+    function addSong() { let t = prompt("Song Name:"); let u = prompt("Link:"); if(t && u) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
+    function addEvent() { let l = prompt("Event Name:"); let d = prompt("Date (YYYY-MM-DD):"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
 </script>
 </body>
 </html>
