@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4 Locked</title>
+    <title>Secret Dunia - A8 Smart MP3</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
@@ -13,6 +13,7 @@
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 70px; overflow-x: hidden; }
         .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
         
+        /* Fixed Buttons */
         .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .mode-toggle { left: 10px; }
         #silent-btn { right: 10px; }
@@ -20,6 +21,7 @@
         .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         
+        /* Music & Countdowns Original */
         .music-card, .countdown-container { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
         .song-row, .cd-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #fff5f7; font-size: 0.75rem; }
         .mini-player-bar { display: none; background: #f8f9fa; border-radius: 10px; padding: 5px 10px; margin-top: 8px; align-items: center; gap: 10px; border: 1px solid #eee; }
@@ -35,21 +37,37 @@
         .dot-offline { background: var(--grey); }
         .off-btn { background:#ff4d4d; color:white; border:none; border-radius:6px; padding:2px 8px; font-size:0.6rem; cursor:pointer; }
 
-        .chat-frame { display: none; position: fixed; bottom: 65px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 380px; height: 420px; background: var(--wa-bg); border-radius: 20px 20px 5px 5px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; }
+        /* WhatsApp Pop-up Chat Box */
+        .chat-frame { 
+            display: none; /* Default Hidden */
+            position: fixed; 
+            bottom: 65px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 92%; 
+            max-width: 380px; 
+            height: 380px; 
+            background: var(--wa-bg); 
+            border-radius: 20px 20px 5px 5px; 
+            z-index: 1500; 
+            flex-direction: column; 
+            padding: 10px; 
+            border: 2px solid var(--pink); 
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            gap: 8px;
+        }
         .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; text-align: left;}
         .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
         .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
         .msg-time { font-size: 0.6rem; opacity: 0.5; margin-left: 5px; float: right; margin-top: 5px; }
         .tick-blue { color: #34b7f1; font-weight: bold; }
-        .date-divider { align-self: center; background: #d1e4f3; color: #555; padding: 4px 15px; border-radius: 10px; font-size: 0.7rem; margin: 10px 0; font-weight: bold; display: block; width: fit-content; }
+        .date-divider { align-self: center; background: #d1e4f3; color: #555; padding: 3px 10px; border-radius: 8px; font-size: 0.65rem; margin: 5px 0; font-weight: bold; }
 
+        /* Bottom Bar */
         .wa-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; background: #f0f0f0; padding: 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
-        .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; position: relative; }
+        .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
-        
-        .chat-btn-container { position: relative; display: flex; align-items: center; }
-        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; min-width: 15px; height: 15px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-weight: bold; border: 1px solid white; }
-        
         .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; }
 
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -60,8 +78,8 @@
 </head>
 <body>
 
-<button class="mode-toggle" onclick="toggleTheme()">🌓 MODE</button>
-<button id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
+<button class="mode-toggle" onclick="toggleTheme()" 🌓 MODE</button>
+<button id="silent-btn" onclick="toggleSilent()" 🔕 SILENT</button>
 
 <div class="container">
     <h2 class="main-title">Secret Dunia</h2>
@@ -77,7 +95,7 @@
         
         <div class="music-card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <b style="color: var(--blue); font-size: 0.8rem;">🎵 Smart Playlist</b>
+                <b style="color: var(--blue); font-size: 0.8rem;" 🎵 Smart Playlist</b>
                 <button style="background:var(--blue); color:white; border:none; padding:4px 8px; border-radius:10px; font-size:0.6rem;" onclick="addSongPrompt()">+ Add MP3</button>
             </div>
             <div id="playlist-area" style="max-height: 80px; overflow-y: auto; margin-top: 5px;"></div>
@@ -92,7 +110,8 @@
         <div class="countdown-container" id="countdown-area"></div>
         <button style="background:var(--pink); color:white; border:none; padding:8px 18px; border-radius:15px; font-weight:bold; margin-bottom:15px; cursor:pointer;" onclick="addCountdownPrompt()">+ Add Event</button>
         
-        <div class="status-bar" id="status-container">Syncing...</div>
+        <div class="status-bar" id="status-container">Syncing Status...</div>
+
         <div class="card" style="padding: 10px;"><div class="btn-grid" id="hub-grid"></div></div>
     </div>
 </div>
@@ -101,11 +120,8 @@
 
 <div id="wa-bar" class="wa-bottom" style="display:none;">
     <div class="wa-input-box">
-        <div class="chat-btn-container">
-            <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">💬</button>
-            <div id="badge-count" class="msg-badge">0</div>
-        </div>
-        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
+        <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;" 💬</button>
+        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;" 📎</label>
         <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
@@ -116,7 +132,7 @@
 
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyrJ63-hodgs0yOBX-guvadPMPN2wXZR1r_PiA1wjBhYg1Lfi4E1gxf0RHw7UW4l3n-/exec';
-    let currentUser = "", sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], mySeenAtLogin = 0;
+    let currentUser = "", sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], lastDate = "";
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
@@ -126,11 +142,10 @@
         sheetPass = data.passwords;
         if((n.includes("AWAIS") && p == sheetPass.LoginPassAwais) || (n.includes("NISHA") && p == sheetPass.LoginPassNisha)) {
             currentUser = n;
-            data.onlineUsers.forEach(u => { if(u.name.toUpperCase().includes(currentUser)) mySeenAtLogin = parseInt(u.seenCount) || 0; });
             document.getElementById('login-screen').style.display='none';
             document.getElementById('dashboard').style.display='block';
             document.getElementById('wa-bar').style.display='flex';
-            refreshData(); 
+            updateStatus("Online", -1);
             setInterval(refreshData, 3000);
             setInterval(updateLiveCountdowns, 1000);
         } else { alert("Wrong Key!"); }
@@ -139,30 +154,7 @@
     function toggleChat() {
         const box = document.getElementById('notes-display');
         box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-        if(box.style.display === 'flex') {
-            box.scrollTop = box.scrollHeight;
-            document.getElementById('badge-count').style.display = 'none';
-            updateStatus("Online", lastMsgCount);
-            mySeenAtLogin = lastMsgCount;
-        }
-    }
-
-    async function sendNote() { 
-        let input = document.getElementById('wa-input');
-        let m = input.value.trim(); if(!m) return;
-        input.value = "";
-        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
-    }
-
-    async function uploadMedia(input) {
-        const file = input.files[0]; if(!file) return;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            const base64 = e.target.result.split(',')[1];
-            fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64, fileName:file.name})});
-            alert("Media Sending...");
-        };
-        reader.readAsDataURL(file);
+        if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
     }
 
     async function refreshData() {
@@ -171,68 +163,87 @@
             const data = await res.json();
             savedCountdowns = data.countdowns || [];
             savedPlaylist = data.playlist || [];
-            let history = data.history || [];
             
+            // Render Status
             let sHtml = ""; let otherSeen = 0;
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) otherSeen = parseInt(u.seenCount) || 0;
                 let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
-                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b></span><span><small>${u.status}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
+                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${formatSimpleDate(u.time)}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
             });
             document.getElementById('status-container').innerHTML = sHtml;
 
-            let hHtml = ""; let lastDateStr = ""; 
-            history.forEach((h, idx) => {
-                const d = new Date(h.time);
-                const dStr = d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-                if(dStr !== lastDateStr) { hHtml += `<div class="date-divider">${dStr}</div>`; lastDateStr = dStr; }
-                let isMe = h.name.toUpperCase().includes(currentUser);
-                let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : "";
-                let content = h.note;
-                if(content.startsWith("MEDIA:")) content = `<img src="${content.split('MEDIA:')[1]}" style="width:100%; border-radius:8px;">`;
-                hHtml += `<div class="msg ${isMe ? 'msg-me':'msg-them'}">${content}<div class="msg-time">${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} ${tick}</div></div>`;
-            });
-            document.getElementById('notes-display').innerHTML = hHtml;
-
-            const badge = document.getElementById('badge-count');
-            const isOpen = document.getElementById('notes-display').style.display === 'flex';
-            let unread = history.length - mySeenAtLogin;
-            if(unread > 0 && !isOpen) { badge.innerText = unread; badge.style.display = 'flex'; }
-            
+            // Render Chat
+            let hHtml = ""; lastDate = "";
+            let history = data.history || [];
             if(history.length > lastMsgCount) {
                 if(!isSilent && lastMsgCount !== 0 && !history[history.length-1].name.toUpperCase().includes(currentUser)) document.getElementById('notif-sound').play();
                 lastMsgCount = history.length;
-                if(isOpen) { 
-                    document.getElementById('notes-display').scrollTop = document.getElementById('notes-display').scrollHeight;
-                    updateStatus("Online", history.length);
-                    mySeenAtLogin = history.length;
-                }
             }
 
-            renderPlaylist();
+            history.forEach((h, idx) => {
+                const d = new Date(h.time);
+                const dStr = d.toLocaleDateString();
+                if(dStr !== lastDate) { hHtml += `<div class="date-divider">${dStr}</div>`; lastDate = dStr; }
+                let isMe = h.name.toUpperCase().includes(currentUser);
+                let sideClass = isMe ? "msg-me" : "msg-them";
+                let tick = (isMe && otherSeen > idx) ? '<span class="tick-blue">✓✓</span>' : (isMe ? '✓' : '');
+                let content = h.note;
+                if(content.startsWith("MEDIA:")) content = `<img src="${content.split(':')[1]}" style="width:100%; border-radius:8px;">`;
+                hHtml += `<div class="msg ${sideClass}">${content}<div class="msg-time">${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} ${tick}</div></div>`;
+            });
+            
+            const box = document.getElementById('notes-display');
+            box.innerHTML = hHtml;
+            if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
+            updateStatus("Online", history.length);
+
+            // Render Hub
             let bHtml = ""; ["Ai Assistant", "WhatsApp Hub", "Chat Rooms", "Pinterest", "Video Room", "Mega Drive", "Protected Text", "Settings"].forEach(name => {
                 bHtml += `<div class="hub-btn" onclick="enterRoom('${name}')">${name}</div>`;
             });
             document.getElementById('hub-grid').innerHTML = bHtml;
+            renderPlaylist();
         } catch(e) {}
+    }
+
+    async function sendNote() { 
+        let input = document.getElementById('wa-input');
+        let m = input.value.trim(); if(!m) return;
+        input.value = "";
+        document.getElementById('notes-display').style.display = 'flex';
+        const box = document.getElementById('notes-display');
+        box.innerHTML += `<div class="msg msg-me">${m}<div class="msg-time">sending...</div></div>`;
+        box.scrollTop = box.scrollHeight;
+        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
+    }
+
+    async function uploadMedia(input) {
+        const file = input.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const base64 = e.target.result.split(',')[1];
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64})});
+        };
+        reader.readAsDataURL(file);
     }
 
     function renderPlaylist() {
         let html = "";
         savedPlaylist.forEach(s => {
-            html += `<div class="song-row"><span><b>${s.title}</b></span><button style="background:none; border:none; color:var(--blue); cursor:pointer;" onclick="playMusic('${s.url}','${s.title}')">▶</button></div>`;
+            html += `<div class="song-row"><span><b>${s.title}</b> <small>(${s.user})</small></span><div><button style="background:none; border:none; color:var(--blue); cursor:pointer;" onclick="playMusic('${s.url}', '${s.title}')">▶</button></div></div>`;
         });
         document.getElementById('playlist-area').innerHTML = html || "No songs.";
     }
-    
     function playMusic(url, title) { const a = document.getElementById('global-audio'); a.src = url; a.play(); document.getElementById('now-playing-title').innerText = title; document.getElementById('smart-player').style.display = "flex"; }
     function stopMusic() { document.getElementById('global-audio').pause(); document.getElementById('smart-player').style.display = "none"; }
     function togglePlay() { const a = document.getElementById('global-audio'); if (a.paused) a.play(); else a.pause(); }
+    async function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
     function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
-    function logout() { updateStatus("Offline", lastMsgCount); setTimeout(() => { location.reload(); }, 500); }
+    function logout() { updateStatus("Offline", -1); setTimeout(() => { location.reload(); }, 500); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ?  🔕 SILENT" :  🔔 SOUND"; }
     function updateLiveCountdowns() {
         let h = ""; savedCountdowns.forEach((c) => {
             let diff = new Date(c.date).getTime() - new Date().getTime();
@@ -241,8 +252,8 @@
         });
         document.getElementById('countdown-area').innerHTML = h;
     }
-    function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
-    function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("YYYY-MM-DD:"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
+    function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("YYYY-MM-DD HH:MM:"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
+    function formatSimpleDate(s) { if(!s) return ""; let d = new Date(s); return `${d.getDate()} Jan, ${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`; }
     function enterRoom(r) { if(prompt("Hub Key:") == sheetPass.HubPass) alert("Redirecting to " + r); }
 </script>
 </body>
