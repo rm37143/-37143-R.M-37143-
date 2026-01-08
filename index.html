@@ -102,7 +102,7 @@
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzCl0ANQXANzbNBgDqXJeiJcrtY7fVauM-D8ZDHDPRoI7gbkFjLGxuoqfIq4ghuOVSi/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx9TfFTYglFiVgU6vAsSZalPQTemuswD9q-euLEzfqTl7FWA3l3skBiqlmf0g63FdRP/exec';
     let currentUser = "", hubKey = "", lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], mySeenAtLogin = 0;
 
     async function checkAuth() {
@@ -124,7 +124,7 @@
                 document.getElementById('login-btn').innerText = "Enter World";
             }
         } catch (e) {
-            alert("Connection Error! Deploy check karein.");
+            alert("Connection Error!");
             document.getElementById('login-btn').innerText = "Enter World";
         }
     }
@@ -154,6 +154,7 @@
         let m = input.value.trim(); if(!m) return;
         input.value = "";
         await fetch(scriptURL, {method:'POST', body:JSON.stringify({name:currentUser, note:m})}); 
+        refreshData();
     }
 
     async function uploadMedia(input) {
@@ -163,6 +164,7 @@
             const base64 = e.target.result.split(',')[1];
             await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64, fileName:file.name})});
             alert("Media Sending...");
+            refreshData();
         };
         reader.readAsDataURL(file);
     }
@@ -248,8 +250,8 @@
         });
         document.getElementById('countdown-area').innerHTML = h;
     }
-    async function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
-    async function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("YYYY-MM-DD:"); if(l && d) await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
+    async function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); refreshData(); }
+    async function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("YYYY-MM-DD:"); if(l && d) await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); refreshData(); }
     function enterRoom(r) { if(prompt("Hub Key:") == hubKey) alert("Redirecting to " + r); }
 </script>
 </body>
