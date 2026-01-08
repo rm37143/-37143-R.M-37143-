@@ -3,246 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4 Final Pro</title>
+    <title>Secret Dunia A4 Pro</title>
     <style>
-        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --blue: #34b7f1; --dark: #1a1a1a; }
-        body { background: #fce4ec; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; padding-bottom: 85px; transition: 0.3s; overflow-x: hidden; }
-        body.dark-mode { background: #121212; color: white; }
-        .dark-mode .card, .dark-mode .music-card, .dark-mode .countdown-item { background: #222; border-color: #444; color: white; }
-        
+        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.7); --green: #2ecc71; --blue: #34b7f1; }
+        body { 
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+            font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; 
+            padding-bottom: 90px; min-height: 100vh;
+        }
         .container { width: 100%; max-width: 400px; margin: auto; text-align: center; }
-        .card, .music-card { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        
+        /* Glass Style - FIXED */
+        .glass-card { 
+            background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 20px;
+            padding: 15px; margin-bottom: 12px; box-shadow: 0 8px 32px rgba(255, 133, 162, 0.15);
+        }
 
-        /* WhatsApp Chat System */
+        /* Status UI - FIXED */
+        .status-box { text-align: left; font-size: 0.85rem; color: #444; }
+        .status-line { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.03); }
+
+        /* Hub Grid */
+        .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .hub-btn { 
+            background: white; border: none; padding: 12px; border-radius: 15px;
+            font-size: 0.8rem; font-weight: bold; color: #d63384; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* WhatsApp Chat UI */
         #chat-window { 
-            position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 400px; height: 0; overflow: hidden;
-            background: #e5ddd5; border-radius: 20px 20px 0 0; transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%);
+            width: 95%; max-width: 400px; height: 0; overflow: hidden;
+            background: #e5ddd5; border-radius: 20px 20px 0 0; transition: height 0.4s ease;
             display: flex; flex-direction: column; z-index: 1000;
         }
-        #chat-window.open { height: 75vh; border-top: 2px solid #ddd; }
-        .chat-header { background: #075e54; color: white; padding: 12px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        #chat-window.open { height: 70vh; box-shadow: 0 -10px 30px rgba(0,0,0,0.1); }
+        .chat-header { background: #075e54; color: white; padding: 12px; display: flex; justify-content: space-between; font-weight: bold; }
         #notes-display { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
 
-        /* Date Divider */
-        .date-badge { align-self: center; background: #d1e4f3; color: #555; padding: 5px 15px; border-radius: 10px; font-size: 0.7rem; font-weight: bold; margin: 10px 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-
-        /* Bubble Styles */
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.9rem; position: relative; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-wrap: break-word; }
-        .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
-        .msg-them { align-self: flex-start; background: #fff; border-bottom-left-radius: 2px; }
-        .msg-meta { font-size: 0.65rem; color: #777; display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 4px; }
-        .tick { font-size: 0.85rem; color: #999; }
+        /* Message Bubbles */
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.9rem; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .msg-me { align-self: flex-end; background: #dcf8c6; }
+        .msg-them { align-self: flex-start; background: #fff; }
         .tick-blue { color: var(--blue); }
-        .media-msg { width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; }
 
-        /* Bottom Bar */
+        /* Bottom Bar - FIXED */
         .bottom-bar { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 400px; background: #f0f0f0; padding: 10px;
-            display: flex; align-items: center; gap: 10px; z-index: 1001; box-sizing: border-box;
+            display: flex; align-items: center; gap: 10px; z-index: 1001;
         }
-        .input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; }
-        .chat-input { flex: 1; border: none; outline: none; font-size: 1rem; padding: 8px 0; background: transparent; }
-        .btn-round { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
-
-        /* Hub Buttons Grid */
-        .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .hub-btn { background: white; border: 1px solid #ffd1dc; padding: 12px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; color: #d63384; cursor: pointer; transition: 0.2s; }
-        .hub-btn:active { transform: scale(0.95); background: #fff0f3; }
-        
-        .mode-btn { position: fixed; top: 15px; right: 15px; z-index: 1002; background: var(--pink); color: white; border: none; padding: 8px; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .input-wrap { flex: 1; background: white; border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; }
+        .chat-input { flex: 1; border: none; outline: none; padding: 10px 0; font-size: 1rem; }
+        .btn-send { background: #075e54; color: white; width: 45px; height: 45px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<button class="mode-btn" onclick="document.body.classList.toggle('dark-mode')">🌓</button>
-
 <div class="container">
-    <h2 style="color:var(--pink); margin-top: 40px;">Secret Dunia</h2>
+    <h2 style="color:var(--pink); margin-top: 30px;">Secret Dunia</h2>
 
-    <div id="login-screen" class="card">
-        <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px; border-radius:10px; border:1px solid #ddd; text-align:center;">
-        <input type="password" id="u-pass" placeholder="Secret Key" style="width:85%; padding:12px; margin:8px; border-radius:10px; border:1px solid #ddd; text-align:center;">
-        <button onclick="checkAuth()" style="width:90%; background:var(--pink); color:white; border:none; padding:14px; border-radius:25px; font-weight:bold; margin-top:10px; cursor:pointer;">Enter Now</button>
+    <div id="login-screen" class="glass-card">
+        <input type="text" id="u-name" placeholder="Name" style="width:80%; padding:10px; margin:5px; border-radius:10px; border:1px solid #ddd;">
+        <input type="password" id="u-pass" placeholder="Key" style="width:80%; padding:10px; margin:5px; border-radius:10px; border:1px solid #ddd;">
+        <button onclick="checkAuth()" style="width:85%; background:var(--pink); color:white; border:none; padding:12px; border-radius:25px; font-weight:bold; margin-top:10px;">Enter</button>
     </div>
 
     <div id="dashboard" style="display:none;">
-        <div class="card" id="status-display" style="text-align:left; font-size:0.7rem;">Syncing status...</div>
+        <div class="glass-card status-box" id="status-area">Syncing...</div>
 
-        <div class="music-card">
+        <div class="glass-card">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-weight:bold; font-size:0.8rem;">🎵 Secret Playlist</span>
+                <b>🎵 Secret Playlist</b>
                 <button onclick="addSong()" style="font-size:0.6rem; background:var(--blue); color:white; border:none; padding:3px 8px; border-radius:5px;">+ Add</button>
             </div>
-            <div id="playlist-list" style="max-height:100px; overflow-y:auto; margin-top:8px; text-align:left;"></div>
+            <div id="playlist-list" style="text-align:left; margin-top:8px;"></div>
         </div>
 
         <div id="countdown-area"></div>
-        <button onclick="addEvent()" style="background:var(--pink); color:white; border:none; padding:10px 20px; border-radius:15px; font-weight:bold; font-size:0.8rem; margin:10px 0;">+ New Event</button>
+        <button onclick="addEvent()" style="background:var(--pink); color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; font-size:0.8rem; margin-bottom:15px;">+ New Event</button>
+
+        <div class="hub-grid" id="hub-grid"></div>
 
         <div id="chat-window">
-            <div class="chat-header">
-                <span id="chat-with-who">Loading...</span>
-                <span onclick="toggleChat()" style="cursor:pointer; font-size:1.2rem;">✕</span>
-            </div>
+            <div class="chat-header"><span id="chat-partner">Chat</span><span onclick="toggleChat()" style="cursor:pointer">✕</span></div>
             <div id="notes-display"></div>
         </div>
 
         <div class="bottom-bar">
-            <div class="input-box">
-                <span style="cursor:pointer; font-size:1.4rem;" onclick="toggleChat()">💬</span>
-                <label for="img-in" style="cursor:pointer; font-size:1.4rem;">📎</label>
-                <input type="file" id="img-in" hidden onchange="uploadFile(this)" accept="image/*,video/*">
-                <input type="text" id="note-input" class="chat-input" placeholder="Type a message" onkeydown="if(event.key==='Enter') sendMsg()">
+            <div class="input-wrap">
+                <span style="cursor:pointer; font-size:1.5rem;" onclick="toggleChat()">💬</span>
+                <label for="f-in" style="cursor:pointer; font-size:1.5rem;">📎</label>
+                <input type="file" id="f-in" hidden onchange="uploadFile(this)">
+                <input type="text" id="note-input" class="chat-input" placeholder="Message..." onkeydown="if(event.key==='Enter') sendNote()">
             </div>
-            <button class="btn-round" onclick="sendMsg()">➤</button>
+            <button class="btn-send" onclick="sendNote()">➤</button>
         </div>
-
-        <div class="hub-grid" id="hub-buttons"></div>
     </div>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxwfgo7O9YZelY9SYVNq55JuEHBYSc8tnqGGrjx0nfSWhib0GaI-HUQdLMS3ifpkz0O/exec';
-    let currentUser = "", savedHistory = [], isChatOpen = false, lastDateHeader = "";
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbywOjby5ya8plMFzC8v6TI3Yxpz_pXt-bZYEZPYUh_9Dz860qFufGR-lcMkwNzK1tJH/exec';
+    let currentUser = "", savedHistory = [], isChatOpen = false, allPass = {};
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
-        if(!n || !p) return;
         const res = await fetch(scriptURL);
         const data = await res.json();
-        if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
+        allPass = data.passwords;
+        if((n.includes("AWAIS") && p == allPass.LoginPassAwais) || (n.includes("NISHA") && p == allPass.LoginPassNisha)) {
             currentUser = n;
             document.getElementById('login-screen').style.display='none';
             document.getElementById('dashboard').style.display='block';
             updateStatus("Online", -1);
             setInterval(refresh, 4000);
-            loadHub();
-        } else { alert("Key Incorrect!"); }
+            renderHub();
+        } else { alert("Wrong Key!"); }
+    }
+
+    function renderHub() {
+        const btns = [
+            {n:"Ai Assistant", p:"AiPass"}, {n:"WhatsApp Hub", p:"HubPass"}, 
+            {n:"Chat Rooms", p:"HistoryPass"}, {n:"Pinterest", p:"HubPass"},
+            {n:"Video Room", p:"HubPass"}, {n:"Mega Drive", p:"HubPass"},
+            {n:"Protected Text", p:"HistoryPass"}, {n:"Settings", p:"LoginPassAwais"}
+        ];
+        let h = ""; btns.forEach(b => h += `<div class="hub-btn" onclick="openHub('${b.n}', '${b.p}')">${b.n}</div>`);
+        document.getElementById('hub-grid').innerHTML = h;
+    }
+
+    function openHub(n, pk) {
+        let p = prompt("Enter Key for " + n);
+        if(p == allPass[pk] || p == allPass["LoginPassAwais"]) alert("Opening " + n);
+        else alert("Wrong!");
     }
 
     function toggleChat() {
         isChatOpen = !isChatOpen;
         document.getElementById('chat-window').classList.toggle('open', isChatOpen);
         if(isChatOpen) { 
-            setTimeout(() => {
-                const d = document.getElementById('notes-display');
-                d.scrollTop = d.scrollHeight;
-            }, 300);
+            setTimeout(() => { document.getElementById('notes-display').scrollTop = document.getElementById('notes-display').scrollHeight; }, 300);
             updateStatus("Online", savedHistory.length); 
         }
     }
 
-    async function sendMsg() {
+    async function sendNote() {
         const input = document.getElementById('note-input');
         const m = input.value.trim(); if(!m) return;
-        const tempId = "msg-" + Date.now();
-        renderMsg({name: currentUser, note: m, time: new Date(), isTemp: true, id: tempId}, true);
-        input.value = ""; 
-        document.getElementById('notes-display').scrollTop = document.getElementById('notes-display').scrollHeight;
+        renderMessage({name:currentUser, note:m, time:new Date(), isTemp:true}, true);
+        input.value = "";
         await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})});
     }
 
-    function renderMsg(h, isNew = false) {
+    function renderMessage(h, append = false) {
         const display = document.getElementById('notes-display');
-        const d = new Date(h.time);
-        const dateStr = d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
-        
-        // Date Separator
-        if(dateStr !== lastDateHeader) {
-            display.insertAdjacentHTML('beforeend', `<div class="date-badge">${dateStr}</div>`);
-            lastDateHeader = dateStr;
-        }
-
         const isMe = h.name.toUpperCase().includes(currentUser);
-        let noteContent = h.note;
-        if(noteContent.startsWith("MEDIA:")) {
-            const url = noteContent.replace("MEDIA:", "");
-            noteContent = `<img src="${url}" class="media-msg" onclick="window.open('${url}')">`;
-        }
-
-        const html = `
-            <div class="msg ${isMe ? 'msg-me' : 'msg-them'}" id="${h.id || ''}">
-                <div>${noteContent}</div>
-                <div class="msg-meta">
-                    ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} 
-                    <span class="tick">${isMe ? (h.isTemp ? '✓' : '✓✓') : ''}</span>
-                </div>
-            </div>`;
+        let note = h.note;
+        if(note.startsWith("MEDIA:")) note = `<img src="${note.split(':')[1]}" style="width:100%; border-radius:10px;">`;
+        
+        const html = `<div class="msg ${isMe ? 'msg-me' : 'msg-them'}"><div>${note}</div><div style="font-size:0.6rem; text-align:right;">${new Date(h.time).getHours()}:${new Date(h.time).getMinutes()} ${isMe ? (h.isTemp?'✓':'✓✓') : ''}</div></div>`;
         display.insertAdjacentHTML('beforeend', html);
+        if(append) display.scrollTop = display.scrollHeight;
     }
 
     async function refresh() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            
-            // Status update
             let sHtml = ""; let partnerSeen = 0;
             data.onlineUsers.forEach(u => {
-                const isPartner = !u.name.toUpperCase().includes(currentUser);
-                if(isPartner) { partnerSeen = u.seenCount; document.getElementById('chat-with-who').innerText = u.name; }
-                sHtml += `<div><b>${u.name}</b>: ${u.status}</div>`;
+                if(!u.name.toUpperCase().includes(currentUser)) { partnerSeen = u.seenCount; document.getElementById('chat-partner').innerText = u.name; }
+                sHtml += `<div class="status-line"><b>${u.name}</b> <span>${u.status}</span></div>`;
             });
-            document.getElementById('status-display').innerHTML = sHtml;
+            document.getElementById('status-area').innerHTML = sHtml;
 
-            // Chat refresh
             if(data.history.length !== savedHistory.length) {
                 const display = document.getElementById('notes-display');
-                display.innerHTML = ""; lastDateHeader = "";
+                display.innerHTML = "";
                 savedHistory = data.history;
                 data.history.forEach((h, idx) => {
-                    renderMsg(h);
+                    renderMessage(h);
                     if(idx + 1 <= partnerSeen) {
                         const ticks = display.querySelectorAll('.tick');
-                        if(ticks[idx]) ticks[idx].classList.add('tick-blue');
+                        if(ticks[idx]) ticks[idx].style.color = "var(--blue)";
                     }
                 });
                 if(isChatOpen) display.scrollTop = display.scrollHeight;
             }
-
-            // Playlist & Countdown
-            renderList(data.playlist);
+            renderPlaylist(data.playlist);
             renderEvents(data.countdowns);
         } catch(e) {}
     }
 
-    function loadHub() {
-        const btns = ["Ai Assistant", "WhatsApp Hub", "Chat Rooms", "Pinterest", "Video Room", "Mega Drive", "Protected Text", "Settings"];
-        let h = ""; btns.forEach(b => h += `<div class="hub-btn" onclick="alert('Opening ${b}...')">${b}</div>`);
-        document.getElementById('hub-buttons').innerHTML = h;
+    function renderPlaylist(l) {
+        let h = ""; (l || []).forEach(s => h += `<div style="font-size:0.75rem; padding:4px 0; border-bottom:1px solid rgba(0,0,0,0.03);">▶ ${s.title}</div>`);
+        document.getElementById('playlist-list').innerHTML = h;
     }
 
-    function renderList(list) {
-        let h = ""; (list || []).forEach(s => h += `<div style="font-size:0.7rem; border-bottom:1px solid #eee; padding:4px 0;">🎵 ${s.title} <small>(${s.user})</small></div>`);
-        document.getElementById('playlist-list').innerHTML = h || "Empty.";
-    }
-
-    function renderEvents(list) {
-        let h = ""; (list || []).forEach(e => {
-            const days = Math.floor((new Date(e.date) - new Date())/(1000*60*60*24));
-            h += `<div class="card" style="text-align:left; font-size:0.75rem;"><b>${e.label}</b>: <span style="color:var(--pink)">${days > 0 ? days+' days left' : 'Finished'}</span></div>`;
+    function renderEvents(l) {
+        let h = ""; (l || []).forEach(e => {
+            const diff = Math.floor((new Date(e.date) - new Date())/(1000*60*60*24));
+            h += `<div class="glass-card" style="text-align:left; font-size:0.8rem;"><b>${e.label}</b>: ${diff > 0 ? diff+' days' : 'Finished'}</div>`;
         });
         document.getElementById('countdown-area').innerHTML = h;
     }
 
-    async function uploadFile(input) {
-        const file = input.files[0]; if(!file) return;
-        renderMsg({name: currentUser, note: "Uploading...", time: new Date(), isTemp: true}, true);
+    async function uploadFile(i) {
+        const f = i.files[0]; if(!f) return;
         const reader = new FileReader();
         reader.onload = async (e) => {
-            const base64 = e.target.result.split(',')[1];
-            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64})});
+            const b64 = e.target.result.split(',')[1];
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:f.type, base64:b64})});
             refresh();
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(f);
     }
 
     function updateStatus(s, c) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:c})}); }
-    function addSong() { let t = prompt("Song Name:"); let u = prompt("Link:"); if(t && u) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
-    function addEvent() { let l = prompt("Event Name:"); let d = prompt("Date (YYYY-MM-DD):"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
+    function addSong() { let t = prompt("Song:"); let u = prompt("URL:"); if(t && u) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
+    function addEvent() { let l = prompt("Event:"); let d = prompt("Date:"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
 </script>
 </body>
 </html>
