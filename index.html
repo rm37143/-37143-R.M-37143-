@@ -8,44 +8,26 @@
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
         body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; }
         .dark-mode .card, .dark-mode .music-card { background: rgba(45, 45, 45, 0.9); border: 1px solid #444; color: white; }
-        .dark-mode .status-bar { background: #333; color: #ddd; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 70px; overflow-x: hidden; }
         .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
         .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .mode-toggle { left: 10px; }
-        #silent-btn { right: 10px; }
+        .mode-toggle { left: 10px; } #silent-btn { right: 10px; }
         .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         .music-card, .countdown-container { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
-        .song-row, .cd-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #fff5f7; font-size: 0.75rem; }
-        .mini-player-bar { display: none; background: #f8f9fa; border-radius: 10px; padding: 5px 10px; margin-top: 8px; align-items: center; gap: 10px; border: 1px solid #eee; }
-        .play-pause-btn { background: var(--blue); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.6rem; }
-        .song-name-scroll { flex-grow: 1; font-size: 0.65rem; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; }
-        .stop-btn-small { background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 0.4rem; cursor: pointer; }
         .card { background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 10px; border: 1px solid white; position: relative; }
         .status-bar { background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 10px; font-size: 0.62rem; border-left: 5px solid var(--green); text-align: left; }
-        .user-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #f9f9f9; }
-        .dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .dot-online { background: var(--green); box-shadow: 0 0 5px var(--green); }
-        .dot-offline { background: var(--grey); }
-        .off-btn { background:#ff4d4d; color:white; border:none; border-radius:6px; padding:2px 8px; font-size:0.6rem; cursor:pointer; }
         .chat-frame { display: none; position: fixed; bottom: 65px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 380px; height: 420px; background: var(--wa-bg); border-radius: 20px 20px 5px 5px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; }
         .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; text-align: left;}
         .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
         .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
-        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-left: 5px; float: right; margin-top: 5px; }
-        .tick-blue { color: #34b7f1; font-weight: bold; }
-        .date-divider { align-self: center; background: #d1e4f3; color: #555; padding: 4px 15px; border-radius: 10px; font-size: 0.7rem; margin: 10px 0; font-weight: bold; display: block; width: fit-content; }
         .wa-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; background: #f0f0f0; padding: 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; position: relative; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
-        .chat-btn-container { position: relative; display: flex; align-items: center; }
-        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; min-width: 15px; height: 15px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-weight: bold; border: 1px solid white; }
-        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .hub-btn { background: #fff0f3; border: 1px solid #ffd1dc; padding: 10px 4px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; font-weight: bold; color: #d63384; }
+        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         #dashboard { display: none; }
         .auth-input { width: 85%; padding: 12px; margin: 8px 0; border-radius: 20px; border: 1px solid #eee; text-align: center; outline: none; }
+        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; min-width: 15px; height: 15px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 1px solid white; }
     </style>
 </head>
 <body>
@@ -55,32 +37,18 @@
 
 <div class="container">
     <h2 class="main-title">Secret Dunia</h2>
-    
     <div id="login-screen" class="card">
         <input type="text" id="u-name" class="auth-input" placeholder="User Name">
-        <input type="password" id="u-pass" class="auth-input" placeholder="Enter Key" onkeypress="if(event.key === 'Enter') checkAuth()">
-        <button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%; cursor:pointer;" onclick="checkAuth()">Enter World</button>
+        <input type="password" id="u-pass" class="auth-input" placeholder="Enter Key">
+        <button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
 
     <div id="dashboard">
         <span class="nisha-note">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
-        <div class="music-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <b style="color: var(--blue); font-size: 0.8rem;">🎵 Smart Playlist</b>
-                <button style="background:var(--blue); color:white; border:none; padding:4px 8px; border-radius:10px; font-size:0.6rem;" onclick="addSongPrompt()">+ Add MP3</button>
-            </div>
-            <div id="playlist-area" style="max-height: 80px; overflow-y: auto; margin-top: 5px;"></div>
-            <div class="mini-player-bar" id="smart-player">
-                <button class="play-pause-btn" id="play-pause" onclick="togglePlay()">⏸</button>
-                <div class="song-name-scroll" id="now-playing-title">Playing...</div>
-                <button class="stop-btn-small" onclick="stopMusic()">×</button>
-            </div>
-            <audio id="global-audio" onended="stopMusic()"></audio>
-        </div>
+        <div class="music-card"><b>🎵 Smart Playlist</b><div id="playlist-area"></div></div>
         <div class="countdown-container" id="countdown-area"></div>
-        <button style="background:var(--pink); color:white; border:none; padding:8px 18px; border-radius:15px; font-weight:bold; margin-bottom:15px; cursor:pointer;" onclick="addCountdownPrompt()">+ Add Event</button>
         <div class="status-bar" id="status-container">Syncing...</div>
-        <div class="card" style="padding: 10px;"><div class="btn-grid" id="hub-grid"></div></div>
+        <div class="card"><div id="hub-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"></div></div>
     </div>
 </div>
 
@@ -88,171 +56,68 @@
 
 <div id="wa-bar" class="wa-bottom" style="display:none;">
     <div class="wa-input-box">
-        <div class="chat-btn-container">
-            <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">💬</button>
+        <div style="position:relative;">
+            <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
             <div id="badge-count" class="msg-badge">0</div>
         </div>
-        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
-        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
     <button class="wa-send-btn" onclick="sendNote()">➤</button>
 </div>
 
-<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
-
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbx9TfFTYglFiVgU6vAsSZalPQTemuswD9q-euLEzfqTl7FWA3l3skBiqlmf0g63FdRP/exec';
-    let currentUser = "", hubKey = "", lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], mySeenAtLogin = 0;
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwHUVzgp2yQj0Odfw4iHitjO3wDqFrNJmLkG18_c4TUCghSo8iaAQewK3CNhe7l1PS_/exec';
+    let currentUser = "", lastMsgCount = 0;
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
-        if(!n || !p) return alert("Details enter karein!");
-
         document.getElementById('login-btn').innerText = "Verifying...";
-        
         try {
             const res = await fetch(`${scriptURL}?action=login&user=${n}&pass=${p}`);
-            const result = await res.text();
-            
-            if (result === "true") {
-                currentUser = n;
-                startDashboard();
-            } else {
-                alert("Wrong Key!");
-                document.getElementById('login-btn').innerText = "Enter World";
-            }
-        } catch (e) {
-            alert("Connection Error!");
-            document.getElementById('login-btn').innerText = "Enter World";
-        }
+            if (await res.text() === "true") { currentUser = n; startDashboard(); }
+            else { alert("Wrong Key!"); document.getElementById('login-btn').innerText = "Enter World"; }
+        } catch(e) { alert("Error!"); }
     }
 
     function startDashboard() {
         document.getElementById('login-screen').style.display='none';
         document.getElementById('dashboard').style.display='block';
         document.getElementById('wa-bar').style.display='flex';
-        refreshData(); 
-        setInterval(refreshData, 5000); 
-        setInterval(updateLiveCountdowns, 1000);
+        refreshData(); setInterval(refreshData, 5000);
     }
 
     function toggleChat() {
         const box = document.getElementById('notes-display');
         box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-        if(box.style.display === 'flex') {
-            box.scrollTop = box.scrollHeight;
-            document.getElementById('badge-count').style.display = 'none';
-            updateStatus("Online", lastMsgCount);
-            mySeenAtLogin = lastMsgCount;
-        }
-    }
-
-    async function sendNote() { 
-        let input = document.getElementById('wa-input');
-        let m = input.value.trim(); if(!m) return;
-        input.value = "";
-        await fetch(scriptURL, {method:'POST', body:JSON.stringify({name:currentUser, note:m})}); 
-        refreshData();
-    }
-
-    async function uploadMedia(input) {
-        const file = input.files[0]; if(!file) return;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            const base64 = e.target.result.split(',')[1];
-            await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64, fileName:file.name})});
-            alert("Media Sending...");
-            refreshData();
-        };
-        reader.readAsDataURL(file);
+        if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
     }
 
     async function refreshData() {
         try {
             const res = await fetch(`${scriptURL}?action=getData`);
             const data = await res.json();
-            savedCountdowns = data.countdowns || [];
-            savedPlaylist = data.playlist || [];
-            hubKey = data.hubKey;
-            let history = data.history || [];
-            
-            let sHtml = ""; let otherSeen = 0;
-            data.onlineUsers.forEach(u => {
-                let isMe = u.name.toUpperCase().includes(currentUser);
-                if(isMe) mySeenAtLogin = parseInt(u.seenCount) || 0;
-                else otherSeen = parseInt(u.seenCount) || 0;
-                let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
-                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b></span><span><small>${u.status}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
-            });
-            document.getElementById('status-container').innerHTML = sHtml;
-
-            let hHtml = ""; let lastDateStr = ""; 
-            history.forEach((h, idx) => {
-                const d = new Date(h.time);
-                const dStr = d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-                if(dStr !== lastDateStr) { hHtml += `<div class="date-divider">${dStr}</div>`; lastDateStr = dStr; }
+            let hHtml = "";
+            data.history.forEach(h => {
                 let isMe = h.name.toUpperCase().includes(currentUser);
-                let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : "";
-                let content = h.note;
-                if(content.startsWith("MEDIA:")) content = `<img src="${content.split('MEDIA:')[1]}" style="width:100%; border-radius:8px;" onclick="window.open(this.src)">`;
-                hHtml += `<div class="msg ${isMe ? 'msg-me':'msg-them'}">${content}<div class="msg-time">${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} ${tick}</div></div>`;
+                hHtml += `<div class="msg ${isMe ? 'msg-me':'msg-them'}"><b>${h.name}:</b><br>${h.note}</div>`;
             });
             document.getElementById('notes-display').innerHTML = hHtml;
-
-            const badge = document.getElementById('badge-count');
-            const isOpen = document.getElementById('notes-display').style.display === 'flex';
-            let unread = history.length - mySeenAtLogin;
-            if(unread > 0 && !isOpen) { badge.innerText = unread; badge.style.display = 'flex'; }
-            
-            if(history.length > lastMsgCount) {
-                if(!isSilent && lastMsgCount !== 0 && !history[history.length-1].name.toUpperCase().includes(currentUser)) document.getElementById('notif-sound').play();
-                lastMsgCount = history.length;
-                if(isOpen) { 
-                    document.getElementById('notes-display').scrollTop = document.getElementById('notes-display').scrollHeight;
-                    updateStatus("Online", history.length);
-                    mySeenAtLogin = history.length;
-                }
+            if(data.history.length > lastMsgCount) {
+                lastMsgCount = data.history.length;
+                document.getElementById('notes-display').scrollTop = document.getElementById('notes-display').scrollHeight;
             }
-            renderPlaylist();
-            renderHubButtons();
-        } catch(e) {}
+        } catch(e) { console.log("Sync error"); }
     }
 
-    function renderHubButtons() {
-        let bHtml = ""; ["Ai Assistant", "WhatsApp Hub", "Chat Rooms", "Pinterest", "Video Room", "Mega Drive", "Protected Text", "Settings"].forEach(name => {
-            bHtml += `<div class="hub-btn" onclick="enterRoom('${name}')">${name}</div>`;
-        });
-        document.getElementById('hub-grid').innerHTML = bHtml;
+    async function sendNote() {
+        let i = document.getElementById('wa-input');
+        let m = i.value.trim(); if(!m) return;
+        i.value = "";
+        await fetch(scriptURL, {method:'POST', body:JSON.stringify({name:currentUser, note:m})});
+        refreshData();
     }
-
-    function renderPlaylist() {
-        let html = "";
-        savedPlaylist.forEach(s => {
-            html += `<div class="song-row"><span><b>${s.title}</b></span><button style="background:none; border:none; color:var(--blue); cursor:pointer;" onclick="playMusic('${s.url}','${s.title}')">▶</button></div>`;
-        });
-        document.getElementById('playlist-area').innerHTML = html || "No songs.";
-    }
-    
-    function playMusic(url, title) { const a = document.getElementById('global-audio'); a.src = url; a.play(); document.getElementById('now-playing-title').innerText = title; document.getElementById('smart-player').style.display = "flex"; }
-    function stopMusic() { document.getElementById('global-audio').pause(); document.getElementById('smart-player').style.display = "none"; }
-    function togglePlay() { const a = document.getElementById('global-audio'); if (a.paused) a.play(); else a.pause(); }
-    async function updateStatus(s, count) { await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
-    function logout() { updateStatus("Offline", lastMsgCount); setTimeout(() => { location.reload(); }, 500); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
-    function updateLiveCountdowns() {
-        let h = ""; savedCountdowns.forEach((c) => {
-            let diff = new Date(c.date).getTime() - new Date().getTime();
-            let txt = diff > 0 ? Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m "+Math.floor((diff%(1000*60))/1000)+"s" : "Finished!";
-            h += `<div class="cd-row"><div><b>${c.label}</b>: <span style="color:var(--pink)">${txt}</span></div></div>`;
-        });
-        document.getElementById('countdown-area').innerHTML = h;
-    }
-    async function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); refreshData(); }
-    async function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("YYYY-MM-DD:"); if(l && d) await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); refreshData(); }
-    function enterRoom(r) { if(prompt("Hub Key:") == hubKey) alert("Redirecting to " + r); }
 </script>
 </body>
 </html>
