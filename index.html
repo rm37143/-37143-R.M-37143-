@@ -102,35 +102,39 @@
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    // Replace with your Web App URL after deployment
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwifR522fDzjRmK2firzWULNLb5NM8igXH_VwKvFGEzkKuqvfai64i3LVhojNJyeww9/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwHUVzgp2yQj0Odfw4iHitjO3wDqFrNJmLkG18_c4TUCghSo8iaAQewK3CNhe7l1PS_/exec';
     let currentUser = "", hubKey = "", lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], mySeenAtLogin = 0;
 
-    function checkAuth() {
+    async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
-        if(!n || !p) return alert("Fill details!");
-        
+        if(!n || !p) return alert("Details enter karein!");
+
         document.getElementById('login-btn').innerText = "Verifying...";
         
-        google.script.run.withSuccessHandler(isValid => {
-            if(isValid) {
+        try {
+            const res = await fetch(`${scriptURL}?action=login&user=${n}&pass=${p}`);
+            const result = await res.text();
+            
+            if (result === "true") {
                 currentUser = n;
                 startDashboard();
             } else {
                 alert("Wrong Key!");
                 document.getElementById('login-btn').innerText = "Enter World";
             }
-        }).verifyUser(n, p);
+        } catch (e) {
+            alert("Connection Error! Deploy check karein.");
+            document.getElementById('login-btn').innerText = "Enter World";
+        }
     }
 
     function startDashboard() {
         document.getElementById('login-screen').style.display='none';
         document.getElementById('dashboard').style.display='block';
         document.getElementById('wa-bar').style.display='flex';
-        
         refreshData(); 
-        setInterval(refreshData, 5000); // 5 sec interval for better quota management
+        setInterval(refreshData, 5000); 
         setInterval(updateLiveCountdowns, 1000);
     }
 
@@ -145,27 +149,28 @@
         }
     }
 
-    function sendNote() { 
+    async function sendNote() { 
         let input = document.getElementById('wa-input');
         let m = input.value.trim(); if(!m) return;
         input.value = "";
-        google.script.run.doPost(JSON.stringify({name:currentUser, note:m})); 
+        await fetch(scriptURL, {method:'POST', body:JSON.stringify({name:currentUser, note:m})}); 
     }
 
-    function uploadMedia(input) {
+    async function uploadMedia(input) {
         const file = input.files[0]; if(!file) return;
-        if(file.size > 5000000) return alert("File too big (Max 5MB)");
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             const base64 = e.target.result.split(',')[1];
-            google.script.run.doPost(JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64, fileName:file.name}));
+            await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64, fileName:file.name})});
             alert("Media Sending...");
         };
         reader.readAsDataURL(file);
     }
 
-    function refreshData() {
-        google.script.run.withSuccessHandler(data => {
+    async function refreshData() {
+        try {
+            const res = await fetch(`${scriptURL}?action=getData`);
+            const data = await res.json();
             savedCountdowns = data.countdowns || [];
             savedPlaylist = data.playlist || [];
             hubKey = data.hubKey;
@@ -176,7 +181,6 @@
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(isMe) mySeenAtLogin = parseInt(u.seenCount) || 0;
                 else otherSeen = parseInt(u.seenCount) || 0;
-                
                 let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
                 sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b></span><span><small>${u.status}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
             });
@@ -211,7 +215,7 @@
             }
             renderPlaylist();
             renderHubButtons();
-        }).getData();
+        } catch(e) {}
     }
 
     function renderHubButtons() {
@@ -232,7 +236,7 @@
     function playMusic(url, title) { const a = document.getElementById('global-audio'); a.src = url; a.play(); document.getElementById('now-playing-title').innerText = title; document.getElementById('smart-player').style.display = "flex"; }
     function stopMusic() { document.getElementById('global-audio').pause(); document.getElementById('smart-player').style.display = "none"; }
     function togglePlay() { const a = document.getElementById('global-audio'); if (a.paused) a.play(); else a.pause(); }
-    function updateStatus(s, count) { google.script.run.doPost(JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})); }
+    async function updateStatus(s, count) { await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
     function logout() { updateStatus("Offline", lastMsgCount); setTimeout(() => { location.reload(); }, 500); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
     function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
@@ -244,8 +248,8 @@
         });
         document.getElementById('countdown-area').innerHTML = h;
     }
-    function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) google.script.run.doPost(JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})); }
-    function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("YYYY-MM-DD:"); if(l && d) google.script.run.doPost(JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})); }
+    async function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
+    async function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("YYYY-MM-DD:"); if(l && d) await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
     function enterRoom(r) { if(prompt("Hub Key:") == hubKey) alert("Redirecting to " + r); }
 </script>
 </body>
