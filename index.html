@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4 Locked Update</title>
+    <title>Secret Dunia - A4 Locked</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
@@ -11,6 +11,7 @@
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 75px; overflow-x: hidden; }
         .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
         
+        /* Buttons Style */
         .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .mode-toggle { left: 10px; }
         #silent-btn { right: 10px; }
@@ -18,8 +19,9 @@
         .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         
-        .music-card, .countdown-container { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
-        .song-row, .cd-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #fff5f7; font-size: 0.75rem; }
+        /* Playlist & Event Cards (Original A4 Style) */
+        .music-card, .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
+        .song-row, .cd-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #fff5f7; font-size: 0.75rem; }
         
         .card { background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 10px; border: 1px solid white; position: relative; }
         .status-bar { background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 10px; font-size: 0.62rem; border-left: 5px solid var(--green); text-align: left; }
@@ -28,7 +30,7 @@
         .dot-online { background: var(--green); }
         .dot-offline { background: var(--grey); }
 
-        /* Chat Display */
+        /* Chat Frame */
         .chat-frame { 
             display: none; position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); 
             width: 95%; max-width: 380px; height: 450px; background: var(--wa-bg); 
@@ -41,18 +43,24 @@
         .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
         .msg-time { font-size: 0.6rem; opacity: 0.5; margin-left: 5px; float: right; margin-top: 5px; }
         .tick-blue { color: #34b7f1; font-weight: bold; }
-        .date-divider { align-self: center; background: #d1e4f3; color: #444; padding: 4px 15px; border-radius: 10px; font-size: 0.75rem; margin: 15px 0; font-weight: bold; display: block; border: 1px solid #b8d4e9; }
+        .date-divider { align-self: center; background: #d1e4f3; color: #444; padding: 4px 15px; border-radius: 10px; font-size: 0.7rem; margin: 15px 0; font-weight: bold; display: block; border: 1px solid #b8d4e9; }
 
         /* Bottom Bar & Badge */
         .wa-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; background: #f0f0f0; padding: 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; position: relative; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
+        
+        /* New Message Badge */
         .chat-btn-container { position: relative; display: flex; align-items: center; }
-        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; }
+        .msg-badge { position: absolute; top: -6px; right: -6px; background: #ff0000; color: white; font-size: 0.65rem; min-width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 1.5px solid white; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        
         .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; }
 
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .hub-btn { background: #fff0f3; border: 1px solid #ffd1dc; padding: 10px 4px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; font-weight: bold; color: #d63384; }
+        /* Hub Buttons (Original A4 Layout) */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .hub-btn { background: #fff0f3; border: 1px solid #ffd1dc; padding: 12px 5px; border-radius: 12px; cursor: pointer; font-size: 0.7rem; font-weight: bold; color: #d63384; transition: 0.2s; }
+        .hub-btn:active { transform: scale(0.95); background: #ffd1dc; }
+        
         #dashboard { display: none; }
         .auth-input { width: 85%; padding: 12px; margin: 8px 0; border-radius: 20px; border: 1px solid #eee; text-align: center; outline: none; }
     </style>
@@ -75,14 +83,27 @@
         <span class="nisha-note">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
         
         <div class="music-card">
-            <b style="color: var(--blue); font-size: 0.8rem; display:block; margin-bottom:5px;">🎵 Smart Playlist</b>
-            <div id="playlist-area" style="max-height: 80px; overflow-y: auto;"></div>
-            <audio id="global-audio" controls style="width:100%; height:30px; margin-top:5px; display:none;"></audio>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:8px;">
+                <b style="color: var(--blue); font-size: 0.8rem;">🎵 Smart Playlist</b>
+                <button style="background:var(--blue); color:white; border:none; padding:3px 8px; border-radius:8px; font-size:0.6rem;" onclick="addSongPrompt()">+ Add MP3</button>
+            </div>
+            <div id="playlist-area" style="max-height: 100px; overflow-y: auto;"></div>
+            <audio id="global-audio" controls style="width:100%; height:30px; margin-top:8px; display:none;"></audio>
         </div>
 
-        <div class="countdown-container" id="countdown-area"></div>
-        <div class="status-bar" id="status-container">Syncing...</div>
-        <div class="card" style="padding: 10px;"><div class="btn-grid" id="hub-grid"></div></div>
+        <div class="countdown-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:8px;">
+                <b style="color: var(--pink); font-size: 0.8rem;">⏳ Memory Countdowns</b>
+                <button style="background:var(--pink); color:white; border:none; padding:3px 8px; border-radius:8px; font-size:0.6rem;" onclick="addCountdownPrompt()">+ Event</button>
+            </div>
+            <div id="countdown-area"></div>
+        </div>
+        
+        <div class="status-bar" id="status-container">Connecting...</div>
+        
+        <div class="card" style="padding: 12px;">
+            <div class="btn-grid" id="hub-grid"></div>
+        </div>
     </div>
 </div>
 
@@ -94,7 +115,7 @@
             <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">💬</button>
             <div id="badge-count" class="msg-badge">0</div>
         </div>
-        <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
+        <input type="text" id="wa-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendNote()">
     </div>
     <button class="wa-send-btn" onclick="sendNote()">➤</button>
 </div>
@@ -103,7 +124,7 @@
 
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyrJ63-hodgs0yOBX-guvadPMPN2wXZR1r_PiA1wjBhYg1Lfi4E1gxf0RHw7UW4l3n-/exec';
-    let currentUser = "", lastMsgCount = 0, isSilent = true, mySeenAtLogin = 0;
+    let currentUser = "", lastMsgCount = 0, isSilent = true, mySeenAtLogin = 0, savedCountdowns = [], savedPlaylist = [];
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
@@ -118,11 +139,11 @@
             document.getElementById('dashboard').style.display='block';
             document.getElementById('wa-bar').style.display='flex';
             
-            // Get initial seen count to calculate badge
+            // Initial data load
             data.onlineUsers.forEach(u => { if(u.name.toUpperCase().includes(currentUser)) mySeenAtLogin = parseInt(u.seenCount) || 0; });
-            
             renderData(data);
             setInterval(fetchUpdates, 3000);
+            setInterval(updateLiveCountdowns, 1000);
         } else { alert("Wrong Key!"); }
     }
 
@@ -135,19 +156,22 @@
     }
 
     function renderData(data) {
-        // Status Update
+        savedPlaylist = data.playlist || [];
+        savedCountdowns = data.countdowns || [];
+        const history = data.history || [];
+        
+        // Status Bar
         let sHtml = ""; let otherSeen = 0;
         data.onlineUsers.forEach(u => {
             let isMe = u.name.toUpperCase().includes(currentUser);
             if(!isMe) otherSeen = parseInt(u.seenCount) || 0;
             let dot = u.status === "Online" ? "dot-online" : "dot-offline";
-            sHtml += `<div class="user-row"><span><span class="dot ${dot}"></span>${u.name}</span><span><small>${u.status}</small></span></div>`;
+            sHtml += `<div class="user-row"><span><span class="dot ${dot}"></span><b>${u.name}</b></span><span><small>${u.status}</small></span></div>`;
         });
         document.getElementById('status-container').innerHTML = sHtml;
 
-        // Chat & Date Fix
+        // Chat & Dates
         let hHtml = ""; let lastDate = ""; 
-        const history = data.history || [];
         const box = document.getElementById('notes-display');
         const isOpen = box.style.display === 'flex';
 
@@ -158,22 +182,21 @@
                 hHtml += `<div class="date-divider">${dStr}</div>`; 
                 lastDate = dStr; 
             }
-            
             let isMe = h.name.toUpperCase().includes(currentUser);
             let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : "";
             hHtml += `<div class="msg ${isMe ? 'msg-me':'msg-them'}">${h.note}<div class="msg-time">${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} ${tick}</div></div>`;
         });
         box.innerHTML = hHtml;
 
-        // Badge Logic
+        // Red Badge Logic
         let unread = history.length - mySeenAtLogin;
         const badge = document.getElementById('badge-count');
         if(unread > 0 && !isOpen) {
             badge.innerText = unread;
-            badge.style.display = 'block';
+            badge.style.display = 'flex';
         } else if(isOpen) {
             badge.style.display = 'none';
-            mySeenAtLogin = history.length; // Mark as read
+            mySeenAtLogin = history.length;
             updateStatus("Online", history.length);
         }
 
@@ -182,23 +205,35 @@
             lastMsgCount = history.length;
             if(isOpen) box.scrollTop = box.scrollHeight;
         }
-        
-        // Hub Buttons
-        let bHtml = ""; ["Ai Assistant", "WhatsApp Hub", "Chat Rooms", "Pinterest"].forEach(name => {
-            bHtml += `<div class="hub-btn">${name}</div>`;
+
+        // Hub & Playlist Restore
+        renderHub();
+        renderPlaylist();
+    }
+
+    function renderHub() {
+        let bHtml = ""; ["Ai Assistant", "WhatsApp Hub", "Chat Rooms", "Pinterest", "Video Room", "Mega Drive", "Protected Text", "Settings"].forEach(name => {
+            bHtml += `<div class="hub-btn" onclick="alert('${name} Opening...')">${name}</div>`;
         });
         document.getElementById('hub-grid').innerHTML = bHtml;
     }
 
+    function renderPlaylist() {
+        let html = "";
+        savedPlaylist.forEach(s => {
+            html += `<div class="song-row"><span><b>${s.title}</b> <small>(${s.user})</small></span><button style="background:none; border:none; color:var(--blue); cursor:pointer;" onclick="playMusic('${s.url}')">▶</button></div>`;
+        });
+        document.getElementById('playlist-area').innerHTML = html || "No songs yet.";
+    }
+
     function toggleChat() {
         const box = document.getElementById('notes-display');
-        const badge = document.getElementById('badge-count');
         if(box.style.display === 'flex') {
             box.style.display = 'none';
         } else {
             box.style.display = 'flex';
             box.scrollTop = box.scrollHeight;
-            badge.style.display = 'none';
+            document.getElementById('badge-count').style.display = 'none';
             updateStatus("Online", lastMsgCount);
         }
     }
@@ -211,12 +246,20 @@
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
     }
 
-    function updateStatus(s, count) { 
-        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); 
-    }
-
+    function playMusic(url) { const a = document.getElementById('global-audio'); a.src = url; a.style.display = "block"; a.play(); }
+    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
     function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
+    function updateLiveCountdowns() {
+        let h = ""; savedCountdowns.forEach((c) => {
+            let diff = new Date(c.date).getTime() - new Date().getTime();
+            let txt = diff > 0 ? Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m "+Math.floor((diff%(1000*60))/1000)+"s" : "Finished!";
+            h += `<div class="cd-row"><div><b>${c.label}</b>: <span style="color:var(--pink)">${txt}</span></div></div>`;
+        });
+        document.getElementById('countdown-area').innerHTML = h;
+    }
+    function addSongPrompt() { let t = prompt("Song Name:"); let u = prompt("URL:"); if(t && u) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
+    function addCountdownPrompt() { let l = prompt("Event Name:"); let d = prompt("Date (YYYY-MM-DD):"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
 </script>
 </body>
 </html>
