@@ -3,293 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A8 Smart MP3</title>
-    
+    <title>Secret Dunia - A4 Pro Max</title>
     <style>
-        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; }
-        body.dark-mode { background: #1a1a1a; }
-        .dark-mode .card, .dark-mode .music-card { background: rgba(45, 45, 45, 0.9); border: 1px solid #444; color: white; }
-        .dark-mode .status-bar { background: #333; color: #ddd; }
-        .dark-mode textarea { color: white; }
-        body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; }
-        .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
-        .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .mode-toggle { left: 10px; }
-        #silent-btn { right: 10px; }
-        .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
-        .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
+        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.98); --green: #2ecc71; --blue: #34b7f1; --dark: #121212; --wa-bg: #e5ddd5; }
         
-        /* Music Player UI */
-        .music-card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
-        .song-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #fff5f7; font-size: 0.75rem; }
-        .mini-player-bar { display: none; background: #f8f9fa; border-radius: 10px; padding: 5px 10px; margin-top: 8px; align-items: center; gap: 10px; border: 1px solid #eee; }
-        .play-pause-btn { background: var(--blue); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.6rem; }
-        .song-name-scroll { flex-grow: 1; font-size: 0.65rem; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; }
-        .stop-btn-small { background: #ff4d4d; color: white; border: none; border-radius: 5px; padding: 2px 6px; font-size: 0.55rem; cursor: pointer; }
+        body { background: #fce4ec; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow-x: hidden; transition: 0.3s; }
+        body.dark-mode { background: var(--dark); color: white; }
+        body.dark-mode .bottom-bar { background: #222; }
+        body.dark-mode .chat-input { color: white; background: transparent; }
 
-        .countdown-container { background: white; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
-        .cd-row { margin-bottom: 10px; border-bottom: 1px solid #fff5f7; padding-bottom: 5px; position: relative; display: flex; justify-content: space-between; align-items: center; }
-        .cd-info { flex-grow: 1; }
-        .cd-label { color: #d63384; font-size: 0.95rem; font-weight: bold; display: block; }
-        .cd-time { color: #555; font-size: 0.75rem; display: block; margin-top: 2px; font-family: monospace; font-weight: bold; }
-        .cd-user { font-size: 0.55rem; color: #bdc3c7; font-style: italic; display: block; margin-top: 2px; }
-        .del-ev-btn { background: #fff0f3; border: 1px solid #ffd1dc; color: #ff85a2; cursor: pointer; font-size: 1rem; line-height: 1; padding: 2px 8px; border-radius: 8px; margin-left: 10px; }
-        .btn-add-event { background: var(--pink); color: white; border: none; padding: 8px 18px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 0.8rem; margin-bottom: 15px; }
-        .card { background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 10px; border: 1px solid white; position: relative; }
-        .status-bar { background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 10px; font-size: 0.62rem; border-left: 5px solid var(--green); text-align: left; }
-        .user-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #f9f9f9; }
-        .dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .dot-online { background: var(--green); box-shadow: 0 0 5px var(--green); }
-        .dot-offline { background: var(--grey); }
-        .off-btn { background:#ff4d4d; color:white; border:none; border-radius:6px; padding:2px 8px; font-size:0.6rem; cursor:pointer; }
-        textarea { width: 100%; border: none; background: transparent; padding: 8px 5px; resize: none; outline: none; font-size: 0.95rem; min-height: 20px; max-height: 80px; overflow-y: auto; text-align: center; }
-        .btn-main { background: var(--pink); color: white; border: none; padding: 12px; border-radius: 20px; font-weight: bold; width: 100%; cursor: pointer; }
-        .history-box { height: 320px; overflow-y: auto; text-align: left; padding: 5px; }
-        .note-item { margin-bottom: 10px; padding: 10px 15px; border-radius: 18px; position: relative; max-width: 85%; line-height: 1.4; font-size: 0.9rem; clear: both; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .note-awais { background-color: #ffe0e9 !important; border-bottom-right-radius: 2px; float: right; color: #000; } 
-        .note-nisha { background-color: #e3f2fd !important; border-bottom-left-radius: 2px; float: left; color: #000; }
-        .note-meta { font-size: 0.55rem; color: #777; margin-top: 4px; display: block; text-align: right; }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .hub-btn { background: #fff0f3; border: 1px solid #ffd1dc; padding: 10px 4px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; font-weight: bold; color: #d63384; }
-        #dashboard { display: none; }
-        input { width: 85%; padding: 12px; margin: 8px 0; border-radius: 20px; border: 1px solid #eee; text-align: center; outline: none; }
+        /* Dashboard & Layout */
+        .container { width: 100%; max-width: 400px; margin: auto; padding: 10px; box-sizing: border-box; }
+        .card { background: var(--glass); border-radius: 15px; padding: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        
+        /* High Speed Chat Window */
+        #chat-window { 
+            position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 400px; height: 0; overflow: hidden;
+            background: var(--wa-bg); border-radius: 20px 20px 0 0; 
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; z-index: 1000;
+        }
+        #chat-window.open { height: 80vh; border-top: 1px solid #ddd; }
+        
+        .chat-header { background: #075e54; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        #notes-display { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+
+        /* WhatsApp Bubble Style */
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.9rem; position: relative; line-height: 1.4; box-shadow: 0 1px 1px rgba(0,0,0,0.1); word-wrap: break-word; }
+        .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
+        .msg-them { align-self: flex-start; background: #fff; border-bottom-left-radius: 2px; }
+        
+        .msg-meta { font-size: 0.65rem; color: #777; display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 3px; }
+        .tick { font-size: 0.85rem; color: #999; font-weight: bold; }
+        .tick-blue { color: var(--blue); }
+        
+        .media-content { width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; display: block; max-height: 250px; object-fit: cover; }
+
+        /* Fixed Bottom Bar */
+        .bottom-bar { 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 400px; background: #f0f0f0; padding: 10px 15px;
+            display: flex; align-items: center; gap: 12px; box-sizing: border-box; z-index: 1001;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        .input-container { flex: 1; background: white; border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; }
+        .chat-input { flex: 1; border: none; outline: none; font-size: 1rem; padding: 8px 0; }
+        .btn-send { background: #075e54; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1.2rem; }
+
+        /* Extra UI Elements */
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .online { background: var(--green); box-shadow: 0 0 5px var(--green); }
+        .offline { background: #bbb; }
+        .mode-btn { position: fixed; top: 15px; right: 15px; z-index: 1002; background: var(--pink); border: none; color: white; padding: 8px; border-radius: 50%; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<button class="mode-toggle" onclick="toggleTheme()">🌓 MODE</button>
-<button id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
+<button class="mode-btn" onclick="document.body.classList.toggle('dark-mode')">🌓</button>
 
 <div class="container">
-    <h2 class="main-title">Secret Dunia</h2>
-    
-    <div id="login-screen" class="card">
-        <input type="text" id="u-name" placeholder="User Name">
-        <input type="password" id="u-pass" placeholder="Enter Key" onkeypress="if(event.key === 'Enter') checkAuth()">
-        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; font-size: 0.8rem; color: #666;">
-            <input type="checkbox" id="is-private" style="width: 16px; margin: 0;"> <span>Private Mode</span>
-        </div>
-        <button class="btn-main" id="login-btn" onclick="checkAuth()">Enter World</button>
+    <div id="login-screen" class="card" style="margin-top: 50px;">
+        <h2 style="color:var(--pink); margin-bottom:20px;">Secret Dunia</h2>
+        <input type="text" id="u-name" placeholder="User Name" style="width:90%; padding:12px; margin:8px; border-radius:10px; border:1px solid #ddd; outline:none; text-align:center;">
+        <input type="password" id="u-pass" placeholder="Enter Key" style="width:90%; padding:12px; margin:8px; border-radius:10px; border:1px solid #ddd; outline:none; text-align:center;">
+        <button onclick="checkAuth()" style="width:95%; background:var(--pink); color:white; border:none; padding:14px; border-radius:25px; font-weight:bold; margin-top:15px; cursor:pointer;">Enter World</button>
     </div>
 
-    <div id="dashboard">
-        <span class="nisha-note">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
-        
-        <div class="music-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <b style="color: var(--blue); font-size: 0.8rem;">🎵 Smart Playlist</b>
-                <button class="btn-add-event" style="margin:0; padding:4px 8px; background:var(--blue); font-size:0.6rem;" onclick="addSongPrompt()">+ Add MP3</button>
-            </div>
-            <div id="playlist-area" style="max-height: 80px; overflow-y: auto; margin-top: 5px;"></div>
-            
-            <div class="mini-player-bar" id="smart-player">
-                <button class="play-pause-btn" id="play-pause" onclick="togglePlay()">⏸</button>
-                <div class="song-name-scroll" id="now-playing-title">Playing...</div>
-                <button class="stop-btn-small" onclick="stopMusic()">STOP</button>
-            </div>
-            <audio id="global-audio" onended="stopMusic()"></audio>
+    <div id="dashboard" style="display:none;">
+        <div class="card" id="status-bar" style="font-size:0.75rem; text-align:left; padding:10px;">
+            Syncing Status...
         </div>
 
-        <div class="countdown-container" id="countdown-area"></div>
-        <button class="btn-add-event" onclick="addCountdownPrompt()">+ Add Event</button>
-        <div class="status-bar" id="status-container">Syncing Status...</div>
-        <div class="card" style="padding: 10px;">
-            <textarea id="note-input" placeholder="Type message & press Enter..." rows="1" onkeydown="handleMsgInput(event)" oninput="this.style.height='auto'; this.style.height=(this.scrollHeight)+'px';"></textarea>
-        </div>
-        <div class="card" style="padding: 10px;">
-            <div id="unread-badge" style="font-size:0.65rem; color:var(--pink); font-weight:bold; margin-bottom: 5px;">Checking...</div>
-            <button id="unlock-btn" class="btn-main" style="background:var(--dark);" onclick="unlockHistory()">Unlock Messages 🔒</button>
-            <div id="history-area" style="display:none;">
-                <div class="history-box" id="notes-display"></div>
+        <div id="chat-window">
+            <div class="chat-header">
+                <span id="chat-partner">Secret Chat</span>
+                <span onclick="toggleChat()" style="cursor:pointer; font-size:1.2rem;">✕</span>
             </div>
+            <div id="notes-display"></div>
         </div>
-        <div class="card" style="padding: 10px;"><div class="btn-grid" id="hub-grid"></div></div>
+
+        <div class="bottom-bar">
+            <div class="input-container">
+                <span style="cursor:pointer; font-size:1.4rem;" onclick="toggleChat()">💬</span>
+                <label for="media-input" style="cursor:pointer; font-size:1.4rem;">📎</label>
+                <input type="file" id="media-input" hidden onchange="handleFileUpload(this)" accept="image/*,video/*">
+                <input type="text" id="note-input" class="chat-input" placeholder="Type a message" onkeydown="if(event.key==='Enter') sendNote()">
+            </div>
+            <button class="btn-send" onclick="sendNote()">➤</button>
+        </div>
     </div>
 </div>
 
-<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
-
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyrJ63-hodgs0yOBX-guvadPMPN2wXZR1r_PiA1wjBhYg1Lfi4E1gxf0RHw7UW4l3n-/exec';
-    
-    let currentUser = "", isPrivateMode = false, isUnlocked = false, sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], myLastSeen = -1;
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzWIVnzwnOlQ4jgJ7JWfUNUjiULBAcWG6amNSUvr0eae66o-0dXSoWgkqojiOzd_hxZ/exec';
+    let currentUser = "", myLastSeen = 0, isChatOpen = false, savedHistory = [], otherUserSeen = 0;
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
         if(!n || !p) return;
+        
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            sheetPass = data.passwords;
-            if((n.includes("AWAIS") && p == sheetPass.LoginPassAwais) || (n.includes("NISHA") && p == sheetPass.LoginPassNisha)) {
+            if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
                 currentUser = n;
                 document.getElementById('login-screen').style.display='none';
                 document.getElementById('dashboard').style.display='block';
                 updateStatus("Online", -1);
-                setInterval(refreshData, 5000);
-                setInterval(updateLiveCountdowns, 1000);
+                setInterval(refreshData, 3000);
             } else { alert("Wrong Key!"); }
-        } catch (e) { alert("Error!"); }
+        } catch(e) { alert("Connection Error!"); }
     }
 
-    function logout() { 
-        stopMusic(); // Login screen par jate hi music band
-        updateStatus("Offline", myLastSeen); 
-        setTimeout(() => { location.reload(); }, 500); 
+    function toggleChat() {
+        isChatOpen = !isChatOpen;
+        const win = document.getElementById('chat-window');
+        win.classList.toggle('open', isChatOpen);
+        if(isChatOpen) {
+            setTimeout(scrollToBottom, 300);
+            updateStatus("Online", savedHistory.length);
+        }
+    }
+
+    function scrollToBottom() {
+        const d = document.getElementById('notes-display');
+        d.scrollTop = d.scrollHeight;
+    }
+
+    async function sendNote() {
+        const input = document.getElementById('note-input');
+        const m = input.value.trim();
+        if(!m) return;
+
+        // Instant Visual (High Speed)
+        const tempId = "msg-" + Date.now();
+        renderMessage({name: currentUser, note: m, time: new Date(), id: tempId, isTemp: true}, true);
+        input.value = "";
+        scrollToBottom();
+
+        // Background Send
+        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})});
+        
+        // Update Tick to Double (Sent)
+        const tempMsg = document.getElementById(tempId);
+        if(tempMsg) tempMsg.querySelector('.tick').innerHTML = "✓✓";
+    }
+
+    async function handleFileUpload(input) {
+        const file = input.files[0];
+        if(!file) return;
+
+        renderMessage({name: currentUser, note: "Uploading Media...", time: new Date(), isTemp: true}, true);
+        scrollToBottom();
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const base64 = e.target.result.split(',')[1];
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({
+                action: "uploadMedia", name: currentUser, type: file.type, base64: base64
+            })});
+            input.value = "";
+            refreshData();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function renderMessage(h, append = false) {
+        const isMe = h.name.toUpperCase().includes(currentUser);
+        const side = isMe ? "msg-me" : "msg-them";
+        const ticks = isMe ? `<span class="tick">${h.isTemp ? '✓' : '✓✓'}</span>` : "";
+        
+        let content = h.note;
+        if(content.startsWith("MEDIA:")) {
+            const url = content.replace("MEDIA:", "");
+            content = `<img src="${url}" class="media-content" onclick="window.open('${url}')">`;
+        }
+
+        const html = `
+            <div class="msg ${side}" id="${h.id || ''}">
+                <div>${content}</div>
+                <div class="msg-meta">${formatTime(h.time)} ${ticks}</div>
+            </div>`;
+        
+        const display = document.getElementById('notes-display');
+        if(append) display.insertAdjacentHTML('beforeend', html);
+        else display.insertAdjacentHTML('beforeend', html);
     }
 
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            sheetPass = data.passwords;
-            savedCountdowns = data.countdowns || [];
-            savedPlaylist = data.playlist || [];
             
-            // Render Status
-            let sHtml = ""; let otherSeen = 0, otherName = "";
+            // Online Status & Partner Name
+            let statusHtml = "";
             data.onlineUsers.forEach(u => {
-                let isMe = u.name.toUpperCase().includes(currentUser);
-                if(!isMe) { otherSeen = parseInt(u.seenCount) || 0; otherName = u.name; }
-                let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
-                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${formatSimpleDate(u.time)}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
+                const isPartner = !u.name.toUpperCase().includes(currentUser);
+                if(isPartner) {
+                    otherUserSeen = u.seenCount;
+                    document.getElementById('chat-partner').innerText = u.name;
+                }
+                const dotClass = u.status === "Online" ? "online" : "offline";
+                statusHtml += `<div><span class="status-dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</div>`;
             });
-            document.getElementById('status-container').innerHTML = sHtml;
+            document.getElementById('status-bar').innerHTML = statusHtml;
 
-            // Messages & Badges
-            let history = data.history || [];
-            if(history.length > lastMsgCount) {
-                if(!isSilent && lastMsgCount !== 0 && !history[history.length-1].name.toUpperCase().includes(currentUser)) document.getElementById('notif-sound').play();
-                lastMsgCount = history.length;
-            }
-            if(history.length > 0) {
-                let lastMsg = history[history.length-1];
-                let isMine = String(lastMsg.name).toUpperCase().includes(currentUser);
-                document.getElementById('unread-badge').innerHTML = isMine ? (otherSeen >= history.length ? `✅ ${otherName} Seen` : `⏳ Sent`) : (history.length > myLastSeen ? `💌 New Message` : `✅ All Read`);
-            }
-
-            if(isUnlocked) {
-                let hHtml = ""; history.slice().reverse().forEach(h => {
-                    let side = String(h.name).toUpperCase().includes("AWAIS") ? "note-awais" : "note-nisha";
-                    hHtml += `<div class="note-item ${side}"><div>${String(h.note)}</div><span class="note-meta">${h.name} • ${formatSimpleDate(h.time)}</span></div>`;
+            // Chat Update
+            if(data.history.length !== savedHistory.length || true) {
+                const display = document.getElementById('notes-display');
+                const wasAtBottom = display.scrollHeight - display.scrollTop <= display.clientHeight + 50;
+                
+                display.innerHTML = "";
+                savedHistory = data.history;
+                
+                data.history.forEach((h, idx) => {
+                    renderMessage(h);
+                    // Blue Tick Logic
+                    if(idx + 1 <= otherUserSeen) {
+                        const ticks = display.querySelectorAll('.tick');
+                        if(ticks[idx]) ticks[idx].classList.add('tick-blue');
+                    }
                 });
-                document.getElementById('notes-display').innerHTML = hHtml;
-                if(history.length > myLastSeen) { myLastSeen = history.length; updateStatus("Online", history.length); }
-            }
-            
-            renderPlaylist();
 
-            let bHtml = ""; ["Ai Assistant", "WhatsApp Hub", "Chat Room 1", "Chat Room 2", "Protected Text", "Video Room", "Pinterest", "Mega Storage"].forEach(name => {
-                bHtml += `<div class="hub-btn" onclick="enterRoom('${name}')">${name}</div>`;
-            });
-            document.getElementById('hub-grid').innerHTML = bHtml;
+                if(isChatOpen && wasAtBottom) scrollToBottom();
+                if(isChatOpen && data.history.length > myLastSeen) {
+                    myLastSeen = data.history.length;
+                    updateStatus("Online", myLastSeen);
+                }
+            }
         } catch(e) {}
     }
 
-    // --- SMART MUSIC LOGIC ---
-    function renderPlaylist() {
-        let html = "";
-        savedPlaylist.forEach(s => {
-            html += `<div class="song-row">
-                <span><b>${s.title}</b> <small>(${s.user})</small></span>
-                <div>
-                    <button class="play-btn" style="background:none; border:none; color:var(--blue); cursor:pointer;" onclick="playMusic('${s.url}', '${s.title}')">▶</button>
-                    <button class="del-ev-btn" style="padding:0 5px;" onclick="removeSong('${s.url}')">×</button>
-                </div>
-            </div>`;
-        });
-        document.getElementById('playlist-area').innerHTML = html || "No songs yet.";
+    function updateStatus(s, count) { 
+        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); 
     }
 
-    function playMusic(url, title) {
-        const audio = document.getElementById('global-audio');
-        audio.src = url;
-        audio.play().catch(() => alert("Error playing MP3 URL"));
-        document.getElementById('now-playing-title').innerText = title;
-        document.getElementById('smart-player').style.display = "flex";
-        document.getElementById('play-pause').innerText = "⏸";
-    }
-
-    function togglePlay() {
-        const audio = document.getElementById('global-audio');
-        const btn = document.getElementById('play-pause');
-        if (audio.paused) { audio.play(); btn.innerText = "⏸"; } 
-        else { audio.pause(); btn.innerText = "▶"; }
-    }
-
-    function stopMusic() {
-        const audio = document.getElementById('global-audio');
-        audio.pause();
-        audio.src = "";
-        document.getElementById('smart-player').style.display = "none";
-    }
-
-    async function addSongPrompt() {
-        let t = prompt("Song Name:");
-        let u = prompt("Direct MP3 URL:");
-        if(t && u) {
-            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})});
-            setTimeout(refreshData, 1000);
-        }
-    }
-
-    async function removeSong(url) {
-        if(confirm("Delete song?")) {
-            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"removeSong", url:url})});
-            setTimeout(refreshData, 1000);
-        }
-    }
-
-    // --- OTHER HANDLERS ---
-    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
-    function handleMsgInput(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNote(); } }
-    async function sendNote() { 
-        let input = document.getElementById('note-input');
-        let m = input.value.trim(); if(!m) return;
-        input.value = ""; input.style.height = "auto";
-        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
-        setTimeout(refreshData, 500);
-    }
-    function enterRoom(r) { if(prompt("Hub Key:") == sheetPass.HubPass) alert("Redirecting..."); }
-    function unlockHistory() { if(prompt("History Key:") == sheetPass.HistoryPass) { isUnlocked = true; document.getElementById('unlock-btn').style.display='none'; document.getElementById('history-area').style.display='block'; refreshData(); } }
-    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
-
-    function updateLiveCountdowns() {
-        let html = "";
-        savedCountdowns.forEach((c) => {
-            let diff = new Date(c.date).getTime() - new Date().getTime();
-            let timeText = diff > 0 ? 
-                Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m "+Math.floor((diff%(1000*60))/1000)+"s" 
-                : "Finished!";
-            html += `<div class="cd-row"><div class="cd-info"><span class="cd-label">${c.label}</span><span class="cd-time">${timeText}</span><span class="cd-user">by ${c.user || 'Unknown'}</span></div><button class="del-ev-btn" onclick="removeEvent('${c.label}', '${c.user}')">×</button></div>`;
-        });
-        document.getElementById('countdown-area').innerHTML = html;
-    }
-
-    async function removeEvent(label, creator) {
-        if(creator && !currentUser.includes(creator.toUpperCase())) { alert("Permission Denied"); return; }
-        if(confirm("Delete event?")) {
-            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"removeCountdown", label:label, user:creator})});
-            setTimeout(refreshData, 1500);
-        }
-    }
-
-    function addCountdownPrompt() { 
-        let l = prompt("Event Name:"); let d = prompt("Date (YYYY-MM-DD HH:MM):"); 
-        if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); 
-    }
-
-    function formatSimpleDate(dateStr) {
-        if(!dateStr) return "";
-        let d = new Date(dateStr);
-        if(isNaN(d.getTime())) return dateStr;
-        let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        let hours = d.getHours();
-        let ampm = hours >= 12 ? 'pm' : 'am';
-        hours = hours % 12 || 12;
-        return `${d.getDate()} ${months[d.getMonth()]}, ${hours}:${String(d.getMinutes()).padStart(2, '0')}${ampm}`;
+    function formatTime(d) {
+        const date = new Date(d);
+        let h = date.getHours();
+        let m = date.getMinutes();
+        let ampm = h >= 12 ? 'pm' : 'am';
+        h = h % 12 || 12;
+        return h + ":" + String(m).padStart(2, '0') + ampm;
     }
 </script>
 </body>
