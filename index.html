@@ -1,34 +1,63 @@
-<style>
-    :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
-    body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
-    body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Secret Dunia - A4.7 LOCKED</title>
     
-    /* Back to your original Top Bar */
-    .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
-    .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
-    .nav-btn-sm { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
-    .status-center-display { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; }
-    .user-stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; text-align: center; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
-    .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
-    .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
-    .stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
+    <style>
+        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
+        body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
+        body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
+        
+        .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
+        .dark-mode .top-status-bar { background: rgba(30, 30, 30, 0.9); }
+        .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
+        .nav-btn-sm { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
 
-    /* Back to your original Card layout */
-    .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
-    .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .status-center-display { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; }
+        .user-stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; text-align: center; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
+        .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
+        .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
+        .stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
+        .dark-mode .stat-label { color: white; }
 
-    /* Countdown Styling (Kept compact to fit your original look) */
-    .ev-container { margin: 10px 0; max-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
-    .ev-bar { background: #fff0f5; border-radius: 8px; padding: 6px 10px; border-left: 3px solid var(--pink); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
-    .add-ev-link { color: var(--pink); font-size: 0.65rem; text-decoration: underline; cursor: pointer; display: block; margin-bottom: 5px; font-weight: bold; }
+        .off-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .stay-label { font-size: 0.5rem; color: var(--dark); }
 
-    /* Chat Frame */
-    .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; }
-    .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; line-height: 1.4; color: #000; word-wrap: break-word; }
-    .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
-    .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
-</style>
+        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
+        .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
+        .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
+        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
+        .tick-blue { color: #34b7f1; font-weight: bold; }
+        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; min-width: 12px; text-align: center; }
+        
+        .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
+        .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
+        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
+        .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
+        .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
+        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+    </style>
+</head>
+<body>
+
+<button onclick="toggleTheme()" style="position:fixed; top:8px; left:10px; z-index:3000; background:var(--pink); color:white; border:none; padding:5px 10px; border-radius:8px; font-size:0.65rem;">🌓 MODE</button>
+
+<div class="top-status-bar" id="top-bar-ui" style="display:none;">
+    <div class="nav-left">
+        <button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
+    </div>
+    <div class="status-center-display" id="top-status-content"></div>
+    <div class="off-group">
+        <button class="off-btn" onclick="fullExit()">OFF</button>
+        <label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label>
+    </div>
+</div>
 
 <div class="container">
     <div id="login-screen" class="card">
@@ -38,79 +67,191 @@
         <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
         <button style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
-
     <div id="dashboard" style="display:none;">
         <span class="nisha-note" style="color:#d63384; font-size:0.7rem; font-style:italic;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
-        
-        <div style="margin-top:10px;">
-            <span class="add-ev-link" onclick="openEventPrompt()">+ Add New Event</span>
-            <div id="event-list-container" class="ev-container"></div>
-        </div>
-
-        <div class="chat-frame" id="notes-display"></div>
+        <div class="card" id="countdown-area" style="font-size:0.75rem; margin-top:10px;"></div>
     </div>
 </div>
 
-<script>
-    // ... [Original Logic Kept Intact] ...
-    let countdownData = [];
+<div class="chat-frame" id="notes-display"></div>
 
-    // Corrected Date Parser for "Invalid Date" fix
+<div id="wa-bar" class="wa-bottom" style="display:none;">
+    <div class="wa-input-box" id="wa-input-wrapper">
+        <div style="position:relative; display:inline-block;">
+            <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
+            <span id="notif-badge" class="msg-badge">0</span>
+        </div>
+        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
+        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
+        <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
+    </div>
+    <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
+</div>
+
+<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
+    let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
+    let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0;
+
     function parseSafeDate(s) {
         if(!s) return new Date();
-        let d = new Date(s.toString().replace(/-/g, '/'));
+        let normalized = s.toString().replace(/-/g, '/').replace('T', ' ');
+        let d = new Date(normalized);
         return isNaN(d.getTime()) ? new Date() : d;
+    }
+
+    async function checkAuth() {
+        const n = document.getElementById('u-name').value.toUpperCase().trim();
+        const p = document.getElementById('u-pass').value.trim();
+        isPrivate = document.getElementById('private-mode').checked;
+        const res = await fetch(scriptURL);
+        const data = await res.json();
+        if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
+            currentUser = n;
+            document.getElementById('login-screen').style.display='none';
+            document.getElementById('dashboard').style.display='block';
+            document.getElementById('wa-bar').style.display='flex';
+            document.getElementById('top-bar-ui').style.display='flex';
+            if(isPrivate) { document.getElementById('wa-input-wrapper').classList.add('private-lock'); document.getElementById('wa-send-btn-main').classList.add('private-lock'); }
+            await refreshData();
+            if(!isPrivate) updateStatus("Online", myLastSeen);
+            setInterval(refreshData, 5000);
+            setInterval(checkIdle, 60000);
+        } else { alert("Wrong Key!"); }
     }
 
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
+            let topHtml = ""; 
             
-            // ... [Original Status & Chat logic remains same] ...
-            
-            // Render Countdown Bars
-            countdownData = data.countdowns || [];
-            renderEventBars();
-        } catch(e) {}
+            data.onlineUsers.forEach(u => {
+                let isMe = u.name.toUpperCase().includes(currentUser);
+                if(!isMe) otherSeenCountGlobal = parseInt(u.seenCount) || 0;
+                else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
+                
+                let lastUpdate = parseSafeDate(u.time).getTime();
+                let isOnline = (u.status === "Online" && (Date.now() - lastUpdate) < 600000);
+                let nameInit = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
+                let displayStatus = isOnline ? "Online" : "Offline";
+                if(isMe && isPrivate) displayStatus = "🕵️ Private";
+                if(!isMe && u.status === "Private") displayStatus = "Offline";
+
+                topHtml += `<div class="user-stat">
+                                <div class="dot ${isOnline && displayStatus!=='Offline'?'dot-online':''}"></div>
+                                <span class="stat-label">${nameInit}: ${displayStatus}</span>
+                                <span class="stat-time">${displayStatus === "Offline" ? formatFullDate(u.time) : 'Active Now'}</span>
+                            </div>`;
+            });
+            document.getElementById('top-status-content').innerHTML = topHtml;
+
+            const chatBox = document.getElementById('notes-display');
+            const badge = document.getElementById('notif-badge');
+
+            if(data.history.length > lastMsgCount) {
+                localHistory = data.history;
+                let unreadCount = localHistory.length - myLastSeen;
+                if(unreadCount > 0 && chatBox.style.display !== 'flex') {
+                    badge.innerText = unreadCount;
+                    badge.style.display = 'block';
+                    if(lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
+                } else if(chatBox.style.display === 'flex') {
+                    myLastSeen = localHistory.length;
+                    updateStatus("Online", myLastSeen);
+                }
+                lastMsgCount = localHistory.length;
+                renderMessages(otherSeenCountGlobal);
+                if(chatBox.style.display === 'flex') chatBox.scrollTop = chatBox.scrollHeight;
+            } else {
+                renderMessages(otherSeenCountGlobal);
+            }
+        } catch(e) { }
     }
 
-    function renderEventBars() {
-        const container = document.getElementById('event-list-container');
-        let html = "";
-        const now = Date.now();
-
-        countdownData.forEach((ev, idx) => {
-            const targetDate = new Date(ev.date.toString().replace(/-/g, '/')).getTime();
-            const diff = targetDate - now;
-            if (diff < -21600000) return; // Hide 6 hours after event
-
-            html += `<div class="ev-bar">
-                        <div style="text-align:left;">
-                            <div style="font-weight:bold; color:var(--pink);">${ev.label}</div>
-                            <div style="font-size:0.5rem; color:#999;">By: ${ev.user[0]}</div>
-                        </div>
-                        <div style="font-family:monospace; font-weight:bold;">${formatTimeDiff(diff)}</div>
-                    </div>`;
+    function renderMessages(otherSeen) {
+        let hHtml = ""; let lastDate = "";
+        localHistory.forEach((h, idx) => {
+            let d = parseSafeDate(h.time);
+            if(d.toDateString() !== lastDate) {
+                hHtml += `<div style="align-self:center; font-size:0.6rem; color:#888; margin:10px 0; background:rgba(0,0,0,0.05); padding:2px 8px; border-radius:10px;">${d.toDateString()}</div>`;
+                lastDate = d.toDateString();
+            }
+            let isMe = h.name.toUpperCase().includes(currentUser);
+            let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
+            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px; margin-top:5px;">` : h.note;
+            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}<div class="msg-time">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
         });
-        container.innerHTML = html;
+        document.getElementById('notes-display').innerHTML = hHtml;
     }
 
-    function formatTimeDiff(ms) {
-        if (ms < 0) return "STARTED!";
-        const d = Math.floor(ms / 86400000);
-        const h = Math.floor((ms % 86400000) / 3600000);
-        const m = Math.floor((ms % 3600000) / 60000);
-        const s = Math.floor((ms % 60000) / 1000);
-        return `${d}d ${h}:${m}:${s}`;
+    // QUICK MESSAGE FIX
+    function sendNote() { 
+        if(isPrivate) return;
+        let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
+        
+        // Step 1: Add to local array instantly
+        let now = new Date();
+        localHistory.push({name: currentUser, note: m, time: now.toISOString()});
+        
+        // Step 2: Render immediately
+        renderMessages(otherSeenCountGlobal);
+        const box = document.getElementById('notes-display');
+        box.scrollTop = box.scrollHeight;
+        inp.value = "";
+        
+        // Step 3: Background sync
+        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
+        myLastSeen = localHistory.length;
+        updateStatus("Online", myLastSeen);
     }
 
-    async function openEventPrompt() {
-        const label = prompt("Event Name:");
-        if (!label) return;
-        const dateStr = prompt("Date (YYYY/MM/DD HH:MM):", "2026/01/20 18:00");
-        if (!dateStr) return;
-        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", label:label, date:dateStr, user:currentUser})});
-        refreshData();
+    function toggleChat() {
+        if(isPrivate) { alert("Private User restricted."); return; }
+        const box = document.getElementById('notes-display');
+        const badge = document.getElementById('notif-badge');
+        const isOpen = (box.style.display === 'flex');
+        box.style.display = isOpen ? 'none' : 'flex';
+        if(!isOpen) {
+            box.scrollTop = box.scrollHeight;
+            badge.style.display = 'none';
+            myLastSeen = localHistory.length;
+            updateStatus("Online", myLastSeen);
+        }
     }
+
+    async function uploadMedia(input) {
+        if(isPrivate) return;
+        const file = input.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const base64 = e.target.result.split(',')[1];
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64})});
+            refreshData();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function fullExit() {
+        if(!isPrivate) updateStatus("Offline", myLastSeen);
+        window.location.href = "about:blank";
+        window.close();
+    }
+
+    function formatFullDate(s) {
+        let d = parseSafeDate(s);
+        let days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;
+    }
+
+    function checkIdle() { if(!document.getElementById('stay-login').checked && (Date.now() - lastActivity > 600000)) fullExit(); }
+    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:isPrivate?"Private":s, seenCount:count})}); }
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
+    window.onload = window.onmousemove = window.ontouchstart = () => { lastActivity = Date.now(); };
 </script>
+</body>
+</html>
