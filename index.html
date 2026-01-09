@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4.7 LOCKED</title>
+    <title>Secret Dunia - A4.7 LOCKED + EXT</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
@@ -42,6 +42,16 @@
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
         .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+
+        /* NEW EXTENSION STYLES */
+        .event-item { background: #fff5f7; border-left: 3px solid var(--pink); border-radius: 6px; padding: 6px 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .dark-mode .event-item { background: #2c2c2c; color: #fff; border-left-color: var(--pink); }
+        .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .hub-btn:active { transform: scale(0.9); }
+        .dark-mode .hub-btn { background: #333; }
+        .playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; white-space: nowrap; border: 1px solid #d0e0ff; }
+        .dark-mode .playlist-bar { background: #1e2530; border-color: #304060; }
     </style>
 </head>
 <body>
@@ -67,9 +77,39 @@
         <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
         <button style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
+
     <div id="dashboard" style="display:none;">
-        <span class="nisha-note" style="color:#d63384; font-size:0.7rem; font-style:italic;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
-        <div class="card" id="countdown-area" style="font-size:0.75rem; margin-top:10px;"></div>
+        <div style="text-align: left; margin-bottom: 8px;">
+            <span class="nisha-note" style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic; display: block;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
+        </div>
+
+        <div class="card" style="padding: 10px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.8rem; font-weight: bold; color: var(--pink);">⏳ Upcoming Events</span>
+                <button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:3px 8px; cursor:pointer;">+ ADD</button>
+            </div>
+            <div id="countdown-list" style="max-height: 150px; overflow-y: auto;">
+                </div>
+        </div>
+
+        <div class="playlist-bar" id="playlist-area">
+            <span>🎵 <b>Playlist:</b></span>
+            <div id="song-items" style="display:flex; gap:10px; overflow-x:auto;">
+                <span style="color:#888;">No songs added yet...</span>
+            </div>
+            <button onclick="addNewSong()" style="border:none; background:none; font-size:1rem; cursor:pointer; margin-left:auto;">➕</button>
+        </div>
+
+        <div class="hub-grid">
+            <button class="hub-btn" onclick="openHub(1)">🔗</button>
+            <button class="hub-btn" onclick="openHub(2)">🎬</button>
+            <button class="hub-btn" onclick="openHub(3)">🎧</button>
+            <button class="hub-btn" onclick="openHub(4)">📂</button>
+            <button class="hub-btn" onclick="openHub(5)">🔒</button>
+            <button class="hub-btn" onclick="openHub(6)">🖼️</button>
+            <button class="hub-btn" onclick="openHub(7)">🛰️</button>
+            <button class="hub-btn" onclick="openHub(8)">🚀</button>
+        </div>
     </div>
 </div>
 
@@ -94,6 +134,18 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
     let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
     let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0;
+    
+    // HUB CONFIG (Passwords and Links)
+    const hubSettings = {
+        1: { url: "https://google.com", pass: "111" },
+        2: { url: "#", pass: "222" },
+        3: { url: "#", pass: "333" },
+        4: { url: "#", pass: "444" },
+        5: { url: "#", pass: "555" },
+        6: { url: "#", pass: "666" },
+        7: { url: "#", pass: "777" },
+        8: { url: "#", pass: "888" }
+    };
 
     function parseSafeDate(s) {
         if(!s) return new Date();
@@ -118,28 +170,30 @@
             await refreshData();
             if(!isPrivate) updateStatus("Online", myLastSeen);
             setInterval(refreshData, 5000);
+            setInterval(runCountdownEngine, 1000); // 1-second interval for live countdown
             setInterval(checkIdle, 60000);
         } else { alert("Wrong Key!"); }
     }
+
+    let globalCountdowns = []; // To store for the 1s ticker
 
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            let topHtml = ""; 
             
+            // 1. Status Bar Logic
+            let topHtml = ""; 
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) otherSeenCountGlobal = parseInt(u.seenCount) || 0;
                 else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
-                
                 let lastUpdate = parseSafeDate(u.time).getTime();
                 let isOnline = (u.status === "Online" && (Date.now() - lastUpdate) < 600000);
                 let nameInit = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
                 let displayStatus = isOnline ? "Online" : "Offline";
                 if(isMe && isPrivate) displayStatus = "🕵️ Private";
                 if(!isMe && u.status === "Private") displayStatus = "Offline";
-
                 topHtml += `<div class="user-stat">
                                 <div class="dot ${isOnline && displayStatus!=='Offline'?'dot-online':''}"></div>
                                 <span class="stat-label">${nameInit}: ${displayStatus}</span>
@@ -148,9 +202,9 @@
             });
             document.getElementById('top-status-content').innerHTML = topHtml;
 
+            // 2. Chat Logic
             const chatBox = document.getElementById('notes-display');
             const badge = document.getElementById('notif-badge');
-
             if(data.history.length > lastMsgCount) {
                 localHistory = data.history;
                 let unreadCount = localHistory.length - myLastSeen;
@@ -168,9 +222,94 @@
             } else {
                 renderMessages(otherSeenCountGlobal);
             }
-        } catch(e) { }
+
+            // 3. New Features Refresh
+            globalCountdowns = data.countdowns;
+            renderPlaylist(data.playlist);
+
+        } catch(e) { console.log(e); }
     }
 
+    // COUNTDOWN ENGINE
+    function runCountdownEngine() {
+        const list = document.getElementById('countdown-list');
+        if(!globalCountdowns.length) { list.innerHTML = "<small style='color:#ccc'>No active events</small>"; return; }
+        
+        let html = "";
+        const now = new Date().getTime();
+
+        globalCountdowns.forEach((ev, idx) => {
+            const target = new Date(ev.date).getTime();
+            const diff = target - now;
+            let timeStr = "";
+            let finished = false;
+
+            if (diff > 0) {
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                timeStr = `${d}d ${h}h ${m}m ${s}s`;
+            } else {
+                timeStr = "<b style='color:green'>FINISHED</b>";
+                finished = true;
+                // Auto Clean: If finished more than 6 hours (21600000ms), don't show
+                if (Math.abs(diff) > 21600000) return;
+            }
+
+            const delBtn = (ev.user === currentUser) ? `<span onclick="alert('Please delete from Spreadsheet Row ' + (${idx}+2))" style="color:red; cursor:pointer; margin-left:8px;">✕</span>` : "";
+            
+            html += `<div class="event-item">
+                        <span><b>${ev.label}</b></span>
+                        <span>${timeStr} ${delBtn}</span>
+                    </div>`;
+        });
+        list.innerHTML = html;
+    }
+
+    async function addNewEvent() {
+        const label = prompt("Event Name (e.g., Birthday):");
+        const date = prompt("Date & Time (Format: YYYY-MM-DD HH:MM:SS)", "2026-01-15 00:00:00");
+        if(label && date) {
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", label:label, date:date, user:currentUser})});
+            alert("Event Saved! Refreshing...");
+            refreshData();
+        }
+    }
+
+    // PLAYLIST LOGIC
+    function renderPlaylist(songs) {
+        const container = document.getElementById('song-items');
+        if(!songs || songs.length === 0) return;
+        let html = "";
+        songs.slice(-5).forEach(s => {
+            html += `<a href="${s.url}" target="_blank" style="color:var(--pink); text-decoration:none; font-weight:bold;">${s.title}</a>`;
+        });
+        container.innerHTML = html;
+    }
+
+    async function addNewSong() {
+        const title = prompt("Song Title:");
+        const url = prompt("Song URL (YouTube/Drive):");
+        if(title && url) {
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:title, url:url, user:currentUser})});
+            refreshData();
+        }
+    }
+
+    // HUB LOGIC
+    function openHub(id) {
+        const config = hubSettings[id];
+        const p = prompt("Enter Hub Key:");
+        if(p === config.pass) {
+            if(config.url === "#") alert("Link not set yet.");
+            else window.open(config.url, '_blank');
+        } else {
+            alert("Wrong Key!");
+        }
+    }
+
+    // --- EXISTING A4 FUNCTIONS (UNTOUCHED) ---
     function renderMessages(otherSeen) {
         let hHtml = ""; let lastDate = "";
         localHistory.forEach((h, idx) => {
@@ -187,22 +326,15 @@
         document.getElementById('notes-display').innerHTML = hHtml;
     }
 
-    // QUICK MESSAGE FIX
     function sendNote() { 
         if(isPrivate) return;
         let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
-        
-        // Step 1: Add to local array instantly
         let now = new Date();
         localHistory.push({name: currentUser, note: m, time: now.toISOString()});
-        
-        // Step 2: Render immediately
         renderMessages(otherSeenCountGlobal);
         const box = document.getElementById('notes-display');
         box.scrollTop = box.scrollHeight;
         inp.value = "";
-        
-        // Step 3: Background sync
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
         myLastSeen = localHistory.length;
         updateStatus("Online", myLastSeen);
