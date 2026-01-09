@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4 Locked</title>
+    <title>Secret Dunia - A8 Fast</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
         body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; }
         .dark-mode .card, .dark-mode .music-card { background: rgba(45, 45, 45, 0.9); border: 1px solid #444; color: white; }
         .dark-mode .status-bar { background: #333; color: #ddd; }
-        body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 70px; overflow-x: hidden; }
+        body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; position: relative; }
         .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
         
+        /* Fixed Buttons */
         .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .mode-toggle { left: 10px; }
         #silent-btn { right: 10px; }
@@ -20,6 +21,7 @@
         .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         
+        /* Dashboard Elements */
         .music-card, .countdown-container { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
         .song-row, .cd-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #fff5f7; font-size: 0.75rem; }
         .mini-player-bar { display: none; background: #f8f9fa; border-radius: 10px; padding: 5px 10px; margin-top: 8px; align-items: center; gap: 10px; border: 1px solid #eee; }
@@ -35,8 +37,9 @@
         .dot-offline { background: var(--grey); }
         .off-btn { background:#ff4d4d; color:white; border:none; border-radius:6px; padding:2px 8px; font-size:0.6rem; cursor:pointer; }
 
+        /* MESSAGE AREA - LOCKED LOGIC */
         .chat-frame { 
-            display: none; position: fixed; bottom: 65px; left: 50%; transform: translateX(-50%); 
+            display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); 
             width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); 
             border-radius: 20px 20px 5px 5px; z-index: 1500; flex-direction: column; 
             padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
@@ -57,14 +60,15 @@
             display: none; min-width: 12px; text-align: center; border: 1px solid white;
         }
 
-        .wa-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; background: #f0f0f0; padding: 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
+        /* Fixed Bottom Bar Fix for Mobile */
+        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; box-sizing: border-box; }
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
         .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; }
 
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .hub-btn { background: #fff0f3; border: 1px solid #ffd1dc; padding: 10px 4px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; font-weight: bold; color: #d63384; }
-        #dashboard { display: none; }
+        #dashboard { display: none; width: 100%; }
         .auth-input { width: 85%; padding: 12px; margin: 8px 0; border-radius: 20px; border: 1px solid #eee; text-align: center; outline: none; }
     </style>
 </head>
@@ -128,6 +132,7 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
     let currentUser = "", sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], lastDateShown = "";
+    let localHistory = []; // Local history for instant speed
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
@@ -140,6 +145,15 @@
             document.getElementById('login-screen').style.display='none';
             document.getElementById('dashboard').style.display='block';
             document.getElementById('wa-bar').style.display='flex';
+            
+            // Load badge from local storage if any
+            const savedBadge = localStorage.getItem('unread_count');
+            if(savedBadge && savedBadge > 0) {
+                const b = document.getElementById('notif-badge');
+                b.innerText = savedBadge;
+                b.style.display = 'block';
+            }
+
             updateStatus("Online", -1);
             setInterval(refreshData, 3000);
             setInterval(updateLiveCountdowns, 1000);
@@ -154,6 +168,8 @@
             box.scrollTop = box.scrollHeight;
             badge.style.display = 'none';
             badge.innerText = "0";
+            localStorage.setItem('unread_count', 0);
+            updateStatus("Online", localHistory.length);
         }
     }
 
@@ -174,65 +190,68 @@
             });
             document.getElementById('status-container').innerHTML = sHtml;
 
-            let hHtml = ""; lastDateShown = "";
             let history = data.history || [];
-            const box = document.getElementById('notes-display');
-            const badge = document.getElementById('notif-badge');
-
-            // --- BADGE LOGIC LOCKED ---
+            localHistory = history; // Sync local with server
+            
+            // --- FAST BADGE LOGIC ---
             if(history.length > lastMsgCount) {
                 if(lastMsgCount !== 0) {
-                    let lastSender = history[history.length-1].name.toUpperCase();
-                    if(!lastSender.includes(currentUser)) {
+                    let lastMsg = history[history.length-1];
+                    if(!lastMsg.name.toUpperCase().includes(currentUser)) {
                         if(!isSilent) document.getElementById('notif-sound').play();
-                        if(box.style.display !== 'flex') {
-                            badge.innerText = parseInt(badge.innerText) + (history.length - lastMsgCount);
+                        if(document.getElementById('notes-display').style.display !== 'flex') {
+                            const badge = document.getElementById('notif-badge');
+                            let newCount = (parseInt(badge.innerText) || 0) + (history.length - lastMsgCount);
+                            badge.innerText = newCount;
                             badge.style.display = 'block';
+                            localStorage.setItem('unread_count', newCount);
                         }
                     }
                 }
                 lastMsgCount = history.length;
+                renderMessages(otherSeen);
             }
-
-            history.forEach((h, idx) => {
-                let d = new Date(h.time);
-                if(isNaN(d.getTime())) d = new Date();
-                const dStr = d.toDateString();
-                if(dStr !== lastDateShown) { hHtml += `<div class="date-divider">${dStr}</div>`; lastDateShown = dStr; }
-                
-                let isMe = h.name.toUpperCase().includes(currentUser);
-                let sideClass = isMe ? "msg-me" : "msg-them";
-                
-                // --- BLUE TICK LOGIC LOCKED ---
-                let tick = "";
-                if(isMe) {
-                    tick = (otherSeen > idx) ? '<span class="tick-blue">✓✓</span>' : '✓';
-                }
-
-                let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px;">` : h.note;
-                let timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                hHtml += `<div class="msg ${sideClass}">${content}<div class="msg-time">${timeStr} ${tick}</div></div>`;
-            });
             
-            box.innerHTML = hHtml;
-            if(box.style.display === 'flex') {
-                box.scrollTop = box.scrollHeight;
-                updateStatus("Online", history.length); // Jab chat khuli ho to seenCount update ho
-            }
-
-            let bHtml = ""; ["Ai Assistant", "WhatsApp Hub", "Chat Rooms", "Pinterest", "Video Room", "Mega Drive", "Protected Text", "Settings"].forEach(name => {
-                bHtml += `<div class="hub-btn" onclick="enterRoom('${name}')">${name}</div>`;
-            });
-            document.getElementById('hub-grid').innerHTML = bHtml;
             renderPlaylist();
         } catch(e) { console.log(e); }
+    }
+
+    function renderMessages(otherSeen) {
+        let hHtml = ""; lastDateShown = "";
+        const box = document.getElementById('notes-display');
+        
+        localHistory.forEach((h, idx) => {
+            let d = new Date(h.time);
+            if(isNaN(d.getTime())) d = new Date();
+            const dStr = d.toDateString();
+            if(dStr !== lastDateShown) { hHtml += `<div class="date-divider">${dStr}</div>`; lastDateShown = dStr; }
+            
+            let isMe = h.name.toUpperCase().includes(currentUser);
+            let sideClass = isMe ? "msg-me" : "msg-them";
+            let tick = (isMe) ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
+            
+            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px;">` : h.note;
+            let timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            hHtml += `<div class="msg ${sideClass}">${content}<div class="msg-time">${timeStr} ${tick}</div></div>`;
+        });
+        box.innerHTML = hHtml;
+        if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
     }
 
     async function sendNote() { 
         let input = document.getElementById('wa-input');
         let m = input.value.trim(); if(!m) return;
+        
+        // INSTANT SHOW (Optimistic UI)
+        const box = document.getElementById('notes-display');
+        const now = new Date();
+        const tempMsg = { name: currentUser, note: m, time: now.toISOString() };
+        localHistory.push(tempMsg);
+        renderMessages(0); // Tick will update on refresh
+        
         input.value = "";
-        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
+        // Background send
+        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
     }
 
     async function uploadMedia(input) {
