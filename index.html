@@ -124,7 +124,7 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
     let currentUser = "", sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], lastDateShown = "";
     let localHistory = []; 
-    let myLastSeen = 0; // Local track for unread logic
+    let myLastSeen = -1; // -1 means not synced yet from server
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
@@ -137,7 +137,11 @@
             document.getElementById('login-screen').style.display='none';
             document.getElementById('dashboard').style.display='block';
             document.getElementById('wa-bar').style.display='flex';
-            updateStatus("Online", -1);
+            
+            // First time update to get user data from server
+            await refreshData(); 
+            updateStatus("Online", myLastSeen); 
+            
             setInterval(refreshData, 5000); 
             setInterval(updateLiveCountdowns, 1000);
         } else { alert("Wrong Key!"); }
@@ -151,8 +155,8 @@
             box.scrollTop = box.scrollHeight;
             badge.style.display = 'none';
             badge.innerText = "0";
-            myLastSeen = localHistory.length; // Mark all as seen locally
-            updateStatus("Online", localHistory.length);
+            myLastSeen = localHistory.length; 
+            updateStatus("Online", myLastSeen);
         }
     }
 
@@ -170,8 +174,8 @@
                 if(!isMe) {
                     otherSeen = parseInt(u.seenCount) || 0;
                 } else {
-                    // Update our own last seen from server for the first time or if sync needed
-                    if(lastMsgCount === 0) myLastSeen = parseInt(u.seenCount) || 0;
+                    // Sync my last seen from server ONLY on first load
+                    if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
                 }
                 let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
                 sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${formatSimpleDate(u.time)}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
@@ -179,41 +183,32 @@
             document.getElementById('status-container').innerHTML = sHtml;
 
             let history = data.history || [];
-            
-            // --- SMART UNREAD BADGE LOGIC ---
+            localHistory = history;
+
+            // --- REFINED BADGE LOGIC ---
             if(history.length > lastMsgCount) {
-                if(lastMsgCount !== 0) {
-                    let lastMsg = history[history.length-1];
-                    // If new message from OTHER person and chat is closed
-                    if(!lastMsg.name.toUpperCase().includes(currentUser)) {
-                        if(!isSilent) document.getElementById('notif-sound').play();
+                let unreadCount = history.length - myLastSeen;
+                const badge = document.getElementById('notif-badge');
+                
+                if(unreadCount > 0) {
+                    // Check if new messages are NOT from me
+                    let newMsgs = history.slice(myLastSeen);
+                    let hasThemMsg = newMsgs.some(m => !m.name.toUpperCase().includes(currentUser));
+                    
+                    if(hasThemMsg) {
+                        if(lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
                         if(document.getElementById('notes-display').style.display !== 'flex') {
-                            const badge = document.getElementById('notif-badge');
-                            let unreadCount = history.length - myLastSeen;
-                            if(unreadCount > 0) {
-                                badge.innerText = unreadCount;
-                                badge.style.display = 'block';
-                            }
+                            badge.innerText = unreadCount;
+                            badge.style.display = 'block';
                         } else {
                             myLastSeen = history.length;
-                            updateStatus("Online", history.length);
+                            updateStatus("Online", myLastSeen);
                         }
-                    }
-                } else {
-                    // FIRST LOAD (Login): Show badge only if server history > myLastSeen
-                    let unreadOnLogin = history.length - myLastSeen;
-                    if(unreadOnLogin > 0) {
-                        const badge = document.getElementById('notif-badge');
-                        badge.innerText = unreadOnLogin;
-                        badge.style.display = 'block';
                     }
                 }
                 lastMsgCount = history.length;
-                localHistory = history;
-                renderMessages(otherSeen);
-            } else {
-                renderMessages(otherSeen);
             }
+            renderMessages(otherSeen);
             renderPlaylist();
         } catch(e) { console.log(e); }
     }
@@ -233,7 +228,7 @@
             hHtml += `<div class="msg ${sideClass}">${content}<div class="msg-time">${timeStr} ${tick}</div></div>`;
         });
         box.innerHTML = hHtml;
-        if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
+        if(box.style.display === 'flex' && localHistory.length > lastMsgCount) box.scrollTop = box.scrollHeight;
     }
 
     async function sendNote() { 
@@ -242,12 +237,11 @@
         const now = new Date();
         const tempMsg = { name: currentUser, note: m, time: now.toISOString() };
         localHistory.push(tempMsg);
-        myLastSeen = localHistory.length; // You saw your own message
+        myLastSeen = localHistory.length; 
         renderMessages(0); 
         input.value = "";
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
-        // Sync seen count immediately for own message
-        updateStatus("Online", localHistory.length);
+        updateStatus("Online", myLastSeen);
     }
 
     async function uploadMedia(input) {
@@ -272,7 +266,7 @@
     function togglePlay() { const a = document.getElementById('global-audio'); if (a.paused) a.play(); else a.pause(); }
     async function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
     function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
-    function logout() { updateStatus("Offline", -1); setTimeout(() => { location.reload(); }, 500); }
+    function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => { location.reload(); }, 500); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
     function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
     function updateLiveCountdowns() {
