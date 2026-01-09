@@ -13,7 +13,6 @@
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; position: relative; }
         .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
         
-        /* Fixed Buttons */
         .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .mode-toggle { left: 10px; }
         #silent-btn { right: 10px; }
@@ -21,7 +20,6 @@
         .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
         .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
         
-        /* Dashboard Elements */
         .music-card, .countdown-container { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
         .song-row, .cd-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #fff5f7; font-size: 0.75rem; }
         .mini-player-bar { display: none; background: #f8f9fa; border-radius: 10px; padding: 5px 10px; margin-top: 8px; align-items: center; gap: 10px; border: 1px solid #eee; }
@@ -37,7 +35,6 @@
         .dot-offline { background: var(--grey); }
         .off-btn { background:#ff4d4d; color:white; border:none; border-radius:6px; padding:2px 8px; font-size:0.6rem; cursor:pointer; }
 
-        /* MESSAGE AREA - LOCKED LOGIC */
         .chat-frame { 
             display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); 
             width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); 
@@ -60,7 +57,6 @@
             display: none; min-width: 12px; text-align: center; border: 1px solid white;
         }
 
-        /* Fixed Bottom Bar Fix for Mobile */
         .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; box-sizing: border-box; }
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
@@ -132,7 +128,7 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
     let currentUser = "", sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], lastDateShown = "";
-    let localHistory = []; // Local history for instant speed
+    let localHistory = []; 
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
@@ -146,7 +142,6 @@
             document.getElementById('dashboard').style.display='block';
             document.getElementById('wa-bar').style.display='flex';
             
-            // Load badge from local storage if any
             const savedBadge = localStorage.getItem('unread_count');
             if(savedBadge && savedBadge > 0) {
                 const b = document.getElementById('notif-badge');
@@ -155,7 +150,7 @@
             }
 
             updateStatus("Online", -1);
-            setInterval(refreshData, 3000);
+            setInterval(refreshData, 5000); // 5 Seconds Refresh
             setInterval(updateLiveCountdowns, 1000);
         } else { alert("Wrong Key!"); }
     }
@@ -169,6 +164,7 @@
             badge.style.display = 'none';
             badge.innerText = "0";
             localStorage.setItem('unread_count', 0);
+            // Instant Seen Sync when opening chat
             updateStatus("Online", localHistory.length);
         }
     }
@@ -191,9 +187,8 @@
             document.getElementById('status-container').innerHTML = sHtml;
 
             let history = data.history || [];
-            localHistory = history; // Sync local with server
+            localHistory = history; 
             
-            // --- FAST BADGE LOGIC ---
             if(history.length > lastMsgCount) {
                 if(lastMsgCount !== 0) {
                     let lastMsg = history[history.length-1];
@@ -205,13 +200,15 @@
                             badge.innerText = newCount;
                             badge.style.display = 'block';
                             localStorage.setItem('unread_count', newCount);
+                        } else {
+                            // If chat is already open, instantly sync seen count
+                            updateStatus("Online", history.length);
                         }
                     }
                 }
                 lastMsgCount = history.length;
-                renderMessages(otherSeen);
             }
-            
+            renderMessages(otherSeen);
             renderPlaylist();
         } catch(e) { console.log(e); }
     }
@@ -242,15 +239,12 @@
         let input = document.getElementById('wa-input');
         let m = input.value.trim(); if(!m) return;
         
-        // INSTANT SHOW (Optimistic UI)
-        const box = document.getElementById('notes-display');
         const now = new Date();
         const tempMsg = { name: currentUser, note: m, time: now.toISOString() };
         localHistory.push(tempMsg);
-        renderMessages(0); // Tick will update on refresh
+        renderMessages(0); 
         
         input.value = "";
-        // Background send
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
     }
 
