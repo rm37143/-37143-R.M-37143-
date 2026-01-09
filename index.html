@@ -3,38 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4 Final</title>
+    <title>Secret Dunia - A4 LOCKED</title>
     
     <style>
+        /* [ZONE: DESIGN SYSTEM] - DO NOT ALTER COLORS/LAYOUT WITHOUT PERMISSION */
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
         body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; }
-        .dark-mode .card, .dark-mode .music-card { background: rgba(45, 45, 45, 0.9); border: 1px solid #444; color: white; }
-        .dark-mode .status-bar { background: #333; color: #ddd; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; position: relative; }
-        .container { width: 100%; max-width: 400px; text-align: center; position: relative; }
         
-        .mode-toggle, #silent-btn { position: fixed; top: 10px; z-index: 1000; background: var(--pink); color: white; border: none; padding: 6px 10px; border-radius: 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .mode-toggle { left: 10px; }
-        #silent-btn { right: 10px; }
-        
-        .main-title { color: var(--pink); margin: 35px 0 5px 0; font-size: 1.6rem; font-weight: bold; }
-        .nisha-note { color: #d63384; font-size: 0.7rem; font-style: italic; margin-bottom: 12px; display: block; opacity: 0.8; }
-        
-        .music-card, .countdown-container { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; text-align: left; }
-        .song-row, .cd-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #fff5f7; font-size: 0.75rem; }
-        .mini-player-bar { display: none; background: #f8f9fa; border-radius: 10px; padding: 5px 10px; margin-top: 8px; align-items: center; gap: 10px; border: 1px solid #eee; }
-        .play-pause-btn { background: var(--blue); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.6rem; }
-        .song-name-scroll { flex-grow: 1; font-size: 0.65rem; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; }
-        .stop-btn-small { background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 0.4rem; cursor: pointer; }
-        
-        .card { background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 10px; border: 1px solid white; position: relative; }
-        .status-bar { background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 10px; font-size: 0.62rem; border-left: 5px solid var(--green); text-align: left; }
-        .user-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #f9f9f9; }
-        .dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .dot-online { background: var(--green); box-shadow: 0 0 5px var(--green); }
-        .dot-offline { background: var(--grey); }
-        .off-btn { background:#ff4d4d; color:white; border:none; border-radius:6px; padding:2px 8px; font-size:0.6rem; cursor:pointer; }
-
+        /* [ZONE: CHAT UI COMPONENTS] - STRUCTURALLY LOCKED */
         .chat-frame { 
             display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); 
             width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); 
@@ -47,59 +24,52 @@
         .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
         .msg-time { font-size: 0.6rem; opacity: 0.5; margin-left: 5px; float: right; margin-top: 5px; display: block; width: 100%; text-align: right;}
         .tick-blue { color: #34b7f1; font-weight: bold; margin-left: 3px; }
-        .date-divider { align-self: center; background: #d1e4f3; color: #555; padding: 3px 10px; border-radius: 8px; font-size: 0.65rem; margin: 10px 0; font-weight: bold; width: fit-content;}
-
-        .badge-container { position: relative; display: inline-block; }
-        .msg-badge { 
-            position: absolute; top: -5px; right: -5px; 
-            background: red; color: white; font-size: 0.6rem; 
-            padding: 2px 6px; border-radius: 10px; font-weight: bold; 
-            display: none; min-width: 12px; text-align: center; border: 1px solid white;
-        }
-
+        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; min-width: 12px; text-align: center; border: 1px solid white;}
+        
+        /* Dashboard & Utility UI */
+        .container { width: 100%; max-width: 400px; text-align: center; }
+        .music-card, .countdown-container, .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; }
         .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; box-sizing: border-box; }
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
-        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; }
-        #dashboard { display: none; width: 100%; }
-        .auth-input { width: 85%; padding: 12px; margin: 8px 0; border-radius: 20px; border: 1px solid #eee; text-align: center; outline: none; }
+        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<button class="mode-toggle" onclick="toggleTheme()">🌓 MODE</button>
-<button id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
+<button class="mode-toggle" onclick="toggleTheme()" style="position:fixed; top:10px; left:10px; z-index:1000; background:var(--pink); color:white; border:none; padding:6px 10px; border-radius:12px; font-size:0.65rem;">🌓 MODE</button>
+<button id="silent-btn" onclick="toggleSilent()" style="position:fixed; top:10px; right:10px; z-index:1000; background:var(--pink); color:white; border:none; padding:6px 10px; border-radius:12px; font-size:0.65rem;">🔕 SILENT</button>
 
 <div class="container">
-    <h2 class="main-title">Secret Dunia</h2>
+    <h2 style="color:var(--pink); margin-top:35px;">Secret Dunia</h2>
     
     <div id="login-screen" class="card">
-        <input type="text" id="u-name" class="auth-input" placeholder="User Name">
-        <input type="password" id="u-pass" class="auth-input" placeholder="Enter Key" onkeypress="if(event.key === 'Enter') checkAuth()">
+        <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
+        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key === 'Enter') checkAuth()">
         <button style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%; cursor:pointer;" onclick="checkAuth()">Enter World</button>
     </div>
 
-    <div id="dashboard">
-        <span class="nisha-note">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
+    <div id="dashboard" style="display:none;">
+        <span class="nisha-note" style="color:#d63384; font-size:0.7rem; font-style:italic;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
         
         <div class="music-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <b style="color: var(--blue); font-size: 0.8rem;">🎵 Smart Playlist</b>
-                <button style="background:var(--blue); color:white; border:none; padding:4px 8px; border-radius:10px; font-size:0.6rem;" onclick="addSongPrompt()">+ Add MP3</button>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b style="color:var(--blue); font-size:0.8rem;">🎵 Smart Playlist</b>
+                <button onclick="addSongPrompt()" style="background:var(--blue); color:white; border:none; padding:4px 8px; border-radius:10px; font-size:0.6rem;">+ Add MP3</button>
             </div>
-            <div id="playlist-area" style="max-height: 80px; overflow-y: auto; margin-top: 5px;"></div>
-            <div class="mini-player-bar" id="smart-player">
-                <button class="play-pause-btn" id="play-pause" onclick="togglePlay()">⏸</button>
-                <div class="song-name-scroll" id="now-playing-title">Playing...</div>
-                <button class="stop-btn-small" onclick="stopMusic()">×</button>
+            <div id="playlist-area" style="max-height:80px; overflow-y:auto; margin-top:5px; font-size:0.75rem;"></div>
+            <div id="smart-player" style="display:none; background:#f8f9fa; border-radius:10px; padding:5px; margin-top:8px; align-items:center; gap:10px;">
+                <button onclick="togglePlay()" style="background:var(--blue); border:none; border-radius:50%; color:white; width:24px; height:24px;">⏸</button>
+                <div id="now-playing-title" style="flex-grow:1; font-size:0.65rem; font-weight:bold; overflow:hidden;">Playing...</div>
+                <button onclick="stopMusic()" style="background:#ff4d4d; border:none; border-radius:50%; color:white; width:20px; height:20px;">×</button>
             </div>
             <audio id="global-audio" onended="stopMusic()"></audio>
         </div>
 
-        <div class="countdown-container" id="countdown-area"></div>
-        <button style="background:var(--pink); color:white; border:none; padding:8px 18px; border-radius:15px; font-weight:bold; margin-bottom:15px; cursor:pointer;" onclick="addCountdownPrompt()">+ Add Event</button>
+        <div class="countdown-container" id="countdown-area" style="font-size:0.75rem;"></div>
+        <button onclick="addCountdownPrompt()" style="background:var(--pink); color:white; border:none; padding:8px 18px; border-radius:15px; font-weight:bold; margin-bottom:15px;">+ Add Event</button>
         
-        <div class="status-bar" id="status-container">Syncing Status...</div>
+        <div id="status-container" style="background:#fff; padding:10px; border-radius:12px; font-size:0.62rem; border-left:5px solid var(--green); text-align:left;">Syncing...</div>
     </div>
 </div>
 
@@ -107,24 +77,24 @@
 
 <div id="wa-bar" class="wa-bottom" style="display:none;">
     <div class="wa-input-box">
-        <div class="badge-container">
-            <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">💬</button>
+        <div style="position:relative; display:inline-block;">
+            <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
             <span id="notif-badge" class="msg-badge">0</span>
         </div>
         <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
         <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
-    <button class="wa-send-btn" onclick="sendNote()">➤</button>
+    <button class="wa-send-btn" onclick="sendNote()" style="font-size:1.2rem; border:none; color:white;">➤</button>
 </div>
 
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
+    /* [ZONE: LOGIC LOCK] - CORE FUNCTIONS FOR SYNC AND BADGE LOGIC */
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
     let currentUser = "", sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], lastDateShown = "";
-    let localHistory = []; 
-    let myLastSeen = -1; // -1 means not synced yet from server
+    let localHistory = [], myLastSeen = -1;
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
@@ -137,16 +107,14 @@
             document.getElementById('login-screen').style.display='none';
             document.getElementById('dashboard').style.display='block';
             document.getElementById('wa-bar').style.display='flex';
-            
-            // First time update to get user data from server
             await refreshData(); 
             updateStatus("Online", myLastSeen); 
-            
             setInterval(refreshData, 5000); 
             setInterval(updateLiveCountdowns, 1000);
         } else { alert("Wrong Key!"); }
     }
 
+    // FUNCTION: TOGGLE CHAT (LOCKED: Handles Seen Logic)
     function toggleChat() {
         const box = document.getElementById('notes-display');
         const badge = document.getElementById('notif-badge');
@@ -160,90 +128,81 @@
         }
     }
 
+    // FUNCTION: REFRESH DATA (LOCKED: Handles Badge & Ticks Sync)
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
             savedCountdowns = data.countdowns || [];
             savedPlaylist = data.playlist || [];
+            let otherSeen = 0, sHtml = ""; 
             
-            let otherSeen = 0;
-            let sHtml = ""; 
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
-                if(!isMe) {
-                    otherSeen = parseInt(u.seenCount) || 0;
-                } else {
-                    // Sync my last seen from server ONLY on first load
-                    if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
-                }
+                if(!isMe) otherSeen = parseInt(u.seenCount) || 0;
+                else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
                 let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
-                sHtml += `<div class="user-row"><span><span class="dot ${dotClass}"></span><b>${u.name}</b>: ${u.status}</span><span><small>${formatSimpleDate(u.time)}</small> ${isMe ? `<button class="off-btn" onclick="logout()">OFF</button>` : ''}</span></div>`;
+                sHtml += `<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #f9f9f9;"><span><b>${u.name}</b>: ${u.status}</span><small>${isMe ? `<button onclick="logout()" style="background:#ff4d4d; color:white; border:none; border-radius:5px; padding:2px 5px; font-size:0.55rem;">OFF</button>` : formatSimpleDate(u.time)}</small></div>`;
             });
             document.getElementById('status-container').innerHTML = sHtml;
 
             let history = data.history || [];
             localHistory = history;
-
-            // --- REFINED BADGE LOGIC ---
             if(history.length > lastMsgCount) {
                 let unreadCount = history.length - myLastSeen;
-                const badge = document.getElementById('notif-badge');
-                
                 if(unreadCount > 0) {
-                    // Check if new messages are NOT from me
                     let newMsgs = history.slice(myLastSeen);
-                    let hasThemMsg = newMsgs.some(m => !m.name.toUpperCase().includes(currentUser));
-                    
-                    if(hasThemMsg) {
+                    if(newMsgs.some(m => !m.name.toUpperCase().includes(currentUser))) {
                         if(lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
                         if(document.getElementById('notes-display').style.display !== 'flex') {
-                            badge.innerText = unreadCount;
-                            badge.style.display = 'block';
-                        } else {
-                            myLastSeen = history.length;
-                            updateStatus("Online", myLastSeen);
-                        }
+                            const badge = document.getElementById('notif-badge');
+                            badge.innerText = unreadCount; badge.style.display = 'block';
+                        } else { myLastSeen = history.length; updateStatus("Online", myLastSeen); }
                     }
                 }
                 lastMsgCount = history.length;
             }
             renderMessages(otherSeen);
             renderPlaylist();
-        } catch(e) { console.log(e); }
+        } catch(e) { console.log("Sync Error", e); }
     }
 
     function renderMessages(otherSeen) {
         let hHtml = ""; lastDateShown = "";
         const box = document.getElementById('notes-display');
         localHistory.forEach((h, idx) => {
-            let d = new Date(h.time); if(isNaN(d.getTime())) d = new Date();
-            const dStr = d.toDateString();
+            let d = new Date(h.time); const dStr = d.toDateString();
             if(dStr !== lastDateShown) { hHtml += `<div class="date-divider">${dStr}</div>`; lastDateShown = dStr; }
             let isMe = h.name.toUpperCase().includes(currentUser);
-            let sideClass = isMe ? "msg-me" : "msg-them";
             let tick = (isMe) ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
             let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px;">` : h.note;
-            let timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            hHtml += `<div class="msg ${sideClass}">${content}<div class="msg-time">${timeStr} ${tick}</div></div>`;
+            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}<div class="msg-time">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
         });
         box.innerHTML = hHtml;
-        if(box.style.display === 'flex' && localHistory.length > lastMsgCount) box.scrollTop = box.scrollHeight;
     }
 
-    async function sendNote() { 
-        let input = document.getElementById('wa-input');
-        let m = input.value.trim(); if(!m) return;
-        const now = new Date();
-        const tempMsg = { name: currentUser, note: m, time: now.toISOString() };
-        localHistory.push(tempMsg);
+    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
+    function sendNote() { 
+        let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
+        localHistory.push({ name: currentUser, note: m, time: new Date().toISOString() });
         myLastSeen = localHistory.length; 
-        renderMessages(0); 
-        input.value = "";
+        renderMessages(0); inp.value = "";
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
         updateStatus("Online", myLastSeen);
     }
-
+    
+    // UTILITIES
+    function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => location.reload(), 500); }
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
+    function updateLiveCountdowns() {
+        let h = ""; savedCountdowns.forEach((c) => {
+            let diff = new Date(c.date).getTime() - new Date().getTime();
+            let txt = diff > 0 ? Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m" : "Finished!";
+            h += `<div style="padding:4px 0;"><b>${c.label}</b>: <span style="color:var(--pink)">${txt}</span></div>`;
+        });
+        document.getElementById('countdown-area').innerHTML = h;
+    }
     async function uploadMedia(input) {
         const file = input.files[0]; if(!file) return;
         const reader = new FileReader();
@@ -253,32 +212,16 @@
         };
         reader.readAsDataURL(file);
     }
-
     function renderPlaylist() {
-        let html = "";
-        savedPlaylist.forEach(s => {
-            html += `<div class="song-row"><span><b>${s.title}</b> <small>(${s.user})</small></span><div><button style="background:none; border:none; color:var(--blue); cursor:pointer;" onclick="playMusic('${s.url}', '${s.title}')">▶</button></div></div>`;
-        });
+        let html = ""; savedPlaylist.forEach(s => { html += `<div style="padding:3px 0;"><b>${s.title}</b> <button onclick="playMusic('${s.url}', '${s.title}')" style="background:none; border:none; color:var(--blue);">▶</button></div>`; });
         document.getElementById('playlist-area').innerHTML = html || "No songs.";
     }
-    function playMusic(url, title) { const a = document.getElementById('global-audio'); a.src = url; a.play(); document.getElementById('now-playing-title').innerText = title; document.getElementById('smart-player').style.display = "flex"; }
+    function playMusic(u, t) { const a = document.getElementById('global-audio'); a.src = u; a.play(); document.getElementById('now-playing-title').innerText = t; document.getElementById('smart-player').style.display = "flex"; }
     function stopMusic() { document.getElementById('global-audio').pause(); document.getElementById('smart-player').style.display = "none"; }
     function togglePlay() { const a = document.getElementById('global-audio'); if (a.paused) a.play(); else a.pause(); }
-    async function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
-    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
-    function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => { location.reload(); }, 500); }
-    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
-    function updateLiveCountdowns() {
-        let h = ""; savedCountdowns.forEach((c) => {
-            let diff = new Date(c.date).getTime() - new Date().getTime();
-            let txt = diff > 0 ? Math.floor(diff/(1000*60*60*24))+"d "+Math.floor((diff%(1000*60*60*24))/(1000*60*60))+"h "+Math.floor((diff%(1000*60*60))/(1000*60))+"m "+Math.floor((diff%(1000*60))/1000)+"s" : "Finished!";
-            h += `<div class="cd-row"><div><b>${c.label}</b>: <span style="color:var(--pink)">${txt}</span></div></div>`;
-        });
-        document.getElementById('countdown-area').innerHTML = h;
-    }
-    function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("YYYY-MM-DD HH:MM:"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
     function formatSimpleDate(s) { if(!s) return ""; let d = new Date(s.replace(' ', 'T')); return `${d.getDate()} Jan, ${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`; }
+    async function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
+    function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("YYYY-MM-DD HH:MM:"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
 </script>
 </body>
 </html>
