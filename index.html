@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4.5 LOCKED</title>
+    <title>Secret Dunia - A4.6 LOCKED</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
@@ -40,7 +40,7 @@
         .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
         .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
         .tick-blue { color: #34b7f1; font-weight: bold; }
-        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white;}
+        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; min-width: 12px; text-align: center; }
         
         .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
         .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
@@ -70,7 +70,7 @@
     <div id="login-screen" class="card">
         <h2 style="color:var(--pink);">Secret Dunia</h2>
         <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
-        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
+        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key==='Enter') checkAuth()">
         <div style="margin:10px 0; font-size:0.8rem;">
             <input type="checkbox" id="private-mode"> 🕵️ Private Mode
         </div>
@@ -91,6 +91,9 @@
             <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
             <span id="notif-badge" class="msg-badge">0</span>
         </div>
+        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
+        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
+        
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
     <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
@@ -99,11 +102,10 @@
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyKsDh0LGIo23lIdU6wwALQpROi2ALEqxUijqMv5jQIoYEAHvfIVld-jKCQgQ33ubFc/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
     let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
     let localHistory = [], myLastSeen = -1;
 
-    // Helper: Robust Date Fix
     function parseSafeDate(s) {
         if(!s) return new Date();
         let normalized = s.toString().replace(/-/g, '/').replace('T', ' ');
@@ -135,11 +137,11 @@
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            let otherSeen = 0, topHtml = ""; 
+            let otherSeenCount = 0, topHtml = ""; 
             
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
-                if(!isMe) otherSeen = parseInt(u.seenCount) || 0;
+                if(!isMe) otherSeenCount = parseInt(u.seenCount) || 0;
                 else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
                 
                 let lastUpdate = parseSafeDate(u.time).getTime();
@@ -157,15 +159,27 @@
             });
             document.getElementById('top-status-content').innerHTML = topHtml;
 
-            if(data.history.length > lastMsgCount) {
-                localHistory = data.history;
-                renderMessages(otherSeen);
-                if(data.history.length > lastMsgCount && lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
-                lastMsgCount = data.history.length;
-                
-                // Auto-Scroll to bottom if chat is open
-                const box = document.getElementById('notes-display');
-                if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
+            localHistory = data.history || [];
+            const chatBox = document.getElementById('notes-display');
+            const badge = document.getElementById('notif-badge');
+
+            if(localHistory.length > lastMsgCount) {
+                // Check if we need to show badge (chat closed and new msg from OTHER person)
+                let unreadCount = localHistory.length - myLastSeen;
+                if(unreadCount > 0 && chatBox.style.display !== 'flex') {
+                    badge.innerText = unreadCount;
+                    badge.style.display = 'block';
+                    if(lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
+                } else if(chatBox.style.display === 'flex') {
+                    myLastSeen = localHistory.length;
+                    updateStatus("Online", myLastSeen);
+                }
+                lastMsgCount = localHistory.length;
+                renderMessages(otherSeenCount);
+                if(chatBox.style.display === 'flex') chatBox.scrollTop = chatBox.scrollHeight;
+            } else {
+                // Even if no new messages, update ticks if other user saw them
+                renderMessages(otherSeenCount);
             }
         } catch(e) { }
     }
@@ -175,12 +189,13 @@
         localHistory.forEach((h, idx) => {
             let d = parseSafeDate(h.time);
             if(d.toDateString() !== lastDate) {
-                hHtml += `<div style="align-self:center; font-size:0.6rem; color:#888; margin:5px 0;">${d.toDateString()}</div>`;
+                hHtml += `<div style="align-self:center; font-size:0.6rem; color:#888; margin:10px 0; background:rgba(0,0,0,0.05); padding:2px 8px; border-radius:10px;">${d.toDateString()}</div>`;
                 lastDate = d.toDateString();
             }
             let isMe = h.name.toUpperCase().includes(currentUser);
             let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
-            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${h.note}<div class="msg-time">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
+            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px; margin-top:5px;">` : h.note;
+            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}<div class="msg-time">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
         });
         document.getElementById('notes-display').innerHTML = hHtml;
     }
@@ -188,38 +203,53 @@
     function sendNote() { 
         if(isPrivate) return;
         let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
-        // Optimistic UI: Add local message for speed
-        const tempTime = new Date().toISOString();
-        localHistory.push({name: currentUser, note: m, time: tempTime});
+        localHistory.push({name: currentUser, note: m, time: new Date().toISOString()});
         renderMessages(0);
         const box = document.getElementById('notes-display');
         box.scrollTop = box.scrollHeight;
         inp.value = "";
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
+        myLastSeen = localHistory.length;
+        updateStatus("Online", myLastSeen);
     }
 
     function toggleChat() {
         if(isPrivate) { alert("Private User restricted."); return; }
         const box = document.getElementById('notes-display');
-        box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-        if(box.style.display === 'flex') {
+        const badge = document.getElementById('notif-badge');
+        const isOpen = (box.style.display === 'flex');
+        box.style.display = isOpen ? 'none' : 'flex';
+        if(!isOpen) {
             box.scrollTop = box.scrollHeight;
-            document.getElementById('notif-badge').style.display = 'none';
+            badge.style.display = 'none';
             myLastSeen = localHistory.length;
-            updateStatus("Online", myLastSeen);
+            updateStatus("Online", myLastSeen); // This triggers blue ticks for the other user
         }
+    }
+
+    async function uploadMedia(input) {
+        if(isPrivate) return;
+        const file = input.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const base64 = e.target.result.split(',')[1];
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64})});
+            refreshData();
+        };
+        reader.readAsDataURL(file);
     }
 
     function fullExit() {
         if(!isPrivate) updateStatus("Offline", myLastSeen);
-        window.close(); // Try closing tab
-        window.location.href = "about:blank"; // Fallback
+        window.location.href = "about:blank";
+        window.close();
     }
 
     function formatFullDate(s) {
         let d = parseSafeDate(s);
         let days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        return `${days[d.getDay()]}, ${d.getDate()} Jan<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;
     }
 
     function checkIdle() { if(!document.getElementById('stay-login').checked && (Date.now() - lastActivity > 600000)) fullExit(); }
