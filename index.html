@@ -3,92 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4.3 COMPLETE</title>
+    <title>Secret Dunia - A4.3 FINAL</title>
     
     <style>
         /* [DESIGN SYSTEM] */
-        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
-        body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; }
+        :root { --pink: #ff85a2; --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --wa-bg: #e5ddd5; }
+        body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
 
         /* [TOP NAV] */
-        .top-nav { position: fixed; top: 0; left: 0; right: 0; height: 65px; background: white; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 2000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-bottom: 2px solid var(--pink); }
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; height: 65px; background: white; display: none; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 2000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-bottom: 2px solid var(--pink); }
         .dark-mode .top-nav { background: #2d2d2d; border-bottom-color: #555; }
         
         .status-center { flex: 1; display: flex; justify-content: center; gap: 20px; }
-        .user-indicator { display: flex; flex-direction: column; align-items: center; opacity: 0.3; transition: 0.5s; filter: grayscale(1); }
-        .user-indicator.is-online { opacity: 1; filter: grayscale(0); }
+        .user-indicator { display: flex; flex-direction: column; align-items: center; opacity: 0.4; transition: 0.5s; }
+        .user-indicator.is-online { opacity: 1; }
         
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--grey); margin-bottom: 3px; border: 2px solid white; }
-        .is-online .status-dot { background: var(--green); box-shadow: 0 0 10px var(--green); }
+        .is-online .status-dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
         
-        .nav-btn { background: var(--pink); color: white; border: none; padding: 5px 8px; border-radius: 8px; font-size: 0.65rem; cursor: pointer; height: 32px; font-weight: bold; }
-        .logout-btn { background: #ff4d4d !important; margin-left: 5px; }
+        .nav-btn { background: var(--pink); color: white; border: none; padding: 5px 8px; border-radius: 8px; font-size: 0.65rem; cursor: pointer; font-weight: bold; }
 
         /* [CHAT UI] */
-        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px 20px 5px 5px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; }
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; }
+        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 400px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 15px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 10px; }
+        .msg { padding: 10px; border-radius: 15px; max-width: 80%; font-size: 0.88rem; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); color: #000; }
         .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
         .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
-        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
+        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right; }
         .tick-blue { color: #34b7f1; font-weight: bold; }
-        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; display: none; border: 1px solid white;}
+        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; display: none; }
         
-        /* [DASHBOARD] */
+        /* [DASHBOARD & LOGIN] */
         .container { width: 100%; max-width: 400px; margin-top: 80px; text-align: center; }
-        .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; }
-        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
-        .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
-        .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
-        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .date-divider { align-self: center; background: #d1e4f3; padding: 3px 10px; border-radius: 8px; font-size: 0.65rem; margin: 10px 0; color: #555; }
-        
-        /* Private Mode Styling */
-        .private-lock { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
+        .card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid #ffd1dc; color: #333; }
+        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px; display: none; align-items: center; gap: 10px; z-index: 2000; }
+        .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 8px 15px; display: flex; align-items: center; }
+        .wa-input-box input { flex: 1; border: none; outline: none; font-size: 1rem; }
+        .wa-send-btn { background: #075e54; color: white; width: 45px; height: 45px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+        .date-divider { align-self: center; background: #d1e4f3; padding: 4px 12px; border-radius: 10px; font-size: 0.7rem; color: #555; margin: 5px 0; }
     </style>
 </head>
 <body>
 
-<div class="top-nav" id="top-nav-ui" style="display:none;">
+<div class="top-nav" id="top-nav-ui">
     <button class="nav-btn" onclick="toggleTheme()">🌓 MODE</button>
     <div class="status-center" id="status-display-top"></div>
-    <div style="display: flex; align-items: center;">
-        <button id="silent-btn" class="nav-btn" onclick="toggleSilent()">🔕</button>
-        <button class="nav-btn logout-btn" onclick="logout()">OFF</button>
-    </div>
+    <button class="nav-btn" onclick="logout()" style="background:#ff4d4d;">OFF</button>
 </div>
 
 <div class="container">
-    <h2 style="color:var(--pink);">Secret Dunia</h2>
-    
     <div id="login-screen" class="card">
-        <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
-        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
-        <div style="margin: 10px 0; font-size: 0.8rem; color: #d63384; font-weight: bold;">
+        <h2 style="color:var(--pink);">Secret Dunia</h2>
+        <input type="text" id="u-name" placeholder="Name (AWAIS / NISHA)" style="width:85%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ddd; text-align:center;">
+        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ddd; text-align:center;">
+        <div style="margin: 10px 0;">
             <input type="checkbox" id="private-mode-check"> 🕵️ Private Mode (Ghost)
         </div>
-        <button style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%; cursor:pointer;" onclick="checkAuth()">Enter World</button>
+        <button onclick="checkAuth()" style="background:var(--pink); color:white; border:none; padding:15px; border-radius:10px; width:90%; font-weight:bold; cursor:pointer;">Enter World</button>
     </div>
 
     <div id="dashboard" style="display:none;">
-        <div class="card" id="playlist-card">
-            <b style="color:var(--blue); font-size:0.8rem;">🎵 Playlist</b>
-            <div id="playlist-area" style="max-height:80px; overflow-y:auto; font-size:0.75rem; margin-top:5px;"></div>
-        </div>
-        <div class="card" id="countdown-card">
-            <div id="countdown-area" style="font-size:0.75rem;"></div>
+        <div class="card">
+            <b style="color:var(--blue);">🎵 Recent Activity</b>
+            <div id="activity-area" style="font-size:0.8rem; margin-top:10px;">Dashboard Loaded Successfully.</div>
         </div>
     </div>
 </div>
 
 <div class="chat-frame" id="notes-display"></div>
 
-<div id="wa-bar" class="wa-bottom" style="display:none;">
+<div id="wa-bar" class="wa-bottom">
+    <div style="position:relative;">
+        <button onclick="toggleChat()" style="background:none; border:none; font-size:1.8rem;">💬</button>
+        <span id="notif-badge" class="msg-badge">0</span>
+    </div>
     <div class="wa-input-box" id="wa-input-wrapper">
-        <div style="position:relative;">
-            <button id="chat-btn" onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">💬</button>
-            <span id="notif-badge" class="msg-badge">0</span>
-        </div>
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
     <button class="wa-send-btn" id="send-btn" onclick="sendNote()">➤</button>
@@ -97,146 +87,143 @@
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
-    let currentUser = "", lastMsgCount = 0, isSilent = true, localHistory = [], myLastSeen = -1, isPrivate = false;
-
-    // Intervals
-    const MSG_SYNC = 5000;    // 5 Seconds
-    const STATUS_SYNC = 120000; // 2 Minutes
+    /* [LOGIC LOCK - A4.3] */
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxzn-GNTlJUOJt95PGc2xCHHENrlAp0631XHipPk6EUnJ9OZHxhmXEgDwQOYD3MH9r4/exec';
+    
+    let currentUser = "", lastMsgCount = 0, localHistory = [], myLastSeen = -1, isPrivate = false;
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
         isPrivate = document.getElementById('private-mode-check').checked;
-        
-        const res = await fetch(scriptURL);
-        const data = await res.json();
-        
-        if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
-            currentUser = n;
-            document.getElementById('login-screen').style.display='none';
-            document.getElementById('dashboard').style.display='block';
-            document.getElementById('wa-bar').style.display='flex';
-            document.getElementById('top-nav-ui').style.display='flex';
-            
-            if(isPrivate) {
-                document.getElementById('wa-input-wrapper').classList.add('private-lock');
-                document.getElementById('send-btn').classList.add('private-lock');
-                document.getElementById('chat-btn').onclick = () => alert("Ghost Mode: Chat locked.");
-            }
 
-            await fullRefresh(); // Pehla load
-            if(!isPrivate) updateStatus("Online", myLastSeen);
+        if(!n || !p) { alert("Fill all fields!"); return; }
 
-            // Hybrid Intervals
-            setInterval(fastMessageSync, MSG_SYNC);
-            setInterval(fullRefresh, STATUS_SYNC);
-            
-            window.addEventListener('beforeunload', () => { if(!isPrivate) updateStatus("Offline", myLastSeen); });
-            document.addEventListener('visibilitychange', () => {
-                if(document.visibilityState === 'hidden' && !isPrivate) updateStatus("Offline", myLastSeen);
-                else if(document.visibilityState === 'visible' && !isPrivate) updateStatus("Online", myLastSeen);
-            });
-        } else { alert("Wrong Key!"); }
-    }
-
-    async function fastMessageSync() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            processMessages(data.history, data.onlineUsers);
-        } catch(e) { console.log("Msg Sync Error"); }
-    }
 
-    async function fullRefresh() {
-        try {
-            const res = await fetch(scriptURL);
-            const data = await res.json();
-            processMessages(data.history, data.onlineUsers);
-            updateStatusBar(data.onlineUsers);
-            renderPlaylist(data.playlist || []);
-            renderCountdowns(data.countdowns || []);
-        } catch(e) { console.log("Full Refresh Error"); }
-    }
+            if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
+                currentUser = n;
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('top-nav-ui').style.display = 'flex';
+                document.getElementById('wa-bar').style.display = 'flex';
 
-    function processMessages(history, onlineUsers) {
-        localHistory = history;
-        let otherUser = onlineUsers.find(u => !u.name.toUpperCase().includes(currentUser));
-        let otherSeen = otherUser ? parseInt(otherUser.seenCount) : 0;
-
-        if(history.length > lastMsgCount) {
-            let unreadCount = history.length - myLastSeen;
-            if(unreadCount > 0 && history.slice(myLastSeen).some(m => !m.name.toUpperCase().includes(currentUser))) {
-                if(lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
-                if(document.getElementById('notes-display').style.display !== 'flex') {
-                    const b = document.getElementById('notif-badge'); b.innerText = unreadCount; b.style.display = 'block';
+                if(isPrivate) {
+                    document.getElementById('wa-input-wrapper').classList.add('private-lock');
+                    document.getElementById('send-btn').classList.add('private-lock');
                 }
+
+                await fullSync();
+                if(!isPrivate) updateStatus("Online", myLastSeen);
+
+                // HYBRID SYNC: Chat (5s), Status (2min)
+                setInterval(fullSync, 5000); 
+                setInterval(() => { if(!isPrivate) updateStatus("Online", myLastSeen); }, 120000);
+
+                window.addEventListener('beforeunload', () => { if(!isPrivate) updateStatus("Offline", myLastSeen); });
+            } else {
+                alert("Wrong Key!");
             }
-            lastMsgCount = history.length;
-        }
-        renderMessages(otherSeen);
+        } catch(e) { alert("Server Error. Try again."); }
     }
 
-    function updateStatusBar(users) {
-        let sHtml = ""; 
+    async function fullSync() {
+        try {
+            const res = await fetch(scriptURL);
+            const data = await res.json();
+            
+            localHistory = data.history;
+            renderMessages(data.onlineUsers);
+            renderStatus(data.onlineUsers);
+
+            if(localHistory.length > lastMsgCount) {
+                if(lastMsgCount !== 0 && document.getElementById('notes-display').style.display !== 'flex') {
+                    document.getElementById('notif-sound').play();
+                    let badge = document.getElementById('notif-badge');
+                    badge.innerText = localHistory.length - myLastSeen;
+                    badge.style.display = 'block';
+                }
+                lastMsgCount = localHistory.length;
+            }
+        } catch(e) { console.log("Sync failed"); }
+    }
+
+    function renderStatus(users) {
+        let h = "";
         users.forEach(u => {
             let isMe = u.name.toUpperCase().includes(currentUser);
             let isOnline = u.status === "Online";
             if(isMe && myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
-            let displayName = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
-            let lastSeenInfo = isOnline ? "Online" : formatLastSeen(u.time);
-            sHtml += `<div class="user-indicator ${isOnline?'is-online':''}">
-                <div class="status-dot"></div>
-                <span style="font-size:0.7rem; font-weight:bold; color:${isMe?'var(--pink)':'#666'}">${displayName}</span>
-                <div style="font-size:0.42rem;">${lastSeenInfo}</div>
-            </div>`;
+            
+            let name = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
+            let timeInfo = isOnline ? "Online" : formatTime(u.time);
+            
+            h += `<div class="user-indicator ${isOnline?'is-online':''}">
+                    <div class="status-dot"></div>
+                    <span style="font-size:0.7rem; font-weight:bold;">${name}</span>
+                    <div style="font-size:0.45rem;">${timeInfo}</div>
+                  </div>`;
         });
-        document.getElementById('status-display-top').innerHTML = sHtml;
+        document.getElementById('status-display-top').innerHTML = h;
     }
 
-    function renderMessages(otherSeen) {
-        let hHtml = ""; let lastDate = "";
-        localHistory.forEach((h, idx) => {
-            let d = new Date(h.time);
-            if(d.toDateString() !== lastDate) { hHtml += `<div class="date-divider">${d.toDateString()}</div>`; lastDate = d.toDateString(); }
-            let isMe = h.name.toUpperCase().includes(currentUser);
+    function renderMessages(onlineUsers) {
+        let otherUser = onlineUsers.find(u => !u.name.toUpperCase().includes(currentUser));
+        let otherSeen = otherUser ? parseInt(otherUser.seenCount) : 0;
+        
+        let hHtml = ""; let lastD = "";
+        localHistory.forEach((m, idx) => {
+            let d = new Date(m.time.replace(' ', 'T'));
+            if(d.toDateString() !== lastD) {
+                hHtml += `<div class="date-divider">${d.toDateString()}</div>`;
+                lastD = d.toDateString();
+            }
+            let isMe = m.name.toUpperCase().includes(currentUser);
             let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
-            hHtml += `<div class="msg ${isMe?'msg-me':'msg-them'}">${h.note}<div class="msg-time">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
+            hHtml += `<div class="msg ${isMe?'msg-me':'msg-them'}">${m.note}
+                      <div class="msg-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${tick}</div></div>`;
         });
-        document.getElementById('notes-display').innerHTML = hHtml;
+        const box = document.getElementById('notes-display');
+        box.innerHTML = hHtml;
     }
 
     function toggleChat() {
-        if(isPrivate) return;
+        if(isPrivate) { alert("Private mode is ON"); return; }
         const box = document.getElementById('notes-display');
-        box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-        if(box.style.display === 'flex') {
+        const isOpen = box.style.display === 'flex';
+        box.style.display = isOpen ? 'none' : 'flex';
+        if(!isOpen) {
             box.scrollTop = box.scrollHeight;
             document.getElementById('notif-badge').style.display = 'none';
-            myLastSeen = localHistory.length; updateStatus("Online", myLastSeen);
+            myLastSeen = localHistory.length;
+            updateStatus("Online", myLastSeen);
         }
     }
 
-    function sendNote() { 
-        if(isPrivate) return;
-        let inp = document.getElementById('wa-input'); if(!inp.value.trim()) return;
-        localHistory.push({ name: currentUser, note: inp.value, time: new Date().toISOString() });
-        myLastSeen = localHistory.length; renderMessages(0);
-        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:inp.value})});
-        inp.value = ""; 
+    async function sendNote() {
+        let inp = document.getElementById('wa-input');
+        if(!inp.value.trim() || isPrivate) return;
+        let note = inp.value;
+        inp.value = "";
+        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:note})});
+        fullSync();
     }
 
-    function updateStatus(s, count) { 
+    function updateStatus(s, count) {
         if(isPrivate && s === "Online") return;
-        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); 
+        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})});
     }
 
-    function formatLastSeen(s) { 
-        if(!s) return "Away"; 
-        let d = new Date(s.replace(' ', 'T')); let now = new Date();
-        let timeStr = d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        return (d.toDateString() === now.toDateString()) ? "Today " + timeStr : `${d.getDate()}/${d.getMonth()+1} ${timeStr}`;
+    function formatTime(s) {
+        if(!s) return "";
+        let d = new Date(s.replace(' ', 'T'));
+        return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
     }
 
-    function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => location.reload(), 500); }
-    function toggleTheme() { document.body.classList.toggle
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    function logout() { updateStatus("Offline", myLastSeen); setTimeout(()=>location.reload(), 500); }
+</script>
+</body>
+</html>
