@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4.4 LOCKED</title>
+    <title>Secret Dunia - A4.5 LOCKED</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
@@ -21,7 +21,6 @@
         .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
         .nav-btn-sm { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
 
-        /* STATUS CENTER */
         .status-center-display { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; }
         .user-stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; text-align: center; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
@@ -30,28 +29,25 @@
         .stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
         .dark-mode .stat-label { color: white; }
 
-        /* OFF BUTTON GROUP */
         .off-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .stay-label { font-size: 0.5rem; color: var(--dark); }
-        .dark-mode .stay-label { color: white; }
 
-        /* [ZONE: CHAT UI COMPONENTS] - FULLY RESTORED ORIGINAL */
-        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px 20px 5px 5px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; }
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; text-align: left; color: #000;}
+        /* [LOCKED CHAT UI] */
+        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
         .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
         .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
-        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-left: 5px; float: right; margin-top: 5px; display: block; width: 100%; text-align: right;}
-        .tick-blue { color: #34b7f1; font-weight: bold; margin-left: 3px; }
-        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; min-width: 12px; text-align: center; border: 1px solid white;}
-        .date-divider { align-self: center; background: rgba(0,0,0,0.05); padding: 2px 10px; border-radius: 10px; font-size: 0.65rem; color: #666; margin: 5px 0; }
+        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
+        .tick-blue { color: #34b7f1; font-weight: bold; }
+        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white;}
         
         .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
         .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
-        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; box-sizing: border-box; }
+        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
-        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; }
+        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
     </style>
 </head>
@@ -63,9 +59,7 @@
     <div class="nav-left">
         <button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
     </div>
-    
     <div class="status-center-display" id="top-status-content"></div>
-
     <div class="off-group">
         <button class="off-btn" onclick="fullExit()">OFF</button>
         <label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label>
@@ -76,17 +70,16 @@
     <div id="login-screen" class="card">
         <h2 style="color:var(--pink);">Secret Dunia</h2>
         <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
-        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key === 'Enter') checkAuth()">
-        <div style="margin:10px 0; font-size:0.8rem; color:#444;">
+        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
+        <div style="margin:10px 0; font-size:0.8rem;">
             <input type="checkbox" id="private-mode"> 🕵️ Private Mode
         </div>
-        <button style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%; cursor:pointer;" onclick="checkAuth()">Enter World</button>
+        <button style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
 
     <div id="dashboard" style="display:none;">
         <span class="nisha-note" style="color:#d63384; font-size:0.7rem; font-style:italic;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
         <div class="card" id="countdown-area" style="font-size:0.75rem; margin-top:10px;"></div>
-        <button onclick="addCountdownPrompt()" style="background:var(--pink); color:white; border:none; padding:8px 18px; border-radius:15px; font-weight:bold;">+ Add Event</button>
     </div>
 </div>
 
@@ -98,8 +91,6 @@
             <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
             <span id="notif-badge" class="msg-badge">0</span>
         </div>
-        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
-        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
     <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
@@ -108,10 +99,17 @@
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    /* [RESTORED ORIGINAL BACKEND LOGIC] */
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbx9d4GOllMkx-SPKf0_Y0VcuhCXVWXQ6pl_-X2h40YJUdVVz_VuHhW9-mt7LRot5foW/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyKsDh0LGIo23lIdU6wwALQpROi2ALEqxUijqMv5jQIoYEAHvfIVld-jKCQgQ33ubFc/exec';
     let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
-    let localHistory = [], myLastSeen = -1, lastDateShown = "";
+    let localHistory = [], myLastSeen = -1;
+
+    // Helper: Robust Date Fix
+    function parseSafeDate(s) {
+        if(!s) return new Date();
+        let normalized = s.toString().replace(/-/g, '/').replace('T', ' ');
+        let d = new Date(normalized);
+        return isNaN(d.getTime()) ? new Date() : d;
+    }
 
     async function checkAuth() {
         const n = document.getElementById('u-name').value.toUpperCase().trim();
@@ -125,13 +123,10 @@
             document.getElementById('dashboard').style.display='block';
             document.getElementById('wa-bar').style.display='flex';
             document.getElementById('top-bar-ui').style.display='flex';
-            if(isPrivate) {
-                document.getElementById('wa-input-wrapper').classList.add('private-lock');
-                document.getElementById('wa-send-btn-main').classList.add('private-lock');
-            }
-            await refreshData(); 
+            if(isPrivate) { document.getElementById('wa-input-wrapper').classList.add('private-lock'); document.getElementById('wa-send-btn-main').classList.add('private-lock'); }
+            await refreshData();
             if(!isPrivate) updateStatus("Online", myLastSeen);
-            setInterval(refreshData, 5000); 
+            setInterval(refreshData, 5000);
             setInterval(checkIdle, 60000);
         } else { alert("Wrong Key!"); }
     }
@@ -147,10 +142,9 @@
                 if(!isMe) otherSeen = parseInt(u.seenCount) || 0;
                 else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
                 
-                let lastUpdate = new Date(u.time.replace(' ', 'T')).getTime();
+                let lastUpdate = parseSafeDate(u.time).getTime();
                 let isOnline = (u.status === "Online" && (Date.now() - lastUpdate) < 600000);
                 let nameInit = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
-                
                 let displayStatus = isOnline ? "Online" : "Offline";
                 if(isMe && isPrivate) displayStatus = "🕵️ Private";
                 if(!isMe && u.status === "Private") displayStatus = "Offline";
@@ -163,97 +157,73 @@
             });
             document.getElementById('top-status-content').innerHTML = topHtml;
 
-            let history = data.history || [];
-            localHistory = history;
-            if(history.length > lastMsgCount) {
-                let unreadCount = history.length - myLastSeen;
-                if(unreadCount > 0 && history.slice(myLastSeen).some(m => !m.name.toUpperCase().includes(currentUser))) {
-                    if(lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
-                    if(document.getElementById('notes-display').style.display !== 'flex') {
-                        const badge = document.getElementById('notif-badge');
-                        badge.innerText = unreadCount; badge.style.display = 'block';
-                    } else { myLastSeen = history.length; updateStatus("Online", myLastSeen); }
-                }
-                lastMsgCount = history.length;
+            if(data.history.length > lastMsgCount) {
+                localHistory = data.history;
+                renderMessages(otherSeen);
+                if(data.history.length > lastMsgCount && lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
+                lastMsgCount = data.history.length;
+                
+                // Auto-Scroll to bottom if chat is open
+                const box = document.getElementById('notes-display');
+                if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
             }
-            renderMessages(otherSeen);
-        } catch(e) { console.log("Sync Error", e); }
+        } catch(e) { }
     }
 
     function renderMessages(otherSeen) {
-        let hHtml = ""; lastDateShown = "";
-        const box = document.getElementById('notes-display');
+        let hHtml = ""; let lastDate = "";
         localHistory.forEach((h, idx) => {
-            let d = new Date(h.time.replace(' ', 'T')); const dStr = d.toDateString();
-            if(dStr !== lastDateShown) { hHtml += `<div class="date-divider">${dStr}</div>`; lastDateShown = dStr; }
+            let d = parseSafeDate(h.time);
+            if(d.toDateString() !== lastDate) {
+                hHtml += `<div style="align-self:center; font-size:0.6rem; color:#888; margin:5px 0;">${d.toDateString()}</div>`;
+                lastDate = d.toDateString();
+            }
             let isMe = h.name.toUpperCase().includes(currentUser);
-            let tick = (isMe) ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
-            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px;">` : h.note;
-            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}<div class="msg-time">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
+            let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
+            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${h.note}<div class="msg-time">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
         });
-        box.innerHTML = hHtml;
-    }
-
-    function toggleChat() {
-        if(isPrivate) { alert("Private User can't open chat."); return; }
-        const box = document.getElementById('notes-display');
-        const badge = document.getElementById('notif-badge');
-        box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-        if(box.style.display === 'flex') {
-            box.scrollTop = box.scrollHeight;
-            badge.style.display = 'none';
-            badge.innerText = "0";
-            myLastSeen = localHistory.length; 
-            updateStatus("Online", myLastSeen);
-        }
+        document.getElementById('notes-display').innerHTML = hHtml;
     }
 
     function sendNote() { 
         if(isPrivate) return;
         let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
-        localHistory.push({ name: currentUser, note: m, time: new Date().toISOString() });
-        myLastSeen = localHistory.length; 
-        renderMessages(0); inp.value = "";
+        // Optimistic UI: Add local message for speed
+        const tempTime = new Date().toISOString();
+        localHistory.push({name: currentUser, note: m, time: tempTime});
+        renderMessages(0);
+        const box = document.getElementById('notes-display');
+        box.scrollTop = box.scrollHeight;
+        inp.value = "";
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
-        updateStatus("Online", myLastSeen);
     }
 
-    function formatFullDate(s) {
-        if(!s) return "";
-        let d = new Date(s.replace(' ', 'T'));
-        let days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        let hrs = d.getHours()%12||12;
-        let ampm = d.getHours()>=12?'pm':'am';
-        return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}<br>${hrs}:${String(d.getMinutes()).padStart(2,'0')}${ampm}`;
-    }
-
-    function checkIdle() {
-        if(document.getElementById('stay-login').checked) return;
-        if(Date.now() - lastActivity > 600000) fullExit();
+    function toggleChat() {
+        if(isPrivate) { alert("Private User restricted."); return; }
+        const box = document.getElementById('notes-display');
+        box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+        if(box.style.display === 'flex') {
+            box.scrollTop = box.scrollHeight;
+            document.getElementById('notif-badge').style.display = 'none';
+            myLastSeen = localHistory.length;
+            updateStatus("Online", myLastSeen);
+        }
     }
 
     function fullExit() {
         if(!isPrivate) updateStatus("Offline", myLastSeen);
-        document.body.innerHTML = "<div style='display:flex; height:100vh; align-items:center; justify-content:center; flex-direction:column; background:#fce4ec;'><h2>World Closed.</h2><button onclick='location.reload()' style='padding:10px 20px; border-radius:15px; border:none; background:#ff85a2; color:white;'>Re-Login</button></div>";
+        window.close(); // Try closing tab
+        window.location.href = "about:blank"; // Fallback
     }
 
-    function updateStatus(s, count) { 
-        if(isPrivate && s === "Online") return; 
-        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:isPrivate?"Private":s, seenCount:count})}); 
+    function formatFullDate(s) {
+        let d = parseSafeDate(s);
+        let days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        return `${days[d.getDay()]}, ${d.getDate()} Jan<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;
     }
 
-    async function uploadMedia(input) {
-        if(isPrivate) return;
-        const file = input.files[0]; if(!file) return;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            const base64 = e.target.result.split(',')[1];
-            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64})});
-        };
-        reader.readAsDataURL(file);
-    }
-
+    function checkIdle() { if(!document.getElementById('stay-login').checked && (Date.now() - lastActivity > 600000)) fullExit(); }
+    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:isPrivate?"Private":s, seenCount:count})}); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
     function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
     window.onload = window.onmousemove = window.ontouchstart = () => { lastActivity = Date.now(); };
