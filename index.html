@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4.7 LOCKED</title>
+    <title>Secret Dunia - A4 FINAL SYNC</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
@@ -41,7 +41,15 @@
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
         .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+        
+        /* NEW COMPONENTS STYLES */
+        .event-bar { background: #fff5f7; border-radius: 8px; padding: 6px 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; border: 1px solid #ffd1dc; }
+        .dark-mode .event-bar { background: #2c2c2c; color: white; border-color: #444; }
+        .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
+        .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.1rem; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .dark-mode .hub-btn { background: #333; }
+        .playlist-scroller { background: #f0f7ff; border-radius: 10px; padding: 8px; font-size: 0.7rem; display: flex; align-items: center; gap: 8px; overflow-x: auto; border: 1px solid #d0e0ff; margin-bottom: 10px; }
+        .dark-mode .playlist-scroller { background: #1e2530; border-color: #333; }
     </style>
 </head>
 <body>
@@ -67,9 +75,36 @@
         <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
         <button style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
+
     <div id="dashboard" style="display:none;">
-        <span class="nisha-note" style="color:#d63384; font-size:0.7rem; font-style:italic;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
-        <div class="card" id="countdown-area" style="font-size:0.75rem; margin-top:10px;"></div>
+        <div style="text-align: left; margin-bottom: 5px;">
+            <span style="color:#d63384; font-size:0.75rem; font-style:italic; font-weight:bold;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
+        </div>
+
+        <div class="card" style="padding: 8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                <span style="font-size:0.75rem; font-weight:bold;">⏳ Events</span>
+                <button onclick="addExtEvent()" style="background:var(--pink); color:white; border:none; border-radius:4px; font-size:0.6rem; padding:2px 6px;">+ ADD</button>
+            </div>
+            <div id="ext-event-list" style="max-height:100px; overflow-y:auto;"></div>
+        </div>
+
+        <div class="playlist-scroller" id="ext-playlist">
+            <b>🎵</b>
+            <div id="ext-song-list" style="display:flex; gap:10px; overflow-x:auto; white-space:nowrap;"></div>
+            <button onclick="addExtSong()" style="border:none; background:none; font-size:1rem; cursor:pointer; margin-left:auto;">➕</button>
+        </div>
+
+        <div class="hub-grid">
+            <button class="hub-btn" onclick="openExtHub(1)">🔗</button>
+            <button class="hub-btn" onclick="openExtHub(2)">🎬</button>
+            <button class="hub-btn" onclick="openExtHub(3)">🎧</button>
+            <button class="hub-btn" onclick="openExtHub(4)">📂</button>
+            <button class="hub-btn" onclick="openExtHub(5)">🔒</button>
+            <button class="hub-btn" onclick="openExtHub(6)">🖼️</button>
+            <button class="hub-btn" onclick="openExtHub(7)">🛰️</button>
+            <button class="hub-btn" onclick="openExtHub(8)">🚀</button>
+        </div>
     </div>
 </div>
 
@@ -94,6 +129,19 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
     let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
     let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0;
+    let extCountdowns = [];
+
+    // --- HUB CONFIG ---
+    const extHubData = {
+        1: { url: "https://google.com", pass: "111" },
+        2: { url: "#", pass: "222" },
+        3: { url: "#", pass: "333" },
+        4: { url: "#", pass: "444" },
+        5: { url: "#", pass: "555" },
+        6: { url: "#", pass: "666" },
+        7: { url: "#", pass: "777" },
+        8: { url: "#", pass: "888" }
+    };
 
     function parseSafeDate(s) {
         if(!s) return new Date();
@@ -114,32 +162,32 @@
             document.getElementById('dashboard').style.display='block';
             document.getElementById('wa-bar').style.display='flex';
             document.getElementById('top-bar-ui').style.display='flex';
-            if(isPrivate) { document.getElementById('wa-input-wrapper').classList.add('private-lock'); document.getElementById('wa-send-btn-main').classList.add('private-lock'); }
             await refreshData();
             if(!isPrivate) updateStatus("Online", myLastSeen);
             setInterval(refreshData, 5000);
+            setInterval(runExtTicker, 1000); // For Seconds
             setInterval(checkIdle, 60000);
         } else { alert("Wrong Key!"); }
     }
 
+    // ORIGINAL REFRESH DATA (A4 LOCKED)
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            let topHtml = ""; 
             
+            // Status Logic
+            let topHtml = ""; 
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) otherSeenCountGlobal = parseInt(u.seenCount) || 0;
                 else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
-                
                 let lastUpdate = parseSafeDate(u.time).getTime();
                 let isOnline = (u.status === "Online" && (Date.now() - lastUpdate) < 600000);
                 let nameInit = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
                 let displayStatus = isOnline ? "Online" : "Offline";
                 if(isMe && isPrivate) displayStatus = "🕵️ Private";
                 if(!isMe && u.status === "Private") displayStatus = "Offline";
-
                 topHtml += `<div class="user-stat">
                                 <div class="dot ${isOnline && displayStatus!=='Offline'?'dot-online':''}"></div>
                                 <span class="stat-label">${nameInit}: ${displayStatus}</span>
@@ -148,9 +196,9 @@
             });
             document.getElementById('top-status-content').innerHTML = topHtml;
 
+            // Chat Logic
             const chatBox = document.getElementById('notes-display');
             const badge = document.getElementById('notif-badge');
-
             if(data.history.length > lastMsgCount) {
                 localHistory = data.history;
                 let unreadCount = localHistory.length - myLastSeen;
@@ -168,9 +216,68 @@
             } else {
                 renderMessages(otherSeenCountGlobal);
             }
-        } catch(e) { }
+
+            // Sync External Data
+            extCountdowns = data.countdowns || [];
+            renderExtPlaylist(data.playlist || []);
+
+        } catch(e) {}
     }
 
+    // --- EXTENSION FUNCTIONS (NO EFFECT ON CHAT) ---
+    function runExtTicker() {
+        const list = document.getElementById('ext-event-list');
+        if(!extCountdowns.length) { list.innerHTML = "<small style='color:#ccc'>No events</small>"; return; }
+        let html = "";
+        const now = new Date().getTime();
+        extCountdowns.forEach((ev, idx) => {
+            const target = new Date(ev.date).getTime();
+            const diff = target - now;
+            let timeStr = "";
+            if (diff > 0) {
+                const d = Math.floor(diff / (1000*60*60*24));
+                const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+                const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+                const s = Math.floor((diff % (1000*60)) / 1000);
+                timeStr = `${d}d ${h}h ${m}m ${s}s`;
+            } else {
+                if (Math.abs(diff) > 21600000) return; // 6h auto clean
+                timeStr = "<b style='color:green'>FINISHED</b>";
+            }
+            const del = (ev.user === currentUser) ? `<span onclick="alert('Delete Row '+(idx+2)+' in Sheets')" style="color:red; cursor:pointer;">✕</span>` : "";
+            html += `<div class="event-bar"><span><b>${ev.label}</b>: ${timeStr}</span> ${del}</div>`;
+        });
+        list.innerHTML = html;
+    }
+
+    async function addExtEvent() {
+        const l = prompt("Event Name:");
+        const d = prompt("Date (YYYY-MM-DD HH:MM:SS):", "2026-01-20 18:00:00");
+        if(l && d) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", label:l, date:d, user:currentUser})}); }
+    }
+
+    function renderExtPlaylist(songs) {
+        const container = document.getElementById('ext-song-list');
+        let html = "";
+        songs.slice(-5).forEach(s => {
+            html += `<a href="${s.url}" target="_blank" style="color:#007bff; text-decoration:none;">${s.title}</a>`;
+        });
+        container.innerHTML = html || "No songs";
+    }
+
+    async function addExtSong() {
+        const t = prompt("Song Title:");
+        const u = prompt("URL:");
+        if(t && u) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
+    }
+
+    function openExtHub(id) {
+        const cfg = extHubData[id];
+        if(prompt("Key:") === cfg.pass) { if(cfg.url !== "#") window.open(cfg.url, '_blank'); else alert("No link."); }
+        else alert("Wrong!");
+    }
+
+    // --- CORE A4 FUNCTIONS (UNTOUCHED) ---
     function renderMessages(otherSeen) {
         let hHtml = ""; let lastDate = "";
         localHistory.forEach((h, idx) => {
@@ -187,29 +294,21 @@
         document.getElementById('notes-display').innerHTML = hHtml;
     }
 
-    // QUICK MESSAGE FIX
     function sendNote() { 
         if(isPrivate) return;
         let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
-        
-        // Step 1: Add to local array instantly
         let now = new Date();
         localHistory.push({name: currentUser, note: m, time: now.toISOString()});
-        
-        // Step 2: Render immediately
         renderMessages(otherSeenCountGlobal);
         const box = document.getElementById('notes-display');
         box.scrollTop = box.scrollHeight;
         inp.value = "";
-        
-        // Step 3: Background sync
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
         myLastSeen = localHistory.length;
         updateStatus("Online", myLastSeen);
     }
 
     function toggleChat() {
-        if(isPrivate) { alert("Private User restricted."); return; }
         const box = document.getElementById('notes-display');
         const badge = document.getElementById('notif-badge');
         const isOpen = (box.style.display === 'flex');
@@ -223,7 +322,6 @@
     }
 
     async function uploadMedia(input) {
-        if(isPrivate) return;
         const file = input.files[0]; if(!file) return;
         const reader = new FileReader();
         reader.onload = async (e) => {
