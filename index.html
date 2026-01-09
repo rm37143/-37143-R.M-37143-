@@ -3,20 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4.6 LOCKED</title>
+    <title>Secret Dunia - A4.7 LOCKED</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
         body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
         
-        /* TOP NAV (FIXED) */
-        .top-status-bar {
-            position: fixed; top: 0; left: 0; right: 0; height: 75px;
-            background: var(--glass); backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink);
-        }
+        .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
         .dark-mode .top-status-bar { background: rgba(30, 30, 30, 0.9); }
         .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
         .nav-btn-sm { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
@@ -33,7 +27,6 @@
         .off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .stay-label { font-size: 0.5rem; color: var(--dark); }
 
-        /* [LOCKED CHAT UI] */
         .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
         .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
         .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
@@ -71,12 +64,9 @@
         <h2 style="color:var(--pink);">Secret Dunia</h2>
         <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
         <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key==='Enter') checkAuth()">
-        <div style="margin:10px 0; font-size:0.8rem;">
-            <input type="checkbox" id="private-mode"> 🕵️ Private Mode
-        </div>
+        <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
         <button style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
-
     <div id="dashboard" style="display:none;">
         <span class="nisha-note" style="color:#d63384; font-size:0.7rem; font-style:italic;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
         <div class="card" id="countdown-area" style="font-size:0.75rem; margin-top:10px;"></div>
@@ -93,7 +83,6 @@
         </div>
         <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
         <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
-        
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
     <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
@@ -104,7 +93,7 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
     let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
-    let localHistory = [], myLastSeen = -1;
+    let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0;
 
     function parseSafeDate(s) {
         if(!s) return new Date();
@@ -137,11 +126,11 @@
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            let otherSeenCount = 0, topHtml = ""; 
+            let topHtml = ""; 
             
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
-                if(!isMe) otherSeenCount = parseInt(u.seenCount) || 0;
+                if(!isMe) otherSeenCountGlobal = parseInt(u.seenCount) || 0;
                 else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
                 
                 let lastUpdate = parseSafeDate(u.time).getTime();
@@ -159,12 +148,11 @@
             });
             document.getElementById('top-status-content').innerHTML = topHtml;
 
-            localHistory = data.history || [];
             const chatBox = document.getElementById('notes-display');
             const badge = document.getElementById('notif-badge');
 
-            if(localHistory.length > lastMsgCount) {
-                // Check if we need to show badge (chat closed and new msg from OTHER person)
+            if(data.history.length > lastMsgCount) {
+                localHistory = data.history;
                 let unreadCount = localHistory.length - myLastSeen;
                 if(unreadCount > 0 && chatBox.style.display !== 'flex') {
                     badge.innerText = unreadCount;
@@ -175,11 +163,10 @@
                     updateStatus("Online", myLastSeen);
                 }
                 lastMsgCount = localHistory.length;
-                renderMessages(otherSeenCount);
+                renderMessages(otherSeenCountGlobal);
                 if(chatBox.style.display === 'flex') chatBox.scrollTop = chatBox.scrollHeight;
             } else {
-                // Even if no new messages, update ticks if other user saw them
-                renderMessages(otherSeenCount);
+                renderMessages(otherSeenCountGlobal);
             }
         } catch(e) { }
     }
@@ -200,14 +187,22 @@
         document.getElementById('notes-display').innerHTML = hHtml;
     }
 
+    // QUICK MESSAGE FIX
     function sendNote() { 
         if(isPrivate) return;
         let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
-        localHistory.push({name: currentUser, note: m, time: new Date().toISOString()});
-        renderMessages(0);
+        
+        // Step 1: Add to local array instantly
+        let now = new Date();
+        localHistory.push({name: currentUser, note: m, time: now.toISOString()});
+        
+        // Step 2: Render immediately
+        renderMessages(otherSeenCountGlobal);
         const box = document.getElementById('notes-display');
         box.scrollTop = box.scrollHeight;
         inp.value = "";
+        
+        // Step 3: Background sync
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
         myLastSeen = localHistory.length;
         updateStatus("Online", myLastSeen);
@@ -223,7 +218,7 @@
             box.scrollTop = box.scrollHeight;
             badge.style.display = 'none';
             myLastSeen = localHistory.length;
-            updateStatus("Online", myLastSeen); // This triggers blue ticks for the other user
+            updateStatus("Online", myLastSeen);
         }
     }
 
