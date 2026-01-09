@@ -6,32 +6,12 @@
     <title>Secret Dunia - A4 LOCKED</title>
     
     <style>
-        /* [ZONE: DESIGN SYSTEM] */
+        /* [ZONE: DESIGN SYSTEM] - DO NOT ALTER COLORS/LAYOUT WITHOUT PERMISSION */
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
         body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; position: relative; }
         
-        /* [NEW: FIXED TOP BAR] */
-        .top-status-bar {
-            position: fixed; top: 0; left: 0; right: 0; height: 50px;
-            background: var(--glass); backdrop-filter: blur(5px);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 10px; z-index: 2000; border-bottom: 1px solid rgba(255,133,162,0.3);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .dark-mode .top-status-bar { background: rgba(0,0,0,0.8); }
-
-        .status-center-display {
-            flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px;
-            font-size: 0.6rem; color: var(--dark);
-        }
-        .dark-mode .status-center-display { color: white; }
-
-        .indicator { display: flex; align-items: center; gap: 4px; }
-        .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--grey); }
-        .dot-online { background: var(--green); box-shadow: 0 0 5px var(--green); }
-
-        /* [ZONE: CHAT UI COMPONENTS] - REMAINING UNTOUCHED */
+        /* [ZONE: CHAT UI COMPONENTS] - STRUCTURALLY LOCKED */
         .chat-frame { 
             display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); 
             width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); 
@@ -45,9 +25,9 @@
         .msg-time { font-size: 0.6rem; opacity: 0.5; margin-left: 5px; float: right; margin-top: 5px; display: block; width: 100%; text-align: right;}
         .tick-blue { color: #34b7f1; font-weight: bold; margin-left: 3px; }
         .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; min-width: 12px; text-align: center; border: 1px solid white;}
-        .date-divider { align-self: center; background: rgba(0,0,0,0.05); padding: 2px 10px; border-radius: 10px; font-size: 0.65rem; color: #666; margin: 5px 0; }
         
-        .container { width: 100%; max-width: 400px; text-align: center; margin-top: 55px; }
+        /* Dashboard & Utility UI */
+        .container { width: 100%; max-width: 400px; text-align: center; }
         .music-card, .countdown-container, .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; }
         .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; box-sizing: border-box; }
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
@@ -57,18 +37,11 @@
 </head>
 <body>
 
-<div class="top-status-bar" id="top-bar-ui" style="display:none;">
-    <button class="mode-toggle" onclick="toggleTheme()" style="background:var(--pink); color:white; border:none; padding:6px 10px; border-radius:12px; font-size:0.65rem; cursor:pointer;">🌓 MODE</button>
-    
-    <div class="status-center-display" id="top-status-content">
-        <span>Syncing World...</span>
-    </div>
-
-    <button id="silent-btn" onclick="toggleSilent()" style="background:var(--pink); color:white; border:none; padding:6px 10px; border-radius:12px; font-size:0.65rem; cursor:pointer;">🔕 SILENT</button>
-</div>
+<button class="mode-toggle" onclick="toggleTheme()" style="position:fixed; top:10px; left:10px; z-index:1000; background:var(--pink); color:white; border:none; padding:6px 10px; border-radius:12px; font-size:0.65rem;">🌓 MODE</button>
+<button id="silent-btn" onclick="toggleSilent()" style="position:fixed; top:10px; right:10px; z-index:1000; background:var(--pink); color:white; border:none; padding:6px 10px; border-radius:12px; font-size:0.65rem;">🔕 SILENT</button>
 
 <div class="container">
-    <h2 id="main-title" style="color:var(--pink); margin-top:35px;">Secret Dunia</h2>
+    <h2 style="color:var(--pink); margin-top:35px;">Secret Dunia</h2>
     
     <div id="login-screen" class="card">
         <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
@@ -95,6 +68,8 @@
 
         <div class="countdown-container" id="countdown-area" style="font-size:0.75rem;"></div>
         <button onclick="addCountdownPrompt()" style="background:var(--pink); color:white; border:none; padding:8px 18px; border-radius:15px; font-weight:bold; margin-bottom:15px;">+ Add Event</button>
+        
+        <div id="status-container" style="background:#fff; padding:10px; border-radius:12px; font-size:0.62rem; border-left:5px solid var(--green); text-align:left;">Syncing...</div>
     </div>
 </div>
 
@@ -116,7 +91,8 @@
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyJcDQF3HJHSyPL8ZV2vsfnGYuBnEXyypKUOivgEaPQ29dch-3LTvmbVg8Swayablg/exec';
+    /* [ZONE: LOGIC LOCK] - CORE FUNCTIONS FOR SYNC AND BADGE LOGIC */
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyHiSHbpv31Nf6og15QmOx6CzDlKWaMElofDgqxeJaK6PbMLLIfUM0J_fXZ_i71q551/exec';
     let currentUser = "", sheetPass = {}, lastMsgCount = 0, isSilent = true, savedCountdowns = [], savedPlaylist = [], lastDateShown = "";
     let localHistory = [], myLastSeen = -1;
 
@@ -131,8 +107,6 @@
             document.getElementById('login-screen').style.display='none';
             document.getElementById('dashboard').style.display='block';
             document.getElementById('wa-bar').style.display='flex';
-            document.getElementById('top-bar-ui').style.display='flex';
-            document.getElementById('main-title').style.display='none';
             await refreshData(); 
             updateStatus("Online", myLastSeen); 
             setInterval(refreshData, 5000); 
@@ -140,6 +114,7 @@
         } else { alert("Wrong Key!"); }
     }
 
+    // FUNCTION: TOGGLE CHAT (LOCKED: Handles Seen Logic)
     function toggleChat() {
         const box = document.getElementById('notes-display');
         const badge = document.getElementById('notif-badge');
@@ -153,28 +128,23 @@
         }
     }
 
+    // FUNCTION: REFRESH DATA (LOCKED: Handles Badge & Ticks Sync)
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
             savedCountdowns = data.countdowns || [];
             savedPlaylist = data.playlist || [];
-            let otherSeen = 0, topHtml = ""; 
+            let otherSeen = 0, sHtml = ""; 
             
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) otherSeen = parseInt(u.seenCount) || 0;
                 else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
-                
-                let isOnline = u.status === "Online";
-                let nameInit = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
-                
-                topHtml += `<div class="indicator">
-                                <div class="dot ${isOnline?'dot-online':''}"></div>
-                                <b>${nameInit}</b>: <span style="opacity:0.8">${isOnline?'Online':formatSimpleDate(u.time)}</span>
-                            </div>`;
+                let dotClass = u.status === "Online" ? "dot-online" : "dot-offline";
+                sHtml += `<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #f9f9f9;"><span><b>${u.name}</b>: ${u.status}</span><small>${isMe ? `<button onclick="logout()" style="background:#ff4d4d; color:white; border:none; border-radius:5px; padding:2px 5px; font-size:0.55rem;">OFF</button>` : formatSimpleDate(u.time)}</small></div>`;
             });
-            document.getElementById('top-status-content').innerHTML = topHtml;
+            document.getElementById('status-container').innerHTML = sHtml;
 
             let history = data.history || [];
             localHistory = history;
@@ -201,8 +171,7 @@
         let hHtml = ""; lastDateShown = "";
         const box = document.getElementById('notes-display');
         localHistory.forEach((h, idx) => {
-            let d = new Date(h.time.replace(' ', 'T')); 
-            const dStr = d.toDateString();
+            let d = new Date(h.time); const dStr = d.toDateString();
             if(dStr !== lastDateShown) { hHtml += `<div class="date-divider">${dStr}</div>`; lastDateShown = dStr; }
             let isMe = h.name.toUpperCase().includes(currentUser);
             let tick = (isMe) ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
@@ -213,7 +182,6 @@
     }
 
     function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
-    
     function sendNote() { 
         let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
         localHistory.push({ name: currentUser, note: m, time: new Date().toISOString() });
@@ -223,10 +191,10 @@
         updateStatus("Online", myLastSeen);
     }
     
+    // UTILITIES
     function logout() { updateStatus("Offline", myLastSeen); setTimeout(() => location.reload(), 500); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
     function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
-    
     function updateLiveCountdowns() {
         let h = ""; savedCountdowns.forEach((c) => {
             let diff = new Date(c.date).getTime() - new Date().getTime();
@@ -235,7 +203,6 @@
         });
         document.getElementById('countdown-area').innerHTML = h;
     }
-
     async function uploadMedia(input) {
         const file = input.files[0]; if(!file) return;
         const reader = new FileReader();
@@ -245,16 +212,14 @@
         };
         reader.readAsDataURL(file);
     }
-
     function renderPlaylist() {
         let html = ""; savedPlaylist.forEach(s => { html += `<div style="padding:3px 0;"><b>${s.title}</b> <button onclick="playMusic('${s.url}', '${s.title}')" style="background:none; border:none; color:var(--blue);">▶</button></div>`; });
         document.getElementById('playlist-area').innerHTML = html || "No songs.";
     }
-
     function playMusic(u, t) { const a = document.getElementById('global-audio'); a.src = u; a.play(); document.getElementById('now-playing-title').innerText = t; document.getElementById('smart-player').style.display = "flex"; }
     function stopMusic() { document.getElementById('global-audio').pause(); document.getElementById('smart-player').style.display = "none"; }
     function togglePlay() { const a = document.getElementById('global-audio'); if (a.paused) a.play(); else a.pause(); }
-    function formatSimpleDate(s) { if(!s) return ""; let d = new Date(s.replace(' ', 'T')); return `${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`; }
+    function formatSimpleDate(s) { if(!s) return ""; let d = new Date(s.replace(' ', 'T')); return `${d.getDate()} Jan, ${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`; }
     async function addSongPrompt() { let t = prompt("Name:"); let u = prompt("URL:"); if(t && u) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:t, url:u, user:currentUser})}); }
     function addCountdownPrompt() { let l = prompt("Event:"); let d = prompt("YYYY-MM-DD HH:MM:"); if(l && d) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", date:d, label:l, user:currentUser})}); }
 </script>
