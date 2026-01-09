@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4 Smart MP3</title>
+    <title>Secret Dunia - A4 Locked</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.9); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
@@ -47,14 +47,14 @@
         .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
         .msg-time { font-size: 0.6rem; opacity: 0.5; margin-left: 5px; float: right; margin-top: 5px; display: block; width: 100%; text-align: right;}
         .tick-blue { color: #34b7f1; font-weight: bold; margin-left: 3px; }
-        .date-divider { align-self: center; background: #d1e4f3; color: #555; padding: 3px 10px; border-radius: 8px; font-size: 0.65rem; margin: 5px 0; font-weight: bold; }
+        .date-divider { align-self: center; background: #d1e4f3; color: #555; padding: 3px 10px; border-radius: 8px; font-size: 0.65rem; margin: 10px 0; font-weight: bold; width: fit-content;}
 
         .badge-container { position: relative; display: inline-block; }
         .msg-badge { 
             position: absolute; top: -5px; right: -5px; 
             background: red; color: white; font-size: 0.6rem; 
-            padding: 2px 5px; border-radius: 50%; font-weight: bold; 
-            display: none; min-width: 10px; text-align: center;
+            padding: 2px 6px; border-radius: 10px; font-weight: bold; 
+            display: none; min-width: 12px; text-align: center; border: 1px solid white;
         }
 
         .wa-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; background: #f0f0f0; padding: 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
@@ -164,8 +164,8 @@
             savedCountdowns = data.countdowns || [];
             savedPlaylist = data.playlist || [];
             
-            // Status Render
-            let sHtml = ""; let otherSeen = 0;
+            let otherSeen = 0;
+            let sHtml = ""; 
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) otherSeen = parseInt(u.seenCount) || 0;
@@ -174,54 +174,58 @@
             });
             document.getElementById('status-container').innerHTML = sHtml;
 
-            // Chat Render
             let hHtml = ""; lastDateShown = "";
             let history = data.history || [];
             const box = document.getElementById('notes-display');
             const badge = document.getElementById('notif-badge');
 
+            // --- BADGE LOGIC LOCKED ---
             if(history.length > lastMsgCount) {
-                if(lastMsgCount !== 0 && !history[history.length-1].name.toUpperCase().includes(currentUser)) {
-                    if(!isSilent) document.getElementById('notif-sound').play();
-                    if(box.style.display !== 'flex') {
-                        badge.innerText = parseInt(badge.innerText) + (history.length - lastMsgCount);
-                        badge.style.display = 'block';
+                if(lastMsgCount !== 0) {
+                    let lastSender = history[history.length-1].name.toUpperCase();
+                    if(!lastSender.includes(currentUser)) {
+                        if(!isSilent) document.getElementById('notif-sound').play();
+                        if(box.style.display !== 'flex') {
+                            badge.innerText = parseInt(badge.innerText) + (history.length - lastMsgCount);
+                            badge.style.display = 'block';
+                        }
                     }
                 }
                 lastMsgCount = history.length;
             }
 
             history.forEach((h, idx) => {
-                // Yahan Maine Error handling ki hai:
                 let d = new Date(h.time);
-                if(isNaN(d.getTime())) d = new Date(); // Agar date kharab ho to current dikhaye
-
+                if(isNaN(d.getTime())) d = new Date();
                 const dStr = d.toDateString();
-                if(dStr !== lastDateShown) { 
-                    hHtml += `<div class="date-divider">${dStr}</div>`; 
-                    lastDateShown = dStr; 
-                }
+                if(dStr !== lastDateShown) { hHtml += `<div class="date-divider">${dStr}</div>`; lastDateShown = dStr; }
                 
                 let isMe = h.name.toUpperCase().includes(currentUser);
                 let sideClass = isMe ? "msg-me" : "msg-them";
-                let tick = (isMe && otherSeen > idx) ? '<span class="tick-blue">✓✓</span>' : (isMe ? '✓' : '');
+                
+                // --- BLUE TICK LOGIC LOCKED ---
+                let tick = "";
+                if(isMe) {
+                    tick = (otherSeen > idx) ? '<span class="tick-blue">✓✓</span>' : '✓';
+                }
+
                 let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px;">` : h.note;
                 let timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
                 hHtml += `<div class="msg ${sideClass}">${content}<div class="msg-time">${timeStr} ${tick}</div></div>`;
             });
             
             box.innerHTML = hHtml;
-            if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
-            updateStatus("Online", history.length);
+            if(box.style.display === 'flex') {
+                box.scrollTop = box.scrollHeight;
+                updateStatus("Online", history.length); // Jab chat khuli ho to seenCount update ho
+            }
 
-            // Hub Render
             let bHtml = ""; ["Ai Assistant", "WhatsApp Hub", "Chat Rooms", "Pinterest", "Video Room", "Mega Drive", "Protected Text", "Settings"].forEach(name => {
                 bHtml += `<div class="hub-btn" onclick="enterRoom('${name}')">${name}</div>`;
             });
             document.getElementById('hub-grid').innerHTML = bHtml;
             renderPlaylist();
-        } catch(e) { console.log("Fetch Error:", e); }
+        } catch(e) { console.log(e); }
     }
 
     async function sendNote() { 
