@@ -1,100 +1,3 @@
-/**
- * BACKEND LOGIC: LOCKED BY GEMINI (2026-01-09)
- * VERSION: A4 FINAL SYNC + BOARD EXTENSION
- */
-
-function doGet() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheets = {
-    settings: ss.getSheetByName("Settings"),
-    status: ss.getSheetByName("Status"),
-    history: ss.getSheetByName("History"),
-    countdowns: ss.getSheetByName("Countdowns"),
-    playlist: ss.getSheetByName("Playlist"),
-    board: ss.getSheetByName("Board") // New Sheet
-  };
-  var data = { passwords: {}, onlineUsers: [], history: [], countdowns: [], playlist: [], board: [] };
-
-  if (sheets.settings) {
-    var v = sheets.settings.getDataRange().getValues();
-    for (var i = 1; i < v.length; i++) { if(v[i][0]) data.passwords[v[i][0]] = v[i][1]; }
-  }
-  if (sheets.status) {
-    var v = sheets.status.getDataRange().getValues();
-    for (var i = 1; i < v.length; i++) {
-      data.onlineUsers.push({ name: v[i][0], status: v[i][1], time: v[i][2], seenCount: v[i][3] });
-    }
-  }
-  if (sheets.history) {
-    var lastRow = sheets.history.getLastRow();
-    if (lastRow > 1) {
-      var v = sheets.history.getRange(Math.max(2, lastRow-99), 1, Math.min(100, lastRow-1), 4).getDisplayValues();
-      for (var i = 0; i < v.length; i++) {
-        if(v[i][0]) data.history.push({ name: v[i][0], note: v[i][1], time: v[i][2] });
-      }
-    }
-  }
-  if (sheets.countdowns) {
-    var v = sheets.countdowns.getDataRange().getValues();
-    for (var i = 1; i < v.length; i++) { data.countdowns.push({ date: v[i][0], label: v[i][1], user: v[i][2] }); }
-  }
-  if (sheets.playlist) {
-    var v = sheets.playlist.getDataRange().getValues();
-    for (var i = 1; i < v.length; i++) { data.playlist.push({ title: v[i][0], url: v[i][1], user: v[i][2] }); }
-  }
-  // NEW BOARD LOGIC
-  if (sheets.board) {
-    var v = sheets.board.getDataRange().getValues();
-    for (var i = 1; i < v.length; i++) { 
-      if(v[i][1]) data.board.push({ type: v[i][0], content: v[i][1], user: v[i][2], time: v[i][3], row: i+1 }); 
-    }
-  }
-
-  return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  var data = JSON.parse(e.postData.contents);
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var now = new Date();
-  var timeStr = Utilities.formatDate(now, "GMT+5", "yyyy-MM-dd HH:mm:ss");
-  
-  // EXTENSION: BOARD ACTIONS
-  if (data.action == "addBoard") {
-    ss.getSheetByName("Board").appendRow([data.type, data.content, data.user, timeStr]);
-    return ContentService.createTextOutput("Success");
-  }
-  if (data.action == "deleteBoard") {
-    ss.getSheetByName("Board").deleteRow(data.row);
-    return ContentService.createTextOutput("Deleted");
-  }
-
-  // ORIGINAL LOCKED ACTIONS
-  if (data.action == "uploadMedia") {
-    var folder = DriveApp.getFolderById("1fkHzmoUEXUy6xjr7YtFOXyYfEbq7qDxe");
-    var blob = Utilities.newBlob(Utilities.base64Decode(data.base64), data.type, data.name + "_" + Date.now());
-    var file = folder.createFile(blob);
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    ss.getSheetByName("History").appendRow([data.name, "MEDIA:" + 'https://drive.google.com/uc?export=view&id=' + file.getId(), timeStr, ""]);
-    return ContentService.createTextOutput("Success");
-  }
-  if (data.action == "updateStatus") {
-    var sheet = ss.getSheetByName("Status");
-    var vals = sheet.getDataRange().getValues();
-    for (var i = 1; i < vals.length; i++) {
-      if (vals[i][0] == data.name) {
-        sheet.getRange(i + 1, 2, 1, 3).setValues([[data.status, timeStr, data.seenCount]]);
-        return ContentService.createTextOutput("OK");
-      }
-    }
-    sheet.appendRow([data.name, data.status, timeStr, data.seenCount]);
-  }
-  else if (data.action == "addCountdown") { ss.getSheetByName("Countdowns").appendRow([data.date, data.label, data.user]); }
-  else if (data.action == "addSong") { ss.getSheetByName("Playlist").appendRow([data.title, data.url, data.user]); }
-  else { ss.getSheetByName("History").appendRow([data.name, data.note, timeStr, ""]); }
-  return ContentService.createTextOutput("Success");
-}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,7 +52,7 @@ function doPost(e) {
         .playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; white-space: nowrap; border: 1px solid #d0e0ff; }
         .dark-mode .playlist-bar { background: #1e2530; border-color: #304060; }
 
-        /* --- NEW BOARD EXTENSION STYLES --- */
+        /* --- GREEN BOARD EXTENSION --- */
         .green-board { 
             background: #1b4d3e; 
             border: 8px solid #5d4037; 
@@ -228,7 +131,7 @@ function doPost(e) {
 
         <div class="green-board" onclick="openFullBoard()">
             <div id="board-preview">
-                <div class="chalk-text">Loading Board...</div>
+                <div class="chalk-text">Click to open Chalk Board...</div>
             </div>
         </div>
     </div>
@@ -239,8 +142,7 @@ function doPost(e) {
         <h3 style="color:white; margin:0;">Chalk Board</h3>
         <button onclick="closeFullBoard()" style="background:red; color:white; border:none; padding:5px 15px; border-radius:5px;">CLOSE</button>
     </div>
-    <div style="background:#1b4d3e; border:4px solid #5d4037; flex:1; border-radius:5px; padding:15px; overflow-y:auto; margin-bottom:15px;" id="board-full-content">
-        </div>
+    <div style="background:#1b4d3e; border:4px solid #5d4037; flex:1; border-radius:5px; padding:15px; overflow-y:auto; margin-bottom:15px;" id="board-full-content"></div>
     <div style="display:flex; gap:5px;">
         <select id="board-type" style="padding:10px; border-radius:5px;">
             <option value="NOTE">Note</option>
@@ -271,11 +173,12 @@ function doPost(e) {
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxwi8CyJP-ccYrnSDrrO58IViLtT0UdvxBuzAREZd2LW7BQX2VH1vSDSQalIqvn9K8/exec';
+    // --- APNI SCRIPT URL YAHA PASTE KAREIN ---
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxwulOKFyoifhI84LYWGmqas0CZB_D1YgXgWhNagtu1jBki9dniVdNFHDlOS1GJ58EM/exec';
+    
     let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
     let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0;
-    
-    // LOCKED: Purana Sara Logic
+
     function parseSafeDate(s) {
         if(!s) return new Date();
         let normalized = s.toString().replace(/-/g, '/').replace('T', ' ');
@@ -285,7 +188,7 @@ function doPost(e) {
 
     async function checkAuth() {
         const btn = document.getElementById('login-btn');
-        btn.innerText = "Verifying..."; // Task: Added Verifying label
+        btn.innerText = "Verifying...";
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
         isPrivate = document.getElementById('private-mode').checked;
@@ -315,7 +218,6 @@ function doPost(e) {
             const res = await fetch(scriptURL);
             const data = await res.json();
             
-            // 1. Status Bar Logic
             let topHtml = ""; 
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
@@ -335,7 +237,6 @@ function doPost(e) {
             });
             document.getElementById('top-status-content').innerHTML = topHtml;
 
-            // 2. Chat Logic
             const chatBox = document.getElementById('notes-display');
             const badge = document.getElementById('notif-badge');
             if(data.history.length > lastMsgCount) {
@@ -356,20 +257,16 @@ function doPost(e) {
 
             globalCountdowns = data.countdowns;
             renderPlaylist(data.playlist);
-            
-            // EXTENSION: Refresh Board
             renderBoard(data.board);
 
-        } catch(e) { console.log(e); }
+        } catch(e) { console.error(e); }
     }
 
-    // --- BOARD EXTENSION LOGIC (ALAG CODING) ---
     function renderBoard(boardData) {
         if(!boardData) return;
         const preview = document.getElementById('board-preview');
         const full = document.getElementById('board-full-content');
         let html = "";
-        
         boardData.forEach(item => {
             let typeLabel = item.type == "Q" ? "Q: " : (item.type == "HEAD" ? "--- " : "");
             html += `<div class="chalk-text">
@@ -378,26 +275,21 @@ function doPost(e) {
                         <span onclick="deleteBoardItem(${item.row})" style="color:#ff4d4d; cursor:pointer; margin-left:10px;">[Delete]</span></span>
                     </div>`;
         });
-        
         full.innerHTML = html;
-        // Preview shows last 3 lines
         const lastThree = boardData.slice(-3);
         let previewHtml = "";
         lastThree.forEach(item => {
             previewHtml += `<div style="font-size:0.7rem; color:white; opacity:0.8; margin-bottom:5px;">• ${item.content.substring(0,30)}...</div>`;
         });
-        preview.innerHTML = previewHtml || "Board is empty. Tap to write.";
+        preview.innerHTML = previewHtml || "Chalk Board is empty.";
     }
 
     async function saveToBoard() {
         const type = document.getElementById('board-type').value;
         const content = document.getElementById('board-input').value.trim();
         if(!content) return;
-        
         document.getElementById('board-input').value = "Saving...";
-        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({
-            action:"addBoard", type:type, content:content, user:currentUser
-        })});
+        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addBoard", type:type, content:content, user:currentUser})});
         document.getElementById('board-input').value = "";
         refreshData();
     }
@@ -412,7 +304,6 @@ function doPost(e) {
     function openFullBoard() { document.getElementById('board-modal').style.display = 'flex'; }
     function closeFullBoard() { document.getElementById('board-modal').style.display = 'none'; }
 
-    // --- BACK TO LOCKED FUNCTIONS ---
     function runCountdownEngine() {
         const list = document.getElementById('countdown-list');
         if(!globalCountdowns.length) { list.innerHTML = "<small style='color:#ccc'>No active events</small>"; return; }
