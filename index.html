@@ -1,145 +1,218 @@
+/**
+ * BACKEND LOGIC: LOCKED BY GEMINI (2026-01-09)
+ * VERSION: A4 FINAL SYNC + BOARD EXTENSION
+ */
+
+function doGet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = {
+    settings: ss.getSheetByName("Settings"),
+    status: ss.getSheetByName("Status"),
+    history: ss.getSheetByName("History"),
+    countdowns: ss.getSheetByName("Countdowns"),
+    playlist: ss.getSheetByName("Playlist"),
+    board: ss.getSheetByName("Board") // New Sheet
+  };
+  var data = { passwords: {}, onlineUsers: [], history: [], countdowns: [], playlist: [], board: [] };
+
+  if (sheets.settings) {
+    var v = sheets.settings.getDataRange().getValues();
+    for (var i = 1; i < v.length; i++) { if(v[i][0]) data.passwords[v[i][0]] = v[i][1]; }
+  }
+  if (sheets.status) {
+    var v = sheets.status.getDataRange().getValues();
+    for (var i = 1; i < v.length; i++) {
+      data.onlineUsers.push({ name: v[i][0], status: v[i][1], time: v[i][2], seenCount: v[i][3] });
+    }
+  }
+  if (sheets.history) {
+    var lastRow = sheets.history.getLastRow();
+    if (lastRow > 1) {
+      var v = sheets.history.getRange(Math.max(2, lastRow-99), 1, Math.min(100, lastRow-1), 4).getDisplayValues();
+      for (var i = 0; i < v.length; i++) {
+        if(v[i][0]) data.history.push({ name: v[i][0], note: v[i][1], time: v[i][2] });
+      }
+    }
+  }
+  if (sheets.countdowns) {
+    var v = sheets.countdowns.getDataRange().getValues();
+    for (var i = 1; i < v.length; i++) { data.countdowns.push({ date: v[i][0], label: v[i][1], user: v[i][2] }); }
+  }
+  if (sheets.playlist) {
+    var v = sheets.playlist.getDataRange().getValues();
+    for (var i = 1; i < v.length; i++) { data.playlist.push({ title: v[i][0], url: v[i][1], user: v[i][2] }); }
+  }
+  // NEW BOARD LOGIC
+  if (sheets.board) {
+    var v = sheets.board.getDataRange().getValues();
+    for (var i = 1; i < v.length; i++) { 
+      if(v[i][1]) data.board.push({ type: v[i][0], content: v[i][1], user: v[i][2], time: v[i][3], row: i+1 }); 
+    }
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var data = JSON.parse(e.postData.contents);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var now = new Date();
+  var timeStr = Utilities.formatDate(now, "GMT+5", "yyyy-MM-dd HH:mm:ss");
+  
+  // EXTENSION: BOARD ACTIONS
+  if (data.action == "addBoard") {
+    ss.getSheetByName("Board").appendRow([data.type, data.content, data.user, timeStr]);
+    return ContentService.createTextOutput("Success");
+  }
+  if (data.action == "deleteBoard") {
+    ss.getSheetByName("Board").deleteRow(data.row);
+    return ContentService.createTextOutput("Deleted");
+  }
+
+  // ORIGINAL LOCKED ACTIONS
+  if (data.action == "uploadMedia") {
+    var folder = DriveApp.getFolderById("1fkHzmoUEXUy6xjr7YtFOXyYfEbq7qDxe");
+    var blob = Utilities.newBlob(Utilities.base64Decode(data.base64), data.type, data.name + "_" + Date.now());
+    var file = folder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    ss.getSheetByName("History").appendRow([data.name, "MEDIA:" + 'https://drive.google.com/uc?export=view&id=' + file.getId(), timeStr, ""]);
+    return ContentService.createTextOutput("Success");
+  }
+  if (data.action == "updateStatus") {
+    var sheet = ss.getSheetByName("Status");
+    var vals = sheet.getDataRange().getValues();
+    for (var i = 1; i < vals.length; i++) {
+      if (vals[i][0] == data.name) {
+        sheet.getRange(i + 1, 2, 1, 3).setValues([[data.status, timeStr, data.seenCount]]);
+        return ContentService.createTextOutput("OK");
+      }
+    }
+    sheet.appendRow([data.name, data.status, timeStr, data.seenCount]);
+  }
+  else if (data.action == "addCountdown") { ss.getSheetByName("Countdowns").appendRow([data.date, data.label, data.user]); }
+  else if (data.action == "addSong") { ss.getSheetByName("Playlist").appendRow([data.title, data.url, data.user]); }
+  else { ss.getSheetByName("History").appendRow([data.name, data.note, timeStr, ""]); }
+  return ContentService.createTextOutput("Success");
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4.8 PREMIUM</title>
+    <title>Secret Dunia - A4.8 LOCKED</title>
     
     <style>
-        :root { 
-            --pink: #ff85a2; 
-            --glass: rgba(255, 255, 255, 0.9); 
-            --green: #2ecc71; 
-            --grey: #bdc3c7; 
-            --blue: #a2d2ff; 
-            --dark: #2c3e50; 
-            --wa-bg: #fdf2f5;
-            --nisha-gold: #ffd700;
-        }
+        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
+        body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
+        body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
         
-        body.dark-mode { background: #0f0f0f; --wa-bg: #0b141a; color: white; }
-        
-        body { 
-            background: linear-gradient(135deg, #fce4ec 0%, #ffe1e9 100%); 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            margin: 0; padding: 10px; 
-            display: flex; justify-content: center; 
-            min-height: 100vh; transition: 0.3s; 
-            padding-bottom: 80px; overflow-x: hidden; 
-        }
+        .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
+        .dark-mode .top-status-bar { background: rgba(30, 30, 30, 0.9); }
+        .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
+        .nav-btn-sm { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
 
-        /* Premium Glass Card */
-        .card { 
-            background: var(--glass); 
-            backdrop-filter: blur(15px);
-            border-radius: 20px; 
+        .status-center-display { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; }
+        .user-stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; text-align: center; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
+        .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
+        .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
+        .stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
+        .dark-mode .stat-label { color: white; }
+
+        .off-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .stay-label { font-size: 0.5rem; color: var(--dark); }
+
+        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
+        .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
+        .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
+        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
+        .tick-blue { color: #34b7f1; font-weight: bold; }
+        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; min-width: 12px; text-align: center; }
+        
+        .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
+        .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
+        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
+        .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
+        .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
+        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+
+        .event-item { background: #fff5f7; border-left: 3px solid var(--pink); border-radius: 6px; padding: 6px 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .dark-mode .event-item { background: #2c2c2c; color: #fff; border-left-color: var(--pink); }
+        .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .hub-btn:active { transform: scale(0.9); }
+        .dark-mode .hub-btn { background: #333; }
+        .playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; white-space: nowrap; border: 1px solid #d0e0ff; }
+        .dark-mode .playlist-bar { background: #1e2530; border-color: #304060; }
+
+        /* --- NEW BOARD EXTENSION STYLES --- */
+        .green-board { 
+            background: #1b4d3e; 
+            border: 8px solid #5d4037; 
+            border-radius: 5px; 
             padding: 15px; 
-            margin-bottom: 15px; 
-            border: 1px solid rgba(255,255,255,0.5); 
-            box-shadow: 0 8px 32px rgba(255, 133, 162, 0.15);
-            color: #444;
+            margin-top: 20px; 
+            min-height: 120px; 
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            position: relative;
         }
-        .dark-mode .card { background: rgba(35, 35, 35, 0.8); color: white; border-color: rgba(255,255,255,0.1); }
-
-        /* Top Status Bar Redesign */
-        .top-status-bar { 
-            position: fixed; top: 0; left: 0; right: 0; height: 75px; 
-            background: var(--glass); backdrop-filter: blur(15px); 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 15px; z-index: 2000; border-bottom: 2px solid var(--pink); 
-        }
-        .dark-mode .top-status-bar { background: rgba(20, 20, 20, 0.9); }
-
-        /* Status Dots with Glow */
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--grey); margin-bottom: 3px; }
-        .dot-online { background: var(--green); box-shadow: 0 0 12px var(--green); }
-
-        /* Nisha Special Styling */
-        .nisha-mode .stat-label { color: #d63384; text-shadow: 0 0 5px rgba(214, 51, 132, 0.2); }
-        .nisha-note { animation: pulse 2s infinite; text-align: center; font-size: 0.85rem !important; }
-        @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; color: #ff1493; } 100% { opacity: 0.7; } }
-
-        /* Modern Grid */
-        .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 15px; }
-        .hub-btn { 
-            background: white; border: none; border-radius: 15px; height: 50px; 
-            font-size: 1.4rem; cursor: pointer; transition: 0.3s; 
-            display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        .hub-btn:hover { transform: translateY(-3px); background: var(--pink); color: white; }
-
-        /* Chat Frame Refresh */
-        .chat-frame { 
-            display: none; position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); 
-            width: 95%; max-width: 400px; height: 400px; background: var(--wa-bg); 
-            border-radius: 25px; z-index: 1500; flex-direction: column; padding: 15px; 
-            border: 2px solid var(--pink); box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
-            overflow-y: auto; gap: 10px;
-        }
-
-        .msg { padding: 10px 14px; border-radius: 18px; max-width: 75%; font-size: 0.9rem; position: relative; line-height: 1.4; }
-        .msg-me { align-self: flex-end; background: #e2ffc7; border-bottom-right-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
-        .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 4px; box-shadow: -2px 2px 5px rgba(0,0,0,0.05); }
-
-        /* Floating Hearts Animation Background */
-        #hearts-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
-
-        /* Utilities */
-        .nav-btn-sm { background: var(--pink); color: white; border: none; padding: 5px 12px; border-radius: 10px; font-size: 0.7rem; cursor: pointer; font-weight: 600; }
-        .wa-send-btn { background: #075e54; color: white; width: 45px; height: 45px; border-radius: 50%; border: none; cursor: pointer; font-size: 1.2rem; }
-        .playlist-bar { background: rgba(255,255,255,0.6); padding: 10px; border-radius: 15px; margin-top: 10px; border: 1px solid var(--blue); }
-        
-        /* New Event Items */
-        .event-item { background: rgba(255,255,255,0.8); margin-bottom: 8px; border-radius: 12px; padding: 10px; display: flex; justify-content: space-between; border-left: 4px solid var(--pink); font-size: 0.8rem; }
+        .chalk-text { font-family: 'Comic Sans MS', cursive; color: rgba(255,255,255,0.9); font-size: 0.9rem; margin-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 5px; }
+        .chalk-meta { font-size: 0.6rem; color: #bdc3c7; display: block; margin-top: 2px; font-style: italic; }
+        .board-full-view { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:4000; flex-direction:column; padding:20px; box-sizing:border-box; }
+        .board-type-tag { font-weight: bold; color: #ffeb3b; margin-right: 5px; }
     </style>
 </head>
-<body id="main-body">
+<body>
 
-<div id="hearts-container"></div>
-
-<button onclick="toggleTheme()" style="position:fixed; top:8px; left:10px; z-index:3000; background:var(--pink); color:white; border:none; padding:6px 12px; border-radius:10px; font-size:0.7rem; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">🌓 THEME</button>
+<button onclick="toggleTheme()" style="position:fixed; top:8px; left:10px; z-index:3000; background:var(--pink); color:white; border:none; padding:5px 10px; border-radius:8px; font-size:0.65rem;">🌓 MODE</button>
 
 <div class="top-status-bar" id="top-bar-ui" style="display:none;">
     <div class="nav-left">
         <button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
     </div>
-    <div class="status-center-display" id="top-status-content" style="display:flex; gap:15px;"></div>
-    <div style="display:flex; flex-direction:column; align-items:center;">
-        <button class="off-btn" onclick="fullExit()" style="background:#ff4757; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:bold; cursor:pointer;">OFF</button>
-        <label style="font-size:0.5rem; margin-top:2px; color:#888;"><input type="checkbox" id="stay-login"> Stay</label>
+    <div class="status-center-display" id="top-status-content"></div>
+    <div class="off-group">
+        <button class="off-btn" onclick="fullExit()">OFF</button>
+        <label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label>
     </div>
 </div>
 
-<div class="container" style="width:100%; max-width:400px; margin-top:90px;">
+<div class="container">
     <div id="login-screen" class="card">
-        <h1 style="color:var(--pink); margin-bottom:5px; font-size: 1.8rem;">Secret Dunia</h1>
-        <p style="font-size: 0.8rem; color: #888; margin-bottom: 20px;">A4.8 FINAL EDITION</p>
-        <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:14px; margin:8px 0; border-radius:25px; border:1px solid #ddd; text-align:center; outline:none;">
-        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:14px; margin:8px 0; border-radius:25px; border:1px solid #ddd; text-align:center; outline:none;" onkeypress="if(event.key==='Enter') checkAuth()">
-        <div style="margin:15px 0; font-size:0.85rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
-        <button style="background:var(--pink); color:white; border:none; padding:14px; border-radius:25px; font-weight:bold; width:90%; cursor:pointer; box-shadow: 0 4px 15px rgba(255, 133, 162, 0.3);" onclick="checkAuth()">ENTER WORLD</button>
+        <h2 style="color:var(--pink);">Secret Dunia</h2>
+        <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
+        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key==='Enter') checkAuth()">
+        <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
+        <button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
 
     <div id="dashboard" style="display:none;">
-        <div id="nisha-header" style="text-align: left; margin-bottom: 12px;">
-            <span class="nisha-note">✨ N sb Apna Wada Yaad Rakhna Hai Hamesha. ✨</span>
+        <div style="text-align: left; margin-bottom: 8px;">
+            <span class="nisha-note" style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic; display: block;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
         </div>
 
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <span style="font-size: 0.9rem; font-weight: bold; color: var(--pink);">📅 UPCOMING EVENTS</span>
-                <button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:8px; font-size:0.7rem; padding:5px 10px; cursor:pointer;">+ ADD</button>
+        <div class="card" style="padding: 10px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.8rem; font-weight: bold; color: var(--pink);">⏳ Upcoming Events</span>
+                <button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:3px 8px; cursor:pointer;">+ ADD</button>
             </div>
-            <div id="countdown-list"></div>
+            <div id="countdown-list" style="max-height: 150px; overflow-y: auto;"></div>
         </div>
 
         <div class="playlist-bar" id="playlist-area">
-            <div style="display:flex; align-items:center; justify-content: space-between; margin-bottom: 5px;">
-                <span style="font-size:0.8rem;">🎵 <b>FAVORITES</b></span>
-                <button onclick="addNewSong()" style="border:none; background:none; font-size:1.1rem; cursor:pointer;">➕</button>
+            <span>🎵 <b>Playlist:</b></span>
+            <div id="song-items" style="display:flex; gap:10px; overflow-x:auto;">
+                <span style="color:#888;">No songs added yet...</span>
             </div>
-            <div id="song-items" style="display:flex; gap:12px; overflow-x:auto; padding-bottom:5px;"></div>
+            <button onclick="addNewSong()" style="border:none; background:none; font-size:1rem; cursor:pointer; margin-left:auto;">➕</button>
         </div>
 
         <div class="hub-grid">
@@ -152,147 +225,57 @@
             <button class="hub-btn" onclick="openHub(7)">🛰️</button>
             <button class="hub-btn" onclick="openHub(8)">🚀</button>
         </div>
+
+        <div class="green-board" onclick="openFullBoard()">
+            <div id="board-preview">
+                <div class="chalk-text">Loading Board...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="board-modal" class="board-full-view">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="color:white; margin:0;">Chalk Board</h3>
+        <button onclick="closeFullBoard()" style="background:red; color:white; border:none; padding:5px 15px; border-radius:5px;">CLOSE</button>
+    </div>
+    <div style="background:#1b4d3e; border:4px solid #5d4037; flex:1; border-radius:5px; padding:15px; overflow-y:auto; margin-bottom:15px;" id="board-full-content">
+        </div>
+    <div style="display:flex; gap:5px;">
+        <select id="board-type" style="padding:10px; border-radius:5px;">
+            <option value="NOTE">Note</option>
+            <option value="Q">Question</option>
+            <option value="A">Answer</option>
+            <option value="HEAD">Heading</option>
+        </select>
+        <input type="text" id="board-input" placeholder="Write on board..." style="flex:1; padding:10px; border-radius:5px; border:none;">
+        <button onclick="saveToBoard()" style="background:var(--green); color:white; border:none; padding:10px 20px; border-radius:5px; font-weight:bold;">SAVE</button>
     </div>
 </div>
 
 <div class="chat-frame" id="notes-display"></div>
 
-<div id="wa-bar" class="top-status-bar" style="display:none; top:auto; bottom:0; height:70px; border-bottom:none; border-top:1px solid #ddd;">
-    <div style="position:relative; margin-right: 10px;">
-        <button onclick="toggleChat()" style="background:none; border:none; font-size:1.8rem; cursor:pointer;">💬</button>
-        <span id="notif-badge" class="msg-badge" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:18px; height:18px; font-size:0.7rem; display:none; align-items:center; justify-content:center;">0</span>
-    </div>
-    <div style="flex:1; background:#f0f0f0; border-radius:25px; padding:5px 15px; display:flex; align-items:center;">
-        <label for="wa-file" style="cursor:pointer; font-size:1.3rem; margin-right:10px;">📎</label>
+<div id="wa-bar" class="wa-bottom" style="display:none;">
+    <div class="wa-input-box" id="wa-input-wrapper">
+        <div style="position:relative; display:inline-block;">
+            <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
+            <span id="notif-badge" class="msg-badge">0</span>
+        </div>
+        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
         <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
-        <input type="text" id="wa-input" placeholder="Type a message..." style="flex:1; border:none; background:none; outline:none; font-size:0.95rem;" onkeydown="if(event.key==='Enter') sendNote()">
+        <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
-    <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()" style="margin-left:10px;">➤</button>
+    <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
 </div>
 
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    // --- CORE CONFIG (LOCKED AS PER A4) ---
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwCfd4_2Maxa2_pqdHmS7JE2bTt0PsIm0IlMqrBIFc32ZmIvtrcBJ4c5-v4dXf_PQEV/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxwi8CyJP-ccYrnSDrrO58IViLtT0UdvxBuzAREZd2LW7BQX2VH1vSDSQalIqvn9K8/exec';
     let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
-    let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0, globalCountdowns = [];
-
-    const hubSettings = {
-        1: { url: "https://google.com", pass: "111" },
-        2: { url: "#", pass: "222" },
-        3: { url: "#", pass: "333" },
-        4: { url: "#", pass: "444" },
-        5: { url: "#", pass: "555" },
-        6: { url: "#", pass: "666" },
-        7: { url: "#", pass: "777" },
-        8: { url: "#", pass: "888" }
-    };
-
-    // --- NEW UI ANIMATION (NISHA SPECIAL) ---
-    function createHearts() {
-        const container = document.getElementById('hearts-container');
-        for(let i=0; i<15; i++) {
-            let heart = document.createElement('div');
-            heart.innerHTML = '❤️';
-            heart.style.position = 'fixed';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.top = '100vh';
-            heart.style.opacity = Math.random() * 0.5;
-            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            heart.style.transition = `transform ${Math.random() * 5 + 5}s linear, opacity 5s`;
-            container.appendChild(heart);
-            setTimeout(() => {
-                heart.style.transform = `translateY(-110vh) rotate(${Math.random() * 360}deg)`;
-                setTimeout(() => heart.remove(), 10000);
-            }, 100);
-        }
-    }
-
-    // --- AUTH & CORE (A4 LOGIC) ---
-    async function checkAuth() {
-        const n = document.getElementById('u-name').value.toUpperCase().trim();
-        const p = document.getElementById('u-pass').value.trim();
-        isPrivate = document.getElementById('private-mode').checked;
-        
-        const res = await fetch(scriptURL);
-        const data = await res.json();
-        
-        if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
-            currentUser = n;
-            document.getElementById('login-screen').style.display='none';
-            document.getElementById('dashboard').style.display='block';
-            document.getElementById('wa-bar').style.display='flex';
-            document.getElementById('top-bar-ui').style.display='flex';
-            
-            if(n.includes("NISHA")) {
-                document.body.classList.add('nisha-mode');
-                setInterval(createHearts, 4000);
-                createHearts();
-            }
-
-            if(isPrivate) {
-                document.getElementById('wa-input').disabled = true;
-                document.getElementById('wa-input').placeholder = "Private Mode Active";
-            }
-            
-            await refreshData();
-            if(!isPrivate) updateStatus("Online", myLastSeen);
-            setInterval(refreshData, 5000);
-            setInterval(runCountdownEngine, 1000);
-            setInterval(checkIdle, 60000);
-        } else { alert("Key Galat Hai!"); }
-    }
-
-    // --- REFRESH DATA (A4 LOGIC) ---
-    async function refreshData() {
-        try {
-            const res = await fetch(scriptURL);
-            const data = await res.json();
-            
-            // Status Logic
-            let topHtml = ""; 
-            data.onlineUsers.forEach(u => {
-                let isMe = u.name.toUpperCase().includes(currentUser);
-                if(!isMe) otherSeenCountGlobal = parseInt(u.seenCount) || 0;
-                else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
-                
-                let lastUpdate = parseSafeDate(u.time).getTime();
-                let isOnline = (u.status === "Online" && (Date.now() - lastUpdate) < 600000);
-                let nameInit = u.name.toUpperCase().includes("AWAIS") ? "AWAIS" : "NISHA";
-                let displayStatus = isOnline ? "Online" : "Offline";
-                if(isMe && isPrivate) displayStatus = "🕵️ Private";
-                if(!isMe && u.status === "Private") displayStatus = "Offline";
-
-                topHtml += `<div style="text-align:center; min-width:80px;">
-                                <div class="dot ${isOnline && displayStatus!=='Offline'?'dot-online':''}" style="margin: 0 auto;"></div>
-                                <div style="font-size:0.7rem; font-weight:bold;">${nameInit}</div>
-                                <div style="font-size:0.5rem; opacity:0.7;">${displayStatus === "Offline" ? formatFullDate(u.time) : 'Active Now'}</div>
-                            </div>`;
-            });
-            document.getElementById('top-status-content').innerHTML = topHtml;
-
-            // Chat/Badge Logic
-            const chatBox = document.getElementById('notes-display');
-            const badge = document.getElementById('notif-badge');
-            if(data.history.length > lastMsgCount) {
-                localHistory = data.history;
-                let unreadCount = localHistory.length - myLastSeen;
-                if(unreadCount > 0 && chatBox.style.display !== 'flex') {
-                    badge.innerText = unreadCount;
-                    badge.style.display = 'flex';
-                    if(lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
-                }
-                lastMsgCount = localHistory.length;
-                renderMessages(otherSeenCountGlobal);
-            }
-            
-            globalCountdowns = data.countdowns;
-            renderPlaylist(data.playlist);
-        } catch(e) { console.log("Refresh Error"); }
-    }
-
-    // --- PRESERVED A4 FUNCTIONS ---
+    let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0;
+    
+    // LOCKED: Purana Sara Logic
     function parseSafeDate(s) {
         if(!s) return new Date();
         let normalized = s.toString().replace(/-/g, '/').replace('T', ' ');
@@ -300,55 +283,163 @@
         return isNaN(d.getTime()) ? new Date() : d;
     }
 
-    function renderMessages(otherSeen) {
-        let hHtml = ""; let lastDate = "";
-        localHistory.forEach((h, idx) => {
-            let d = parseSafeDate(h.time);
-            if(d.toDateString() !== lastDate) {
-                hHtml += `<div style="align-self:center; font-size:0.6rem; color:#888; margin:10px 0; background:rgba(0,0,0,0.05); padding:2px 8px; border-radius:10px;">${d.toDateString()}</div>`;
-                lastDate = d.toDateString();
-            }
-            let isMe = h.name.toUpperCase().includes(currentUser);
-            let tick = isMe ? (otherSeen > idx ? '<span style="color:#34b7f1; font-weight:bold;">✓✓</span>' : '✓') : '';
-            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:12px; margin-top:5px;">` : h.note;
-            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}<div style="font-size:0.6rem; opacity:0.5; text-align:right; margin-top:4px;">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
+    async function checkAuth() {
+        const btn = document.getElementById('login-btn');
+        btn.innerText = "Verifying..."; // Task: Added Verifying label
+        const n = document.getElementById('u-name').value.toUpperCase().trim();
+        const p = document.getElementById('u-pass').value.trim();
+        isPrivate = document.getElementById('private-mode').checked;
+        try {
+            const res = await fetch(scriptURL);
+            const data = await res.json();
+            if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
+                currentUser = n;
+                document.getElementById('login-screen').style.display='none';
+                document.getElementById('dashboard').style.display='block';
+                document.getElementById('wa-bar').style.display='flex';
+                document.getElementById('top-bar-ui').style.display='flex';
+                if(isPrivate) { document.getElementById('wa-input-wrapper').classList.add('private-lock'); document.getElementById('wa-send-btn-main').classList.add('private-lock'); }
+                await refreshData();
+                if(!isPrivate) updateStatus("Online", myLastSeen);
+                setInterval(refreshData, 5000);
+                setInterval(runCountdownEngine, 1000);
+                setInterval(checkIdle, 60000);
+            } else { alert("Wrong Key!"); btn.innerText = "Enter World"; }
+        } catch(e) { btn.innerText = "Enter World"; }
+    }
+
+    let globalCountdowns = [];
+
+    async function refreshData() {
+        try {
+            const res = await fetch(scriptURL);
+            const data = await res.json();
+            
+            // 1. Status Bar Logic
+            let topHtml = ""; 
+            data.onlineUsers.forEach(u => {
+                let isMe = u.name.toUpperCase().includes(currentUser);
+                if(!isMe) otherSeenCountGlobal = parseInt(u.seenCount) || 0;
+                else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
+                let lastUpdate = parseSafeDate(u.time).getTime();
+                let isOnline = (u.status === "Online" && (Date.now() - lastUpdate) < 600000);
+                let nameInit = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
+                let displayStatus = isOnline ? "Online" : "Offline";
+                if(isMe && isPrivate) displayStatus = "🕵️ Private";
+                if(!isMe && u.status === "Private") displayStatus = "Offline";
+                topHtml += `<div class="user-stat">
+                                <div class="dot ${isOnline && displayStatus!=='Offline'?'dot-online':''}"></div>
+                                <span class="stat-label">${nameInit}: ${displayStatus}</span>
+                                <span class="stat-time">${displayStatus === "Offline" ? formatFullDate(u.time) : 'Active Now'}</span>
+                            </div>`;
+            });
+            document.getElementById('top-status-content').innerHTML = topHtml;
+
+            // 2. Chat Logic
+            const chatBox = document.getElementById('notes-display');
+            const badge = document.getElementById('notif-badge');
+            if(data.history.length > lastMsgCount) {
+                localHistory = data.history;
+                let unreadCount = localHistory.length - myLastSeen;
+                if(unreadCount > 0 && chatBox.style.display !== 'flex') {
+                    badge.innerText = unreadCount;
+                    badge.style.display = 'block';
+                    if(lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
+                } else if(chatBox.style.display === 'flex') {
+                    myLastSeen = localHistory.length;
+                    updateStatus("Online", myLastSeen);
+                }
+                lastMsgCount = localHistory.length;
+                renderMessages(otherSeenCountGlobal);
+                if(chatBox.style.display === 'flex') chatBox.scrollTop = chatBox.scrollHeight;
+            } else { renderMessages(otherSeenCountGlobal); }
+
+            globalCountdowns = data.countdowns;
+            renderPlaylist(data.playlist);
+            
+            // EXTENSION: Refresh Board
+            renderBoard(data.board);
+
+        } catch(e) { console.log(e); }
+    }
+
+    // --- BOARD EXTENSION LOGIC (ALAG CODING) ---
+    function renderBoard(boardData) {
+        if(!boardData) return;
+        const preview = document.getElementById('board-preview');
+        const full = document.getElementById('board-full-content');
+        let html = "";
+        
+        boardData.forEach(item => {
+            let typeLabel = item.type == "Q" ? "Q: " : (item.type == "HEAD" ? "--- " : "");
+            html += `<div class="chalk-text">
+                        <span class="board-type-tag">${typeLabel}</span>${item.content}
+                        <span class="chalk-meta">${item.time} - By ${item.user} 
+                        <span onclick="deleteBoardItem(${item.row})" style="color:#ff4d4d; cursor:pointer; margin-left:10px;">[Delete]</span></span>
+                    </div>`;
         });
-        const box = document.getElementById('notes-display');
-        box.innerHTML = hHtml;
-        if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
+        
+        full.innerHTML = html;
+        // Preview shows last 3 lines
+        const lastThree = boardData.slice(-3);
+        let previewHtml = "";
+        lastThree.forEach(item => {
+            previewHtml += `<div style="font-size:0.7rem; color:white; opacity:0.8; margin-bottom:5px;">• ${item.content.substring(0,30)}...</div>`;
+        });
+        preview.innerHTML = previewHtml || "Board is empty. Tap to write.";
     }
 
-    function sendNote() { 
-        if(isPrivate) return;
-        let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
-        localHistory.push({name: currentUser, note: m, time: new Date().toISOString()});
-        renderMessages(otherSeenCountGlobal);
-        inp.value = "";
-        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
-        myLastSeen = localHistory.length;
-        updateStatus("Online", myLastSeen);
+    async function saveToBoard() {
+        const type = document.getElementById('board-type').value;
+        const content = document.getElementById('board-input').value.trim();
+        if(!content) return;
+        
+        document.getElementById('board-input').value = "Saving...";
+        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({
+            action:"addBoard", type:type, content:content, user:currentUser
+        })});
+        document.getElementById('board-input').value = "";
+        refreshData();
     }
 
+    async function deleteBoardItem(row) {
+        if(confirm("Delete this line?")) {
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"deleteBoard", row:row})});
+            refreshData();
+        }
+    }
+
+    function openFullBoard() { document.getElementById('board-modal').style.display = 'flex'; }
+    function closeFullBoard() { document.getElementById('board-modal').style.display = 'none'; }
+
+    // --- BACK TO LOCKED FUNCTIONS ---
     function runCountdownEngine() {
         const list = document.getElementById('countdown-list');
         if(!globalCountdowns.length) { list.innerHTML = "<small style='color:#ccc'>No active events</small>"; return; }
-        let html = "";
-        const now = new Date().getTime();
+        let html = ""; const now = new Date().getTime();
         globalCountdowns.forEach((ev, idx) => {
             const target = new Date(ev.date).getTime();
             const diff = target - now;
-            let timeStr = diff > 0 ? 
-                `${Math.floor(diff/(1000*60*60*24))}d ${Math.floor((diff%(1000*60*60*24))/(1000*60*60))}h ${Math.floor((diff%(1000*60*60))/(1000*60))}m` : 
-                "<b style='color:green'>COMPLETED</b>";
-            if (diff < -21600000) return; 
-            html += `<div class="event-item"><span><b>${ev.label}</b></span><span>${timeStr}</span></div>`;
+            let timeStr = "";
+            if (diff > 0) {
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                timeStr = `${d}d ${h}h ${m}m ${s}s`;
+            } else {
+                timeStr = "<b style='color:green'>FINISHED</b>";
+                if (Math.abs(diff) > 21600000) return;
+            }
+            const delBtn = (ev.user === currentUser) ? `<span onclick="alert('Please delete from Spreadsheet Row ' + (${idx}+2))" style="color:red; cursor:pointer; margin-left:8px;">✕</span>` : "";
+            html += `<div class="event-item"><span><b>${ev.label}</b></span><span>${timeStr} ${delBtn}</span></div>`;
         });
         list.innerHTML = html;
     }
 
     async function addNewEvent() {
         const label = prompt("Event Name:");
-        const date = prompt("Format: YYYY-MM-DD HH:MM:SS", "2026-01-15 00:00:00");
+        const date = prompt("Date & Time (YYYY-MM-DD HH:MM:SS)", "2026-01-15 00:00:00");
         if(label && date) {
             await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", label:label, date:date, user:currentUser})});
             refreshData();
@@ -360,7 +451,7 @@
         if(!songs || songs.length === 0) return;
         let html = "";
         songs.slice(-5).forEach(s => {
-            html += `<a href="${s.url}" target="_blank" style="background:var(--pink); color:white; padding:5px 12px; border-radius:15px; text-decoration:none; font-size:0.7rem; white-space:nowrap;">${s.title}</a>`;
+            html += `<a href="${s.url}" target="_blank" style="color:var(--pink); text-decoration:none; font-weight:bold;">${s.title}</a>`;
         });
         container.innerHTML = html;
     }
@@ -375,22 +466,56 @@
     }
 
     function openHub(id) {
+        const hubSettings = { 1: { url: "https://google.com", pass: "111" }, 2: { url: "#", pass: "222" }, 3: { url: "#", pass: "333" }, 4: { url: "#", pass: "444" }, 5: { url: "#", pass: "555" }, 6: { url: "#", pass: "666" }, 7: { url: "#", pass: "777" }, 8: { url: "#", pass: "888" } };
         const config = hubSettings[id];
-        if(prompt("Enter Hub Key:") === config.pass) {
-            if(config.url === "#") alert("Link Pending");
+        const p = prompt("Enter Hub Key:");
+        if(p === config.pass) {
+            if(config.url === "#") alert("Link not set yet.");
             else window.open(config.url, '_blank');
-        } else alert("Wrong Key!");
+        } else { alert("Wrong Key!"); }
+    }
+
+    function renderMessages(otherSeen) {
+        let hHtml = ""; let lastDate = "";
+        localHistory.forEach((h, idx) => {
+            let d = parseSafeDate(h.time);
+            if(d.toDateString() !== lastDate) {
+                hHtml += `<div style="align-self:center; font-size:0.6rem; color:#888; margin:10px 0; background:rgba(0,0,0,0.05); padding:2px 8px; border-radius:10px;">${d.toDateString()}</div>`;
+                lastDate = d.toDateString();
+            }
+            let isMe = h.name.toUpperCase().includes(currentUser);
+            let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
+            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px; margin-top:5px;">` : h.note;
+            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}<div class="msg-time">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
+        });
+        document.getElementById('notes-display').innerHTML = hHtml;
+    }
+
+    function sendNote() { 
+        if(isPrivate) return;
+        let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
+        let now = new Date();
+        localHistory.push({name: currentUser, note: m, time: now.toISOString()});
+        renderMessages(otherSeenCountGlobal);
+        const box = document.getElementById('notes-display');
+        box.scrollTop = box.scrollHeight;
+        inp.value = "";
+        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
+        myLastSeen = localHistory.length;
+        updateStatus("Online", myLastSeen);
     }
 
     function toggleChat() {
+        if(isPrivate) { alert("Private User restricted."); return; }
         const box = document.getElementById('notes-display');
+        const badge = document.getElementById('notif-badge');
         const isOpen = (box.style.display === 'flex');
         box.style.display = isOpen ? 'none' : 'flex';
         if(!isOpen) {
-            document.getElementById('notif-badge').style.display = 'none';
+            box.scrollTop = box.scrollHeight;
+            badge.style.display = 'none';
             myLastSeen = localHistory.length;
             updateStatus("Online", myLastSeen);
-            setTimeout(() => box.scrollTop = box.scrollHeight, 100);
         }
     }
 
@@ -406,18 +531,24 @@
         reader.readAsDataURL(file);
     }
 
-    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:isPrivate?"Private":s, seenCount:count})}); }
-    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
-    function fullExit() { if(!isPrivate) updateStatus("Offline", myLastSeen); window.location.href = "about:blank"; }
+    function fullExit() {
+        if(!isPrivate) updateStatus("Offline", myLastSeen);
+        window.location.href = "about:blank";
+        window.close();
+    }
+
     function formatFullDate(s) {
         let d = parseSafeDate(s);
         let days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        return `${days[d.getDay()]}, ${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;
     }
+
     function checkIdle() { if(!document.getElementById('stay-login').checked && (Date.now() - lastActivity > 600000)) fullExit(); }
+    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:isPrivate?"Private":s, seenCount:count})}); }
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
     window.onload = window.onmousemove = window.ontouchstart = () => { lastActivity = Date.now(); };
 </script>
-
 </body>
 </html>
