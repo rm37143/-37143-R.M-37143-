@@ -3,36 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4.14 LOCKED</title>
+    <title>Secret Dunia - A4.15 LOCKED</title>
     <style>
-        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --wa-bg: #e5ddd5; }
+        :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
         body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
-        body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; padding-bottom: 80px; overflow-x: hidden; }
-        
-        /* TOP BAR */
+        body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
         .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
-        .status-center-display { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; font-size: 0.7rem; font-weight: bold; color: var(--pink); }
-        .user-stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; }
+        .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
+        .nav-btn-sm { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
+        .status-center-display { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; }
+        .user-stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; text-align: center; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
         .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
-
-        /* UI ELEMENTS */
+        .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
+        .stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
+        .off-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .stay-label { font-size: 0.5rem; color: var(--dark); }
+        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
+        .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
+        .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
+        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
+        .tick-blue { color: #34b7f1; font-weight: bold; }
+        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; min-width: 12px; text-align: center; }
         .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
         .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
         .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
         .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        
-        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); word-wrap: break-word; color: #000; }
-        .msg-me { align-self: flex-end; background: #dcf8c6; }
-        .msg-them { align-self: flex-start; background: #ffffff; }
-        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; text-align: right; }
-        .tick-blue { color: #34b7f1; }
-        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; display: none; }
-        
-        .event-item { background: #fff5f7; border-left: 3px solid var(--pink); padding: 5px; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; font-size: 0.7rem; }
+        .event-item { background: #fff5f7; border-left: 3px solid var(--pink); border-radius: 6px; padding: 6px 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; white-space: nowrap; border: 1px solid #d0e0ff; }
+        .loading-overlay { font-size: 0.8rem; color: var(--pink); font-weight: bold; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -40,11 +45,11 @@
 <button onclick="toggleTheme()" style="position:fixed; top:8px; left:10px; z-index:3000; background:var(--pink); color:white; border:none; padding:5px 10px; border-radius:8px; font-size:0.65rem;">🌓 MODE</button>
 
 <div class="top-status-bar" id="top-bar-ui" style="display:none;">
-    <div style="padding-top:15px;"><button id="silent-btn" onclick="toggleSilent()" style="background:var(--pink); color:white; border:none; border-radius:8px; font-size:0.6rem; padding:4px 8px;">🔕 SILENT</button></div>
-    <div class="status-center-display" id="top-status-content">Syncing...</div>
-    <div style="display:flex; flex-direction:column; align-items:center;">
-        <button style="background:#ff4d4d; color:white; border:none; width:50px; height:30px; border-radius:8px; font-weight:bold;" onclick="fullExit()">OFF</button>
-        <label style="font-size:0.5rem;"><input type="checkbox" id="stay-login"> Stay</label>
+    <div class="nav-left"><button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button></div>
+    <div class="status-center-display" id="top-status-content"></div>
+    <div class="off-group">
+        <button class="off-btn" onclick="fullExit()">OFF</button>
+        <label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label>
     </div>
 </div>
 
@@ -52,19 +57,39 @@
     <div id="login-screen" class="card">
         <h2 style="color:var(--pink);">Secret Dunia</h2>
         <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
-        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
+        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key==='Enter') checkAuth()">
         <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
         <button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
 
     <div id="dashboard" style="display:none;">
-        <div style="text-align: left; font-style:italic; color:#d63384; font-size:0.75rem; margin-bottom:10px;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</div>
-        <div class="card">
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                <b style="font-size:0.8rem; color:var(--pink);">⏳ Events</b>
-                <button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:2px 6px;">+ ADD</button>
+        <div id="loading-status" class="loading-overlay">Syncing World Data...</div>
+        <div id="dashboard-content" style="display:none;">
+            <div style="text-align: left; margin-bottom: 8px;">
+                <span style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic; display: block;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
             </div>
-            <div id="countdown-list"></div>
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 0.8rem; font-weight: bold; color: var(--pink);">⏳ Upcoming Events</span>
+                    <button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:3px 8px;">+ ADD</button>
+                </div>
+                <div id="countdown-list" style="max-height: 150px; overflow-y: auto;"></div>
+            </div>
+            <div class="playlist-bar" id="playlist-area">
+                <span>🎵 <b>Playlist:</b></span>
+                <div id="song-items" style="display:flex; gap:10px; overflow-x:auto;"></div>
+                <button onclick="addNewSong()" style="border:none; background:none; font-size:1rem; cursor:pointer; margin-left:auto;">➕</button>
+            </div>
+            <div class="hub-grid">
+                <button class="hub-btn" onclick="openHub(1)">🔗</button>
+                <button class="hub-btn" onclick="openHub(2)">🎬</button>
+                <button class="hub-btn" onclick="openHub(3)">🎧</button>
+                <button class="hub-btn" onclick="openHub(4)">📂</button>
+                <button class="hub-btn" onclick="openHub(5)">🔒</button>
+                <button class="hub-btn" onclick="openHub(6)">🖼️</button>
+                <button class="hub-btn" onclick="openHub(7)">🛰️</button>
+                <button class="hub-btn" onclick="openHub(8)">🚀</button>
+            </div>
         </div>
     </div>
 </div>
@@ -77,6 +102,8 @@
             <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
             <span id="notif-badge" class="msg-badge">0</span>
         </div>
+        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
+        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
     <button class="wa-send-btn" onclick="sendNote()">➤</button>
@@ -85,118 +112,135 @@
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    // YAHAN APNA NAYA URL PASTE KAREIN
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzX0VntBfTb5HIOSeGLyvNiuFVGb9nb-X9IIydGc1GgZC95Eu7uIIWgK4WKWYDUl52F/exec';
-    
-    let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false;
-    let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0;
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwDEgTjEbhiPXl94V-jgusu_0_IQGB_UmnaqbgREBeCykaeCMSmuq4aOudMzPs-i40x/exec';
+    let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
+    let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0, globalCountdowns = [];
 
     async function checkAuth() {
         const btn = document.getElementById('login-btn');
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
-        if(!n || !p) { alert("Please fill both fields"); return; }
         
-        btn.innerText = "Verifying...";
+        btn.innerText = "Verifying..."; // ACTION 1: VERIFYING
         btn.disabled = true;
 
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            
-            // Password Check Logic
-            if(data.passwords[n] && p == data.passwords[n]) {
+            // EXACT SAME LOGIC AS YOURS
+            if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
                 currentUser = n;
                 isPrivate = document.getElementById('private-mode').checked;
                 document.getElementById('login-screen').style.display='none';
                 document.getElementById('dashboard').style.display='block';
                 document.getElementById('wa-bar').style.display='flex';
                 document.getElementById('top-bar-ui').style.display='flex';
+                
                 await refreshData();
+                
+                // ACTION 2: HIDE LOADING AFTER SYNC
+                document.getElementById('loading-status').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
+
+                if(!isPrivate) updateStatus("Online", myLastSeen);
                 setInterval(refreshData, 5000);
+                setInterval(runCountdownEngine, 1000);
             } else { 
-                alert("Wrong Key or Username!"); 
+                alert("Wrong Key!"); 
                 btn.innerText = "Enter World";
                 btn.disabled = false;
             }
         } catch(e) { 
-            alert("Connection Error. Check your Script URL."); 
+            alert("Error connecting!"); 
             btn.innerText = "Enter World";
             btn.disabled = false;
         }
     }
 
+    // --- ALL OTHER FUNCTIONS REMAIN EXACTLY AS YOUR PROVIDED CODE ---
+    function parseSafeDate(s) { if(!s) return new Date(); let d = new Date(s.toString().replace(/-/g, '/').replace('T', ' ')); return isNaN(d.getTime()) ? new Date() : d; }
+    
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            
-            // STATUS SYNC
             let topHtml = ""; 
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) otherSeenCountGlobal = parseInt(u.seenCount) || 0;
                 else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
-                let isOnline = (u.status === "Online" && (Date.now() - new Date(u.time).getTime()) < 600000);
+                let isOnline = (u.status === "Online" && (Date.now() - parseSafeDate(u.time).getTime()) < 600000);
                 let nameInit = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
-                topHtml += `<div class="user-stat"><div class="dot ${isOnline?'dot-online':''}"></div><span>${nameInit}: ${isOnline?'Online':'Offline'}</span></div>`;
+                let displayStatus = isOnline ? "Online" : "Offline";
+                if(isMe && isPrivate) displayStatus = "🕵️ Private";
+                topHtml += `<div class="user-stat"><div class="dot ${isOnline?'dot-online':''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span></div>`;
             });
             document.getElementById('top-status-content').innerHTML = topHtml;
-
-            // CHAT & EVENTS
             if(data.history.length > lastMsgCount) {
                 localHistory = data.history;
-                lastMsgCount = data.history.length;
-                if(document.getElementById('notes-display').style.display !== 'flex') {
-                    let unread = localHistory.length - myLastSeen;
-                    if(unread > 0) {
-                        let b = document.getElementById('notif-badge');
-                        b.innerText = unread; b.style.display = 'block';
-                        if(!isSilent) document.getElementById('notif-sound').play();
-                    }
+                if(localHistory.length - myLastSeen > 0 && document.getElementById('notes-display').style.display !== 'flex') {
+                    document.getElementById('notif-badge').innerText = localHistory.length - myLastSeen;
+                    document.getElementById('notif-badge').style.display = 'block';
+                    if(!isSilent) document.getElementById('notif-sound').play();
                 }
-                renderMessages();
+                lastMsgCount = localHistory.length;
+                renderMessages(otherSeenCountGlobal);
             }
-            renderEvents(data.countdowns);
+            globalCountdowns = data.countdowns;
+            renderPlaylist(data.playlist);
         } catch(e) {}
     }
 
-    function renderMessages() {
+    function renderMessages(otherSeen) {
         let hHtml = "";
         localHistory.forEach((h, idx) => {
             let isMe = h.name.toUpperCase().includes(currentUser);
-            let tick = isMe ? (otherSeenCountGlobal > (lastMsgCount - localHistory.length + idx) ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
-            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${h.note}<div class="msg-time">${tick}</div></div>`;
+            let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
+            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px;">` : h.note;
+            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}<div class="msg-time">${tick}</div></div>`;
         });
         document.getElementById('notes-display').innerHTML = hHtml;
     }
 
-    function renderEvents(evs) {
-        let h = "";
-        evs.forEach(e => { h += `<div class="event-item"><b>${e.label}</b><span>${e.date}</span></div>`; });
-        document.getElementById('countdown-list').innerHTML = h || "No events";
+    function runCountdownEngine() {
+        let html = "";
+        globalCountdowns.forEach(ev => {
+            const diff = new Date(ev.date).getTime() - new Date().getTime();
+            if(diff > 0) {
+                const d = Math.floor(diff/(1000*60*60*24)), h = Math.floor((diff%(1000*60*60*24))/(1000*60*60)), m = Math.floor((diff%(1000*60*60))/(1000*60)), s = Math.floor((diff%(1000*60))/1000);
+                html += `<div class="event-item"><span><b>${ev.label}</b></span><span>${d}d ${h}h ${m}m ${s}s</span></div>`;
+            }
+        });
+        document.getElementById('countdown-list').innerHTML = html || "<small>No events</small>";
     }
 
-    function sendNote() {
-        let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
+    function renderPlaylist(songs) {
+        let html = ""; songs.slice(-5).forEach(s => { html += `<a href="${s.url}" target="_blank" style="color:var(--pink); text-decoration:none; font-weight:bold;">${s.title}</a>`; });
+        document.getElementById('song-items').innerHTML = html;
+    }
+
+    function sendNote() { 
+        let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m || isPrivate) return;
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})});
         inp.value = ""; setTimeout(refreshData, 500);
     }
 
     function toggleChat() {
-        let box = document.getElementById('notes-display');
+        const box = document.getElementById('notes-display');
         box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
         if(box.style.display === 'flex') {
             document.getElementById('notif-badge').style.display = 'none';
-            myLastSeen = lastMsgCount;
+            myLastSeen = localHistory.length;
+            updateStatus("Online", myLastSeen);
             box.scrollTop = box.scrollHeight;
-            fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:"Online", seenCount:myLastSeen})});
         }
     }
-    
+
+    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:isPrivate?"Private":s, seenCount:count})}); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
     function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
-    function fullExit() { window.location.href = "about:blank"; }
+    function fullExit() { if(!isPrivate) updateStatus("Offline", myLastSeen); window.location.href = "about:blank"; }
+    window.onload = window.onmousemove = () => { lastActivity = Date.now(); };
 </script>
 </body>
 </html>
