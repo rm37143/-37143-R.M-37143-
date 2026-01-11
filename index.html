@@ -3,60 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4.9.1 STICKY BOARD PRO</title>
+    <title>Secret Dunia - A4.9 FINAL BOARD</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
         body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
         
-        /* TOP BAR */
+        /* Top Bar */
         .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
-        .dark-mode .top-status-bar { background: rgba(30, 30, 30, 0.9); }
         .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
         .nav-btn-sm { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
-
         .status-center-display { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; }
         .user-stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; text-align: center; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
         .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
         .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
         .stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
-        
+        .dark-mode .stat-label { color: white; }
         .off-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* DASHBOARD CARDS */
+        /* Dashboard & Cards */
         .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
         .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
-        
-        /* STICKY BOARD IMPROVEMENTS */
-        .green-board { background: #1b4d3e; border: 8px solid #5d4037; border-radius: 8px; margin-top: 20px; height: 300px; position: relative; overflow-y: auto; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); cursor: pointer; padding: 10px; }
-        
-        .sticky-note { position: relative; display: inline-block; vertical-align: top; width: 85px; min-height: 85px; padding: 6px; margin: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); font-family: 'Comic Sans MS', cursive; word-wrap: break-word; border-radius: 2px; font-size: 0.6rem; transition: 0.2s; text-align: left; }
-        .sticky-note:hover { transform: scale(1.05); z-index: 10; }
-        
-        .paper-pin { width: 8px; height: 8px; border-radius: 50%; position: absolute; top: 3px; left: 50%; transform: translateX(-50%); box-shadow: inset -1px -1px 2px rgba(0,0,0,0.4); z-index: 5; }
-        
-        .note-tools { position: absolute; bottom: 2px; right: 2px; display: flex; gap: 4px; opacity: 0; transition: 0.3s; }
-        .sticky-note:hover .note-tools { opacity: 1; }
-        .tool-btn { cursor: pointer; font-size: 0.7rem; background: rgba(255,255,255,0.8); border-radius: 3px; padding: 1px 3px; }
-
-        .note-meta { font-size: 0.45rem; color: #555; margin-top: 5px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 2px; line-height: 1; }
-        .note-img { width: 100%; border-radius: 2px; margin-bottom: 3px; max-height: 50px; object-fit: cover; }
-
-        /* CHAT FRAME */
-        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; }
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); color: #000; word-wrap: break-word; }
-        .msg-me { align-self: flex-end; background: #dcf8c6; }
-        .msg-them { align-self: flex-start; background: #ffffff; }
-
-        /* HUB & PLAYLIST */
+        .event-item { background: #fff5f7; border-left: 3px solid var(--pink); border-radius: 6px; padding: 6px 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
         .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
-        .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; border: 1px solid #d0e0ff; }
+        .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
-        /* WA BOTTOM BAR */
+        /* --- UPDATED GREEN BOARD --- */
+        .green-board { background: #1b4d3e; border: 8px solid #5d4037; border-radius: 8px; margin-top: 20px; height: 250px; position: relative; overflow-y: auto; padding: 15px; box-shadow: inset 0 0 40px rgba(0,0,0,0.5); display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+        .sticky-note { width: 100px; height: 100px; padding: 10px; position: relative; box-shadow: 3px 3px 6px rgba(0,0,0,0.3); font-family: 'Comic Sans MS', cursive; font-size: 0.6rem; color: #333; overflow: hidden; cursor: pointer; transition: 0.2s; }
+        .sticky-note:active { transform: scale(0.95); }
+        .paper-pin { width: 10px; height: 10px; border-radius: 50%; position: absolute; top: 4px; left: 50%; transform: translateX(-50%); z-index: 5; box-shadow: inset -1px -1px 2px rgba(0,0,0,0.4); }
+        .note-meta-mini { font-size: 0.4rem; position: absolute; bottom: 5px; left: 10px; opacity: 0.7; }
+
+        /* --- FULL SCREEN LINED PAPER VIEW --- */
+        #paper-full-view { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; }
+        .lined-paper { width: 85%; max-width: 350px; min-height: 450px; background: #fff; padding: 40px 20px 20px 20px; position: relative; border-radius: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); background-image: linear-gradient(#e1e1e1 1px, transparent 1px); background-size: 100% 25px; line-height: 25px; font-family: 'Comic Sans MS', cursive; color: #2c3e50; font-size: 1rem; }
+        .lined-paper::before { content: ''; position: absolute; top: 0; left: 35px; width: 2px; height: 100%; background: #ffadad; }
+        .full-pin { width: 20px; height: 20px; border-radius: 50%; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); z-index: 5001; }
+        .full-meta { position: absolute; bottom: 15px; right: 20px; font-size: 0.7rem; color: #7f8c8d; line-height: 1.2; text-align: right; }
+        .close-paper { position: absolute; top: 10px; right: 10px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; cursor: pointer; }
+
+        /* Chat Frame */
+        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; line-height: 1.4; color: #000; word-wrap: break-word; }
+        .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
+        .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
+        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; text-align: right; }
         .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
@@ -68,14 +63,9 @@
 <button onclick="toggleTheme()" style="position:fixed; top:8px; left:10px; z-index:3000; background:var(--pink); color:white; border:none; padding:5px 10px; border-radius:8px; font-size:0.65rem;">🌓 MODE</button>
 
 <div class="top-status-bar" id="top-bar-ui" style="display:none;">
-    <div class="nav-left">
-        <button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
-    </div>
+    <div class="nav-left"><button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button></div>
     <div class="status-center-display" id="top-status-content"></div>
-    <div class="off-group">
-        <button class="off-btn" onclick="fullExit()">OFF</button>
-        <label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label>
-    </div>
+    <div class="off-group"><button class="off-btn" onclick="fullExit()">OFF</button></div>
 </div>
 
 <div class="container">
@@ -83,69 +73,51 @@
         <h2 style="color:var(--pink);">Secret Dunia</h2>
         <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
         <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key==='Enter') checkAuth()">
-        <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
         <button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
 
     <div id="dashboard" style="display:none;">
-        <div style="text-align: left; margin-bottom: 8px;">
-            <span class="nisha-note" style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic; display: block;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
-        </div>
+        <div style="text-align: left;"><span style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span></div>
 
-        <div class="card" style="padding: 10px; margin-bottom: 12px;">
+        <div class="card" style="margin-top:10px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <span style="font-size: 0.8rem; font-weight: bold; color: var(--pink);">⏳ Upcoming Events</span>
-                <button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:3px 8px; cursor:pointer;">+ ADD</button>
+                <button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:3px 8px;">+ ADD</button>
             </div>
-            <div id="countdown-list" style="max-height: 120px; overflow-y: auto;"></div>
-        </div>
-
-        <div class="playlist-bar" id="playlist-area">
-            <span>🎵 <b>Playlist:</b></span>
-            <div id="song-items" style="display:flex; gap:10px; overflow-x:auto;"></div>
-            <button onclick="addNewSong()" style="border:none; background:none; font-size:1rem; cursor:pointer; margin-left:auto;">➕</button>
+            <div id="countdown-list" style="max-height: 100px; overflow-y: auto;"></div>
         </div>
 
         <div class="hub-grid">
-            <button class="hub-btn" onclick="openHub(1)">🔗</button>
-            <button class="hub-btn" onclick="openHub(2)">🎬</button>
-            <button class="hub-btn" onclick="openHub(3)">🎧</button>
-            <button class="hub-btn" onclick="openHub(4)">📂</button>
-            <button class="hub-btn" onclick="openHub(5)">🔒</button>
-            <button class="hub-btn" onclick="openHub(6)">🖼️</button>
-            <button class="hub-btn" onclick="openHub(7)">🛰️</button>
-            <button class="hub-btn" onclick="openHub(8)">🚀</button>
+            <button class="hub-btn" onclick="openHub(1)">🔗</button><button class="hub-btn" onclick="openHub(2)">🎬</button><button class="hub-btn" onclick="openHub(3)">🎧</button><button class="hub-btn" onclick="openHub(4)">📂</button>
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; padding:0 5px;">
-            <b style="color:var(--pink); font-size:0.8rem;">📌 Sticky Board</b>
-            <button onclick="showNewNoteForm()" style="background:var(--green); color:white; border:none; padding:4px 10px; border-radius:5px; font-size:0.65rem; font-weight:bold;">+ ADD NOTE</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+            <b style="color:var(--pink); font-size:0.8rem;">📌 Interactive Board</b>
+            <button onclick="showNewNoteForm()" style="background:var(--green); color:white; border:none; padding:4px 10px; border-radius:5px; font-size:0.65rem;">+ NEW NOTE</button>
         </div>
-        <div class="green-board" id="board-preview">
-            <div style="color:rgba(255,255,255,0.2); margin-top:120px;">No notes yet...</div>
-        </div>
+        <div class="green-board" id="board-preview-area"></div>
+    </div>
+</div>
+
+<div id="paper-full-view">
+    <div class="lined-paper">
+        <div id="full-paper-pin" class="full-pin"></div>
+        <button class="close-paper" onclick="closePaper()">X</button>
+        <div id="full-paper-content" style="padding-top:10px;"></div>
+        <div id="full-paper-meta" class="full-meta"></div>
     </div>
 </div>
 
 <div id="note-form-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:6000; justify-content:center; align-items:center;">
     <div class="card" style="width:90%; max-width:350px;">
-        <h4 id="note-form-title">Create New Note</h4>
-        <input type="hidden" id="edit-note-id">
-        <textarea id="note-text" placeholder="Write something..." style="width:95%; height:80px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
-        
-        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+        <h4>New Sticky Note</h4>
+        <textarea id="note-text" placeholder="Write something..." style="width:95%; height:100px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
             <label style="font-size:0.75rem">Color: <input type="color" id="note-color" value="#fff9c4"></label>
             <label style="font-size:0.75rem">Pin: <input type="color" id="pin-color" value="#ff0000"></label>
         </div>
-        
-        <div style="text-align:left; margin-bottom:15px;">
-            <label style="font-size:0.75rem; display:block; margin-bottom:5px;">Add Image (Optional):</label>
-            <input type="file" id="note-image-input" accept="image/*" style="font-size:0.7rem;">
-            <input type="hidden" id="note-img-base64">
-        </div>
-
         <div style="display:flex; gap:10px;">
-            <button onclick="saveSticky()" id="sticky-save-btn" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold;">SAVE</button>
+            <button onclick="saveSticky()" id="sticky-save-btn" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:8px;">SAVE NOTE</button>
             <button onclick="hideNewNoteForm()" style="flex:1; background:grey; color:white; border:none; padding:12px; border-radius:8px;">CANCEL</button>
         </div>
     </div>
@@ -156,45 +128,29 @@
 <div id="wa-bar" class="wa-bottom" style="display:none;">
     <div class="wa-input-box">
         <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
-        <span id="notif-badge" class="msg-badge" style="display:none; position:absolute; left:25px; top:5px; background:red; color:white; font-size:0.6rem; padding:2px 5px; border-radius:10px;">0</span>
-        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
-        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)">
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
     <button class="wa-send-btn" onclick="sendNote()">➤</button>
 </div>
 
-<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
-
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyGaQJtM7FX7dqraZqNTTHaF5KkuHOuJSiFnwYX_kNEL6_qv_XGrgJT3lhVA5VsKbZC/exec';
-    
-    let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
-    let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0, globalCountdowns = [];
-    let currentBoardData = [];
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyxTnU-5uhTa25uk2UUNfNcIrgTJBNcV29h5d_VwnN6kdkodkrXXHO_cW4VcPyhNqX3/exec';
+    let currentUser = "", allNotes = [], lastMsgCount = 0;
 
-    // --- AUTH & REFRESH ---
     async function checkAuth() {
-        const btn = document.getElementById('login-btn');
-        btn.innerText = "Verifying...";
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
-        isPrivate = document.getElementById('private-mode').checked;
-        try {
-            const res = await fetch(scriptURL);
-            const data = await res.json();
-            if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
-                currentUser = n;
-                document.getElementById('login-screen').style.display='none';
-                document.getElementById('dashboard').style.display='block';
-                document.getElementById('wa-bar').style.display='flex';
-                document.getElementById('top-bar-ui').style.display='flex';
-                await refreshData();
-                setInterval(refreshData, 5000);
-                setInterval(runCountdownEngine, 1000);
-                if(!isPrivate) updateStatus("Online", myLastSeen);
-            } else { alert("Wrong Key!"); btn.innerText = "Enter World"; }
-        } catch(e) { btn.innerText = "Error!"; }
+        const res = await fetch(scriptURL);
+        const data = await res.json();
+        if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
+            currentUser = n;
+            document.getElementById('login-screen').style.display='none';
+            document.getElementById('dashboard').style.display='block';
+            document.getElementById('wa-bar').style.display='flex';
+            document.getElementById('top-bar-ui').style.display='flex';
+            refreshData();
+            setInterval(refreshData, 5000);
+        } else { alert("Wrong Key!"); }
     }
 
     async function refreshData() {
@@ -202,176 +158,98 @@
             const res = await fetch(scriptURL);
             const data = await res.json();
             
-            // Online Status
+            // Render Status
             let topHtml = "";
             data.onlineUsers.forEach(u => {
-                let isMe = u.name.toUpperCase().includes(currentUser);
-                if(!isMe) otherSeenCountGlobal = parseInt(u.seenCount) || 0;
-                let isOnline = (u.status === "Online" && (Date.now() - new Date(u.time).getTime()) < 600000);
-                topHtml += `<div class="user-stat">
-                    <div class="dot ${isOnline?'dot-online':''}"></div>
-                    <span class="stat-label">${u.name.charAt(0)}: ${isOnline?'Online':'Offline'}</span>
-                    <span class="stat-time">${isOnline?'Active Now':formatDate(u.time)}</span>
-                </div>`;
+                let isOnline = (Date.now() - new Date(u.time).getTime()) < 600000;
+                topHtml += `<div class="user-stat"><div class="dot ${isOnline?'dot-online':''}"></div><span class="stat-label">${u.name.charAt(0)}: ${isOnline?'Online':'Offline'}</span></div>`;
             });
             document.getElementById('top-status-content').innerHTML = topHtml;
 
-            // Board Data
-            currentBoardData = data.board;
+            // Render Board
+            allNotes = data.board;
             renderBoard(data.board);
-            
-            // Playlist & Events
-            renderPlaylist(data.playlist);
-            globalCountdowns = data.countdowns;
-            
-            // Chat
+
+            // Render Chat
             if(data.history.length > lastMsgCount) {
-                localHistory = data.history;
-                lastMsgCount = localHistory.length;
-                renderMessages(otherSeenCountGlobal);
+                lastMsgCount = data.history.length;
+                renderMessages(data.history);
             }
-        } catch(e) { console.log(e); }
+            
+            // Events
+            renderEvents(data.countdowns);
+        } catch(e) {}
     }
 
-    // --- BOARD FUNCTIONS ---
-    function renderBoard(stickyData) {
-        if(!stickyData) return;
-        const preview = document.getElementById('board-preview');
-        let html = "";
-        stickyData.forEach(note => {
-            html += `
-            <div class="sticky-note" style="background:${note.color};">
-                <div class="paper-pin" style="background:${note.pinColor}"></div>
-                <div class="note-tools">
-                    <span class="tool-btn" onclick="editNote('${note.id}')">✏️</span>
-                    <span class="tool-btn" onclick="deleteSticky('${note.id}')">🗑️</span>
-                </div>
-                ${note.image ? `<img src="${note.image}" class="note-img">` : ''}
-                <div style="height:45px; overflow-y:auto;">${note.content}</div>
-                <div class="note-meta">
-                    <b>${note.user}</b><br>
-                    ${note.created || ''}
-                </div>
-            </div>`;
-        });
-        preview.innerHTML = html || "Board is empty";
+    function renderBoard(notes) {
+        const area = document.getElementById('board-preview-area');
+        area.innerHTML = notes.map(n => `
+            <div class="sticky-note" style="background:${n.color};" onclick="viewPaper('${n.id}')">
+                <div class="paper-pin" style="background:${n.pinColor}"></div>
+                <div style="margin-top:5px;">${n.content.substring(0,40)}...</div>
+                <div class="note-meta-mini">${n.user} | ${n.created.split(' ')[0]}</div>
+            </div>
+        `).join('');
     }
 
-    function showNewNoteForm() {
-        document.getElementById('note-form-title').innerText = "Create New Note";
-        document.getElementById('edit-note-id').value = "";
-        document.getElementById('note-text').value = "";
-        document.getElementById('note-form-overlay').style.display = 'flex';
+    // --- FULL SCREEN LOGIC ---
+    function viewPaper(id) {
+        const note = allNotes.find(x => x.id == id);
+        if(!note) return;
+        document.getElementById('full-paper-content').innerText = note.content;
+        document.getElementById('full-paper-pin').style.background = note.pinColor;
+        document.getElementById('full-paper-meta').innerHTML = `Written by: ${note.user}<br>Date: ${note.created}`;
+        document.getElementById('paper-full-view').style.display = 'flex';
     }
 
+    function closePaper() { document.getElementById('paper-full-view').style.display = 'none'; }
+
+    // --- FORM LOGIC ---
+    function showNewNoteForm() { document.getElementById('note-form-overlay').style.display = 'flex'; }
     function hideNewNoteForm() { document.getElementById('note-form-overlay').style.display = 'none'; }
-
-    // Convert Image to Base64 easily
-    document.getElementById('note-image-input').onchange = function(e) {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function() { document.getElementById('note-img-base64').value = reader.result; };
-        if(file) reader.readAsDataURL(file);
-    };
 
     async function saveSticky() {
         const text = document.getElementById('note-text').value.trim();
-        const color = document.getElementById('note-color').value;
-        const pin = document.getElementById('pin-color').value;
-        const img = document.getElementById('note-img-base64').value;
-        const editId = document.getElementById('edit-note-id').value;
+        if(!text) return;
         const btn = document.getElementById('sticky-save-btn');
-        
-        if(!text) return alert("Text is empty!");
         btn.innerText = "Saving..."; btn.disabled = true;
-
-        const payload = {
-            action: editId ? "editSticky" : "addSticky",
-            id: editId,
+        await fetch(scriptURL, { method:'POST', mode:'no-cors', body: JSON.stringify({
+            action: "addSticky",
             user: currentUser,
             content: text,
-            color: color,
-            pinColor: pin,
-            image: img
-        };
-
-        await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-        
-        btn.innerText = "SAVE"; btn.disabled = false;
+            color: document.getElementById('note-color').value,
+            pinColor: document.getElementById('pin-color').value
+        })});
+        btn.innerText = "SAVE NOTE"; btn.disabled = false;
         hideNewNoteForm();
         refreshData();
     }
 
-    function editNote(id) {
-        const note = currentBoardData.find(n => n.id == id);
-        if(!note) return;
-        document.getElementById('note-form-title').innerText = "Edit Note";
-        document.getElementById('edit-note-id').value = id;
-        document.getElementById('note-text').value = note.content;
-        document.getElementById('note-color').value = note.color;
-        document.getElementById('pin-color').value = note.pinColor;
-        document.getElementById('note-form-overlay').style.display = 'flex';
+    function renderMessages(history) {
+        document.getElementById('notes-display').innerHTML = history.map(h => `
+            <div class="msg ${h.name.toUpperCase().includes(currentUser)?'msg-me':'msg-them'}">${h.note}</div>
+        `).join('');
     }
 
-    async function deleteSticky(id) {
-        if(confirm("Delete this note?")) {
-            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "deleteSticky", id: id}) });
-            refreshData();
-        }
-    }
-
-    // --- UTILS ---
-    function formatDate(s) {
-        if(!s) return "";
-        const d = new Date(s);
-        return `${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;
-    }
-
-    function runCountdownEngine() {
-        const list = document.getElementById('countdown-list');
-        if(!globalCountdowns.length) { list.innerHTML = "<small>No events</small>"; return; }
-        let html = "";
-        globalCountdowns.forEach(ev => {
-            const diff = new Date(ev.date).getTime() - Date.now();
-            let timeStr = diff > 0 ? Math.floor(diff/86400000)+"d " + Math.floor((diff%86400000)/3600000)+"h" : "FINISHED";
-            html += `<div class="event-item" style="font-size:0.65rem; padding:3px; border-bottom:1px solid #eee;"><b>${ev.label}</b>: ${timeStr}</div>`;
-        });
-        list.innerHTML = html;
-    }
-
-    function renderPlaylist(songs) {
-        const div = document.getElementById('song-items');
-        div.innerHTML = songs ? songs.slice(-3).map(s => `<a href="${s.url}" target="_blank" style="color:var(--pink);">${s.title}</a>`).join(" | ") : "No songs";
-    }
-
-    function renderMessages(otherSeen) {
-        let hHtml = "";
-        localHistory.forEach((h, idx) => {
-            let isMe = h.name.toUpperCase().includes(currentUser);
-            let tick = isMe ? (otherSeen > idx ? ' <span style="color:#34b7f1">✓✓</span>' : ' ✓') : '';
-            hHtml += `<div class="msg ${isMe?'msg-me':'msg-them'}">${h.note}<div style="font-size:0.5rem; text-align:right;">${formatDate(h.time)}${tick}</div></div>`;
-        });
-        document.getElementById('notes-display').innerHTML = hHtml;
+    function renderEvents(evs) {
+        document.getElementById('countdown-list').innerHTML = evs.map(e => `<div class="event-item"><b>${e.label}</b><span>${e.date.split(' ')[0]}</span></div>`).join('');
     }
 
     function sendNote() {
         const inp = document.getElementById('wa-input');
-        if(!inp.value.trim()) return;
+        if(!inp.value) return;
         fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:inp.value})});
         inp.value = "";
-        setTimeout(refreshData, 1000);
     }
 
     function toggleChat() {
         const box = document.getElementById('notes-display');
         box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-        if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
     }
-
-    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerText = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
-    function fullExit() { updateStatus("Offline", myLastSeen); window.location.href = "about:blank"; }
+    function toggleSilent() {}
+    function fullExit() { window.location.href = "about:blank"; }
+    function openHub(id) { alert("Hub Clicked"); }
 </script>
 </body>
 </html>
