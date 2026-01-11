@@ -3,142 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A5 FINAL</title>
+    <title>Secret Dunia - A4.8 LOCKED + STICKY BOARD</title>
+    
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
         body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
         
-        /* Status Bar */
         .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
+        .dark-mode .top-status-bar { background: rgba(30, 30, 30, 0.9); }
         .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
         .nav-btn-sm { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
+ 
         .status-center-display { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; }
         .user-stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; text-align: center; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
         .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
         .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
-        .stat-time { font-size: 0.5rem; color: #777; }
-
-        /* Memory Board */
-        .board-container { 
-            background: #1b4d3e url('https://www.transparenttextures.com/patterns/felt.png'); 
-            border: 8px solid #5d4037; border-radius: 12px; 
-            min-height: 350px; max-height: 500px; overflow-y: auto; 
-            padding: 20px; display: flex; flex-wrap: wrap; gap: 12px; 
-            justify-content: center; box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
-            margin: 15px 0;
-        }
-        .sticky-note {
-            width: 90px; height: 95px; padding: 8px; position: relative;
-            box-shadow: 3px 4px 8px rgba(0,0,0,0.3); cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            overflow: hidden; transition: 0.2s;
-        }
-        .push-pin { width: 10px; height: 10px; border-radius: 50%; position: absolute; top: 4px; left: 50%; transform: translateX(-50%); }
-        .note-preview { font-size: 0.6rem; text-align: center; color: #333; line-height: 1.2; font-weight: bold; }
-
-        /* Full Paper View */
-        .paper-modal { display:none; position:fixed; top:75px; left:0; width:100%; height:calc(100% - 75px); background: #fdfdfd; z-index: 3000; flex-direction: column; padding: 25px; box-sizing: border-box; overflow-y: auto; }
+        .stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
+        .dark-mode .stat-label { color: white; }
+ 
+        .off-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .stay-label { font-size: 0.5rem; color: var(--dark); }
+ 
+        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
+        .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
+        .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
+        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
+        .tick-blue { color: #34b7f1; font-weight: bold; }
+        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; min-width: 12px; text-align: center; }
         
-        /* Chat Frame */
-        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; }
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; color:#000; }
-        .msg-me { align-self: flex-end; background: #dcf8c6; }
-        .msg-them { align-self: flex-start; background: #ffffff; }
-
-        /* Input Bar */
-        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; }
-        .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
-        .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; }
-        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; }
-        .private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
-        
-        /* Utility */
         .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
         .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
+        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
+        .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
+        .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
+        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+ 
+        .event-item { background: #fff5f7; border-left: 3px solid var(--pink); border-radius: 6px; padding: 6px 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .dark-mode .event-item { background: #2c2c2c; color: #fff; border-left-color: var(--pink); }
+        .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .hub-btn:active { transform: scale(0.9); }
+        .dark-mode .hub-btn { background: #333; }
+        .playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; white-space: nowrap; border: 1px solid #d0e0ff; }
+        .dark-mode .playlist-bar { background: #1e2530; border-color: #304060; }
+ 
+        /* --- GREEN BOARD (CHALK STYLE) --- */
+        .green-board { background: #1b4d3e; border: 8px solid #5d4037; border-radius: 5px; padding: 15px; margin-top: 20px; min-height: 120px; max-height: 200px; overflow-y: auto; text-align: left; box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3); cursor: pointer; position: relative; }
+        .chalk-text { font-family: 'Comic Sans MS', cursive; color: rgba(255,255,255,0.9); font-size: 0.9rem; margin-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 5px; }
+        .chalk-meta { font-size: 0.6rem; color: #bdc3c7; display: block; margin-top: 2px; font-style: italic; }
+        
+        /* --- STICKY NOTES EXTENSION (NEW) --- */
+        .board-scroll-area { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; justify-content: center; perspective: 1000px; }
+        .sticky-note { width: 140px; min-height: 140px; padding: 15px; position: relative; box-shadow: 5px 5px 10px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.2s; font-family: 'Comic Sans MS', cursive; font-size: 0.8rem; color: #333; word-wrap: break-word; display: flex; flex-direction: column; }
+        .sticky-note:hover { transform: scale(1.05) !important; z-index: 10; }
+        .paper-pin { width: 12px; height: 12px; border-radius: 50%; position: absolute; top: 5px; left: 50%; transform: translateX(-50%); box-shadow: inset -2px -2px 4px rgba(0,0,0,0.4); z-index: 5; }
+        .note-meta { font-size: 0.6rem; margin-top: auto; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 5px; color: #666; }
+        .note-delete { position: absolute; top: 2px; right: 5px; color: red; font-weight: bold; font-size: 0.9rem; display: none; }
+        .sticky-note:hover .note-delete { display: block; }
+        .note-img { width: 100%; border-radius: 3px; margin: 5px 0; }
+        
+        .board-full-view { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:4000; flex-direction:column; padding:0; box-sizing:border-box; }
+        .board-type-tag { font-weight: bold; color: #ffeb3b; margin-right: 5px; }
     </style>
 </head>
 <body>
-
+ 
+<button onclick="toggleTheme()" style="position:fixed; top:8px; left:10px; z-index:3000; background:var(--pink); color:white; border:none; padding:5px 10px; border-radius:8px; font-size:0.65rem;">🌓 MODE</button>
+ 
 <div class="top-status-bar" id="top-bar-ui" style="display:none;">
-    <div class="nav-left"><button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button></div>
+    <div class="nav-left">
+        <button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
+    </div>
     <div class="status-center-display" id="top-status-content"></div>
-    <div class="off-group"><button onclick="fullExit()" style="background:#ff4d4d; color:white; border:none; width:50px; height:35px; border-radius:8px; font-weight:bold;">OFF</button></div>
+    <div class="off-group">
+        <button class="off-btn" onclick="fullExit()">OFF</button>
+        <label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label>
+    </div>
 </div>
-
+ 
 <div class="container">
     <div id="login-screen" class="card">
         <h2 style="color:var(--pink);">Secret Dunia</h2>
         <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
-        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
+        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key==='Enter') checkAuth()">
         <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
         <button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
-
+ 
     <div id="dashboard" style="display:none;">
-        <div style="text-align: left; margin-bottom: 8px;"><span style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span></div>
-        
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-weight:bold; color:var(--dark);">Bulletin Board</span>
-            <button onclick="document.getElementById('new-note-modal').style.display='flex'" style="background:var(--green); color:white; border:none; border-radius:5px; padding:4px 10px; font-size:0.7rem;">+ NEW NOTE</button>
+        <div style="text-align: left; margin-bottom: 8px;">
+            <span class="nisha-note" style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic; display: block;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span>
         </div>
-        <div class="board-container" id="board-preview"></div>
-        
-        <div id="countdown-list" class="card" style="font-size:0.8rem;"></div>
-        <div id="song-items" class="card" style="display:flex; gap:10px; overflow-x:auto; font-size:0.7rem;"></div>
-    </div>
-</div>
-
-<div id="full-paper-modal" class="paper-modal">
-    <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
-        <div id="paper-meta-info" style="font-size:0.75rem; color:#888;"></div>
-        <button onclick="closePaper()" style="background:red; color:white; border:none; padding:5px 15px; border-radius:5px;">CLOSE</button>
-    </div>
-    <div id="paper-content-area" style="font-size:1.1rem; line-height:1.6; color:#222; white-space:pre-wrap;"></div>
-    <div id="paper-footer" style="margin-top:30px;"></div>
-</div>
-
-<div id="new-note-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:5000; align-items:center; justify-content:center;">
-    <div class="card" style="width:85%; max-width:350px;">
-        <h3>New Sticky Note</h3>
-        <textarea id="board-input" placeholder="Type message..." style="width:100%; height:80px; margin-bottom:10px; padding:8px;"></textarea>
-        <div style="display:flex; gap:10px; margin-bottom:10px;">
-            <div style="flex:1"><small>Paper Color:</small><input type="color" id="note-color" value="#fff9c4" style="width:100%;"></div>
-            <div style="flex:1"><small>Pin Color:</small><input type="color" id="pin-color" value="#ff0000" style="width:100%;"></div>
+ 
+        <div class="card" style="padding: 10px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.8rem; font-weight: bold; color: var(--pink);">⏳ Upcoming Events</span>
+                <button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:3px 8px; cursor:pointer;">+ ADD</button>
+            </div>
+            <div id="countdown-list" style="max-height: 150px; overflow-y: auto;"></div>
         </div>
-        <button onclick="saveToBoard()" style="background:var(--green); color:white; border:none; padding:10px; width:100%; border-radius:10px;">PIN TO BOARD</button>
-        <button onclick="document.getElementById('new-note-modal').style.display='none'" style="background:none; border:none; margin-top:10px; color:grey;">Cancel</button>
+ 
+        <div class="playlist-bar" id="playlist-area">
+            <span>🎵 <b>Playlist:</b></span>
+            <div id="song-items" style="display:flex; gap:10px; overflow-x:auto;">
+                <span style="color:#888;">No songs added yet...</span>
+            </div>
+            <button onclick="addNewSong()" style="border:none; background:none; font-size:1rem; cursor:pointer; margin-left:auto;">➕</button>
+        </div>
+ 
+        <div class="hub-grid">
+            <button class="hub-btn" onclick="openHub(1)">🔗</button>
+            <button class="hub-btn" onclick="openHub(2)">🎬</button>
+            <button class="hub-btn" onclick="openHub(3)">🎧</button>
+            <button class="hub-btn" onclick="openHub(4)">📂</button>
+            <button class="hub-btn" onclick="openHub(5)">🔒</button>
+            <button class="hub-btn" onclick="openHub(6)">🖼️</button>
+            <button class="hub-btn" onclick="openHub(7)">🛰️</button>
+            <button class="hub-btn" onclick="openHub(8)">🚀</button>
+        </div>
+ 
+        <div class="green-board" onclick="openFullBoard()">
+            <div id="board-preview">
+                <div class="chalk-text">Click to open Chalk Board...</div>
+            </div>
+        </div>
     </div>
 </div>
+ 
+<div id="board-modal" class="board-full-view">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding: 15px; background: rgba(0,0,0,0.3);">
+        <h3 style="color:white; margin:0;">📌 Interactive Board</h3>
+        <div style="display:flex; gap:10px;">
+             <button onclick="showNewNoteForm()" style="background:var(--green); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">+ NEW NOTE</button>
+             <button onclick="closeFullBoard()" style="background:red; color:white; border:none; padding:8px 15px; border-radius:5px;">CLOSE</button>
+        </div>
+    </div>
+    
+    <div id="board-scroll-container" class="board-scroll-area" style="flex:1; overflow-y:auto; background:#1b4d3e;">
+        </div>
+</div>
 
+<div id="note-form-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:6000; justify-content:center; align-items:center;">
+    <div class="card" style="width:90%; max-width:350px;">
+        <h4>Create New Note</h4>
+        <textarea id="note-text" placeholder="Write your note here..." style="width:95%; height:100px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
+        
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+            <label style="font-size:0.8rem">Paper: <input type="color" id="note-color" value="#fff9c4"></label>
+            <label style="font-size:0.8rem">Pin: <input type="color" id="pin-color" value="#ff0000"></label>
+        </div>
+        
+        <input type="text" id="note-pic-url" placeholder="Image URL (Optional)" style="width:95%; margin-bottom:15px; padding:8px; border-radius:5px; border:1px solid #ddd;">
+        
+        <div style="display:flex; gap:10px;">
+            <button onclick="saveSticky()" id="sticky-save-btn" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold;">SAVE NOTE</button>
+            <button onclick="hideNewNoteForm()" style="flex:1; background:grey; color:white; border:none; padding:12px; border-radius:8px;">CANCEL</button>
+        </div>
+    </div>
+</div>
+ 
 <div class="chat-frame" id="notes-display"></div>
+ 
 <div id="wa-bar" class="wa-bottom" style="display:none;">
     <div class="wa-input-box" id="wa-input-wrapper">
-        <div style="position:relative;"><button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button><span id="notif-badge" style="position:absolute; top:-5px; right:-5px; background:red; color:white; font-size:0.6rem; padding:2px 5px; border-radius:10px; display:none;">0</span></div>
+        <div style="position:relative; display:inline-block;">
+            <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
+            <span id="notif-badge" class="msg-badge">0</span>
+        </div>
         <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
-        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*">
+        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
     <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
 </div>
-
+ 
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
-
+ 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzGvvlMQ19FaPARMJFnucYi2y8d-uQ097teGjkxoIGJDZaDCKEzeUZeTkJ9KD0oEw61/exec';
-    let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, localHistory = [], myLastSeen = -1;
-
+    // --- APNI SCRIPT URL YAHA PASTE KAREIN ---
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyjeBH83t-YZBOeYbvWu5qfxEeEyGYi2htoJ6FzmmUEnMKdrJtc_7D9EyZz_lHy2yKx/exec';
+    
+    let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
+    let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0;
+ 
+    function parseSafeDate(s) {
+        if(!s) return new Date();
+        let normalized = s.toString().replace(/-/g, '/').replace('T', ' ');
+        let d = new Date(normalized);
+        return isNaN(d.getTime()) ? new Date() : d;
+    }
+ 
     async function checkAuth() {
+        const btn = document.getElementById('login-btn');
+        btn.innerText = "Verifying...";
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
         isPrivate = document.getElementById('private-mode').checked;
-        if(!n || !p) return;
-        document.getElementById('login-btn').innerText = "Verifying...";
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
+           if((n.includes("AWAIS") && p == data.passwords.LoginPassAwais) || (n.includes("NISHA") && p == data.passwords.LoginPassNisha)) {
                 currentUser = n;
                 document.getElementById('login-screen').style.display='none';
                 document.getElementById('dashboard').style.display='block';
@@ -148,85 +217,257 @@
                 await refreshData();
                 if(!isPrivate) updateStatus("Online", myLastSeen);
                 setInterval(refreshData, 5000);
-            } else { alert("Wrong Key!"); document.getElementById('login-btn').innerText = "Enter World"; }
-        } catch(e) { console.error(e); }
+                setInterval(runCountdownEngine, 1000);
+                setInterval(checkIdle, 60000);
+            } else { alert("Wrong Key!"); btn.innerText = "Enter World"; }
+        } catch(e) { btn.innerText = "Enter World"; }
     }
-
+ 
+    let globalCountdowns = [];
+ 
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
             
-            // Status Bar
             let topHtml = ""; 
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
-                let isOnline = (u.status === "Online" && (Date.now() - new Date(u.time.replace(/-/g, '/')).getTime()) < 600000);
+                if(!isMe) otherSeenCountGlobal = parseInt(u.seenCount) || 0;
+                else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
+                let lastUpdate = parseSafeDate(u.time).getTime();
+                let isOnline = (u.status === "Online" && (Date.now() - lastUpdate) < 600000);
                 let nameInit = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
                 let displayStatus = isOnline ? "Online" : "Offline";
                 if(isMe && isPrivate) displayStatus = "🕵️ Private";
                 if(!isMe && u.status === "Private") displayStatus = "Offline";
-                topHtml += `<div class="user-stat"><div class="dot ${isOnline && displayStatus !== 'Offline' ? 'dot-online' : ''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span></div>`;
+                topHtml += `<div class="user-stat">
+                               <div class="dot ${isOnline && displayStatus!=='Offline'?'dot-online':''}"></div>
+                               <span class="stat-label">${nameInit}: ${displayStatus}</span>
+                               <span class="stat-time">${displayStatus === "Offline" ? formatFullDate(u.time) : 'Active Now'}</span>
+                           </div>`;
             });
             document.getElementById('top-status-content').innerHTML = topHtml;
-
-            // History & Board
-            if(data.history.length > lastMsgCount) { localHistory = data.history; renderMessages(); lastMsgCount = localHistory.length; }
+ 
+            const chatBox = document.getElementById('notes-display');
+            const badge = document.getElementById('notif-badge');
+            if(data.history.length > lastMsgCount) {
+                localHistory = data.history;
+                let unreadCount = localHistory.length - myLastSeen;
+                if(unreadCount > 0 && chatBox.style.display !== 'flex') {
+                    badge.innerText = unreadCount;
+                    badge.style.display = 'block';
+                    if(lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
+                } else if(chatBox.style.display === 'flex') {
+                    myLastSeen = localHistory.length;
+                    updateStatus("Online", myLastSeen);
+                }
+                lastMsgCount = localHistory.length;
+                renderMessages(otherSeenCountGlobal);
+                if(chatBox.style.display === 'flex') chatBox.scrollTop = chatBox.scrollHeight;
+            } else { renderMessages(otherSeenCountGlobal); }
+ 
+            globalCountdowns = data.countdowns;
+            renderPlaylist(data.playlist);
+            
+            // Render the new Sticky Board
             renderBoard(data.board);
-        } catch(e) {}
+ 
+        } catch(e) { console.error(e); }
     }
-
-    function renderBoard(boardData) {
-        const board = document.getElementById('board-preview');
-        let html = ""; const rots = ["-3deg", "2deg", "-2deg", "3deg", "0deg"];
-        boardData.forEach((item, idx) => {
-            html += `<div class="sticky-note" style="background:${item.color}; transform:rotate(${rots[idx%5]})" onclick='openPaper(${JSON.stringify(item)})'>
-                        <div class="push-pin" style="background:${item.pin}"></div>
-                        <div class="note-preview">${item.content.substring(0,35)}...</div>
-                    </div>`;
+ 
+    // --- UPDATED BOARD RENDERER (STICKY STYLE) ---
+    function renderBoard(stickyData) {
+        if(!stickyData || !Array.isArray(stickyData)) return;
+        
+        const container = document.getElementById('board-scroll-container');
+        const preview = document.getElementById('board-preview');
+        
+        // Reversed for Latest on Top
+        const sortedData = [...stickyData].reverse();
+        
+        // Container content
+        let html = "";
+        sortedData.forEach((note) => {
+            const rotation = (Math.random() * 6 - 3).toFixed(2);
+            html += `
+                <div class="sticky-note" style="background:${note.color || '#fff9c4'}; transform:rotate(${rotation}deg);">
+                    <div class="paper-pin" style="background:${note.pinColor || 'red'}"></div>
+                    <span class="note-delete" onclick="deleteSticky('${note.id}')">×</span>
+                    ${note.image ? `<img src="${note.image}" class="note-img">` : ''}
+                    <div style="flex:1">${note.content}</div>
+                    <div class="note-meta">
+                        By: ${note.user}<br>
+                        ${note.created || ''}
+                    </div>
+                </div>
+            `;
         });
-        board.innerHTML = html;
+        container.innerHTML = html;
+        
+        // Dashboard Preview (Show last 2 notes text)
+        let previewHtml = "";
+        sortedData.slice(0, 2).forEach(item => {
+            previewHtml += `<div style="font-size:0.7rem; color:white; opacity:0.8; margin-bottom:5px;">📌 ${item.content.substring(0,30)}...</div>`;
+        });
+        preview.innerHTML = previewHtml || "Board is empty.";
     }
 
-    function openPaper(item) {
-        document.getElementById('full-paper-modal').style.display = "flex";
-        document.getElementById('paper-meta-info').innerHTML = `📅 ${item.time} | ✍️ ${item.user}`;
-        document.getElementById('paper-content-area').innerText = item.content;
-        document.getElementById('paper-footer').innerHTML = `<button onclick="deleteNote(${item.row})" style="color:red; background:none; border:none; font-size:0.75rem;">[Delete Page]</button>`;
-    }
+    // --- NEW STICKY BOARD FUNCTIONS ---
+    function showNewNoteForm() { document.getElementById('note-form-overlay').style.display = 'flex'; }
+    function hideNewNoteForm() { document.getElementById('note-form-overlay').style.display = 'none'; }
+    function openFullBoard() { document.getElementById('board-modal').style.display = 'flex'; }
+    function closeFullBoard() { document.getElementById('board-modal').style.display = 'none'; }
 
-    async function saveToBoard() {
-        const text = document.getElementById('board-input').value.trim();
+    async function saveSticky() {
+        const text = document.getElementById('note-text').value.trim();
         const color = document.getElementById('note-color').value;
         const pin = document.getElementById('pin-color').value;
-        if(!text) return;
-        document.getElementById('new-note-modal').style.display = 'none';
-        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addBoard", content:text, user:currentUser, color:color, pin:pin, type:"NOTE"})});
-        document.getElementById('board-input').value = "";
+        const img = document.getElementById('note-pic-url').value;
+        const btn = document.getElementById('sticky-save-btn');
+        
+        if(!text) return alert("Write something first!");
+        
+        btn.innerText = "SAVING...";
+        btn.disabled = true;
+
+        await fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                action: "addSticky",
+                user: currentUser,
+                content: text,
+                color: color,
+                pinColor: pin,
+                image: img
+            })
+        });
+        
+        btn.innerText = "SAVE NOTE";
+        btn.disabled = false;
+        document.getElementById('note-text').value = "";
+        hideNewNoteForm();
         refreshData();
     }
 
-    async function deleteNote(row) {
-        if(confirm("Delete?")) { await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"deleteBoard", row:row})}); closePaper(); refreshData(); }
+    async function deleteSticky(id) {
+        if(confirm("Delete this note?")) {
+            await fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({action: "deleteSticky", id: id})
+            });
+            refreshData();
+        }
     }
-
-    function renderMessages() {
-        let hHtml = "";
-        localHistory.forEach(h => {
+ 
+    function runCountdownEngine() {
+        const list = document.getElementById('countdown-list');
+        if(!globalCountdowns.length) { list.innerHTML = "<small style='color:#ccc'>No active events</small>"; return; }
+        let html = ""; const now = new Date().getTime();
+        globalCountdowns.forEach((ev, idx) => {
+            const target = new Date(ev.date).getTime();
+            const diff = target - now;
+            let timeStr = "";
+            if (diff > 0) {
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                timeStr = `${d}d ${h}h ${m}m ${s}s`;
+            } else {
+                timeStr = "<b style='color:green'>FINISHED</b>";
+                if (Math.abs(diff) > 21600000) return;
+            }
+            const delBtn = (ev.user === currentUser) ? `<span onclick="alert('Please delete from Spreadsheet Row ' + (${idx}+2))" style="color:red; cursor:pointer; margin-left:8px;">✕</span>` : "";
+            html += `<div class="event-item"><span><b>${ev.label}</b></span><span>${timeStr} ${delBtn}</span></div>`;
+        });
+        list.innerHTML = html;
+    }
+ 
+    async function addNewEvent() {
+        const label = prompt("Event Name:");
+        const date = prompt("Date & Time (YYYY-MM-DD HH:MM:SS)", "2026-01-15 00:00:00");
+        if(label && date) {
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", label:label, date:date, user:currentUser})});
+            refreshData();
+        }
+    }
+ 
+    function renderPlaylist(songs) {
+        const container = document.getElementById('song-items');
+        if(!songs || songs.length === 0) return;
+        let html = "";
+        songs.slice(-5).forEach(s => {
+            html += `<a href="${s.url}" target="_blank" style="color:var(--pink); text-decoration:none; font-weight:bold;">${s.title}</a>`;
+        });
+        container.innerHTML = html;
+    }
+ 
+    async function addNewSong() {
+        const title = prompt("Song Title:");
+        const url = prompt("Song URL:");
+        if(title && url) {
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:title, url:url, user:currentUser})});
+            refreshData();
+        }
+    }
+ 
+    function openHub(id) {
+        const hubSettings = { 1: { url: "https://google.com", pass: "111" }, 2: { url: "#", pass: "222" }, 3: { url: "#", pass: "333" }, 4: { url: "#", pass: "444" }, 5: { url: "#", pass: "555" }, 6: { url: "#", pass: "666" }, 7: { url: "#", pass: "777" }, 8: { url: "#", pass: "888" } };
+        const config = hubSettings[id];
+        const p = prompt("Enter Hub Key:");
+        if(p === config.pass) {
+            if(config.url === "#") alert("Link not set yet.");
+            else window.open(config.url, '_blank');
+        } else { alert("Wrong Key!"); }
+    }
+ 
+    function renderMessages(otherSeen) {
+        let hHtml = ""; let lastDate = "";
+        localHistory.forEach((h, idx) => {
+            let d = parseSafeDate(h.time);
+            if(d.toDateString() !== lastDate) {
+                hHtml += `<div style="align-self:center; font-size:0.6rem; color:#888; margin:10px 0; background:rgba(0,0,0,0.05); padding:2px 8px; border-radius:10px;">${d.toDateString()}</div>`;
+                lastDate = d.toDateString();
+            }
             let isMe = h.name.toUpperCase().includes(currentUser);
-            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px;">` : h.note;
-            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}</div>`;
+            let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
+            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px; margin-top:5px;">` : h.note;
+            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}<div class="msg-time">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
         });
         document.getElementById('notes-display').innerHTML = hHtml;
     }
-
-    function sendNote() {
+ 
+    function sendNote() { 
         if(isPrivate) return;
-        let inp = document.getElementById('wa-input'); if(!inp.value.trim()) return;
-        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:inp.value})});
-        inp.value = ""; refreshData();
+        let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
+        let now = new Date();
+        localHistory.push({name: currentUser, note: m, time: now.toISOString()});
+        renderMessages(otherSeenCountGlobal);
+        const box = document.getElementById('notes-display');
+        box.scrollTop = box.scrollHeight;
+        inp.value = "";
+        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
+        myLastSeen = localHistory.length;
+        updateStatus("Online", myLastSeen);
     }
-
+ 
+    function toggleChat() {
+        if(isPrivate) { alert("Private User restricted."); return; }
+        const box = document.getElementById('notes-display');
+        const badge = document.getElementById('notif-badge');
+        const isOpen = (box.style.display === 'flex');
+        box.style.display = isOpen ? 'none' : 'flex';
+        if(!isOpen) {
+            box.scrollTop = box.scrollHeight;
+            badge.style.display = 'none';
+            myLastSeen = localHistory.length;
+            updateStatus("Online", myLastSeen);
+        }
+    }
+ 
     async function uploadMedia(input) {
         if(isPrivate) return;
         const file = input.files[0]; if(!file) return;
@@ -238,16 +479,25 @@
         };
         reader.readAsDataURL(file);
     }
-
-    function toggleChat() { 
-        const box = document.getElementById('notes-display'); 
-        box.style.display = (box.style.display === 'flex') ? 'none' : 'flex'; 
-        if(box.style.display==='flex') box.scrollTop = box.scrollHeight;
+ 
+    function fullExit() {
+        if(!isPrivate) updateStatus("Offline", myLastSeen);
+        window.location.href = "about:blank";
+        window.close();
     }
-    function closePaper() { document.getElementById('full-paper-modal').style.display = "none"; }
-    function updateStatus(s, c) { if(!isPrivate) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:c})}); }
-    function fullExit() { updateStatus("Offline", -1); window.location.href = "about:blank"; }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerText = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
+ 
+    function formatFullDate(s) {
+        let d = parseSafeDate(s);
+        let days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;
+    }
+ 
+    function checkIdle() { if(!document.getElementById('stay-login').checked && (Date.now() - lastActivity > 600000)) fullExit(); }
+    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:isPrivate?"Private":s, seenCount:count})}); }
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
+    window.onload = window.onmousemove = window.ontouchstart = () => { lastActivity = Date.now(); };
 </script>
 </body>
 </html>
