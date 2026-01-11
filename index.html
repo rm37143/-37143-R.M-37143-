@@ -3,11 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Secret Dunia - DC5html</title>
+<title>Secret Dunia - DC10Html</title>
 <style>
 :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
 body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
 body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
+
+/* TOP BAR */
 .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
 .dark-mode .top-status-bar { background: rgba(30, 30, 30, 0.9); }
 .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
@@ -17,11 +19,12 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
 .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
 .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
-.stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
 .dark-mode .stat-label { color: white; }
 .off-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 .stay-label { font-size: 0.5rem; color: var(--dark); }
+
+/* CHAT AREA */
 .chat-frame { display: none; position: fixed; top: 75px; bottom: 65px; left: 0; right: 0; width: 100%; background: var(--wa-bg); z-index: 1500; flex-direction: column; padding: 10px; border: none; box-shadow: none; overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
 .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
 .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
@@ -30,184 +33,213 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
 .tick-blue { color: #34b7f1; font-weight: bold; }
 .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; min-width: 12px; text-align: center; }
+
+/* CARDS */
 .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
 .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
-.wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
-.wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
-.wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
-.wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+
+/* EVENTS */
 .event-item { background: #fff5f7; border-left: 3px solid var(--pink); border-radius: 6px; padding: 6px 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
 .dark-mode .event-item { background: #2c2c2c; color: #fff; border-left-color: var(--pink); }
+.event-del-btn { background: #ff4d4d; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.6rem; cursor: pointer; margin-left: 8px; }
+
+/* DASHBOARD GRID */
 .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
 .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.hub-btn:active { transform: scale(0.9); }
 .dark-mode .hub-btn { background: #333; }
 
-/* COMPACT PLAYLIST BAR */
-.playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.7rem; text-align: left; display: flex; align-items: center; gap: 8px; border: 1px solid #d0e0ff; overflow: hidden; }
+/* MUSIC PLAYER */
+.playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.7rem; text-align: left; display: flex; align-items: center; gap: 8px; border: 1px solid #d0e0ff; overflow: hidden; margin-top: 5px; }
 .dark-mode .playlist-bar { background: #1e2530; border-color: #304060; }
 #now-playing { font-weight: bold; color: var(--pink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
 .player-mini-ctrls { display: flex; align-items: center; gap: 5px; }
 .p-btn { background: none; border: none; font-size: 1rem; cursor: pointer; padding: 0; color: #444; }
-.dark-mode .p-btn { color: #eee; }
 .vol-slider { width: 40px; height: 3px; accent-color: var(--pink); cursor: pointer; }
 
-/* GREEN BOARD STYLING */
-.green-board { background: #1b4d3e; border: 8px solid #5d4037; border-radius: 5px; padding: 10px; margin-top: 15px; height: 160px; overflow-y: auto; text-align: left; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); cursor: pointer; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
-.mini-note { width: 70px; height: 75px; padding: 4px; font-size: 0.45rem; overflow: hidden; position: relative; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); border-radius: 2px; color: #333; line-height: 1; font-family: 'Comic Sans MS', cursive; display: flex; flex-direction: column; }
-.mini-note img { width: 100%; height: 35px; object-fit: cover; margin-top: 2px; border-radius: 2px; }
+/* GREEN BOARD (4 NOTES PER ROW) */
+.green-board { background: #1b4d3e; border: 8px solid #5d4037; border-radius: 5px; padding: 6px; margin-top: 15px; height: 160px; overflow-y: auto; text-align: left; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; }
+.mini-note { width: calc(25% - 4px); height: 72px; padding: 3px; font-size: 0.35rem; overflow: hidden; position: relative; box-shadow: 1px 1px 2px rgba(0,0,0,0.3); border-radius: 2px; color: #333; line-height: 1; font-family: 'Comic Sans MS', cursive; display: flex; flex-direction: column; background: #fff9c4; }
+.mini-note img { width: 100%; height: 32px; object-fit: cover; margin-top: 2px; border-radius: 1px; }
 .mini-note-pin { width: 4px; height: 4px; border-radius: 50%; position: absolute; top: 1px; left: 50%; transform: translateX(-50%); }
-.sticky-note { width: 140px; min-height: 150px; padding: 12px; position: relative; box-shadow: 5px 5px 10px rgba(0,0,0,0.3); cursor: pointer; font-family: 'Comic Sans MS', cursive; font-size: 0.75rem; color: #333; display: flex; flex-direction: column; border-radius: 2px; }
+
+/* STICKY NOTES FULL BOARD */
+.board-full-view { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1b4d3e; z-index:4000; flex-direction:column; }
+.sticky-note { width: 140px; min-height: 150px; padding: 12px; position: relative; box-shadow: 5px 5px 10px rgba(0,0,0,0.3); cursor: pointer; font-family: 'Comic Sans MS', cursive; font-size: 0.75rem; color: #333; display: flex; flex-direction: column; border-radius: 2px; margin: 10px; }
 .sticky-note img { width: 100%; border-radius: 4px; margin-bottom: 5px; max-height: 80px; object-fit: cover; }
 .note-ctrls { position: absolute; top: 4px; right: 4px; display: flex; gap: 3px; z-index: 10; }
 .note-ctrl-btn { font-size: 0.7rem; cursor: pointer; background: rgba(255,255,255,0.8); border-radius: 3px; padding: 1px 3px; border: 1px solid #ddd; }
-.board-full-view { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1b4d3e; z-index:4000; flex-direction:column; }
+.paper-pin { width: 12px; height: 12px; border-radius: 50%; position: absolute; top: -5px; left: 50%; transform: translateX(-50%); }
+
+/* PAPER MODAL */
 #paper-full-view { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 7000; justify-content: center; align-items: center; }
 .lined-paper { width: 85%; max-width: 350px; min-height: 500px; background: #fff; padding: 50px 25px 30px 45px; position: relative; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); background-image: linear-gradient(#94d2ff 1px, transparent 1px); background-size: 100% 28px; line-height: 28px; font-family: 'Comic Sans MS', cursive; color: #2c3e50; font-size: 0.95rem; overflow-y: auto; max-height: 80vh; }
 .lined-paper img { width: 100%; border-radius: 5px; margin: 10px 0; border: 1px solid #eee; }
 .lined-paper::before { content: ''; position: absolute; top: 0; left: 40px; width: 2px; height: 100%; background: #ffadad; }
-.full-pin { width: 20px; height: 20px; border-radius: 50%; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); z-index: 7001; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-.full-meta { margin-top: 20px; padding-top: 10px; font-size: 0.7rem; color: #7f8c8d; text-align: right; border-top: 1px solid #eee; width: 100%; line-height: 1.2; }
+.full-pin { width: 20px; height: 20px; border-radius: 50%; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); z-index: 7001; }
 .close-paper-btn { position: absolute; top: 10px; right: 10px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; font-weight: bold; cursor: pointer; z-index: 7005; }
+
+/* BOTTOM BAR */
+.wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
+.wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
+.wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
+.wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 </style>
 </head>
 <body>
+
 <button onclick="toggleTheme()" style="position:fixed; top:8px; left:10px; z-index:3000; background:var(--pink); color:white; border:none; padding:5px 10px; border-radius:8px; font-size:0.65rem;">🌓 MODE</button>
+
 <div class="top-status-bar" id="top-bar-ui" style="display:none;">
-<div class="nav-left"><button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button></div>
-<div class="status-center-display" id="top-status-content"></div>
-<div class="off-group"><button class="off-btn" onclick="fullExit()">OFF</button>
-<label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label></div>
-</div>
-<div class="container">
-<div id="login-screen" class="card">
-<h2 style="color:var(--pink);">Secret Dunia</h2>
-<input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
-<input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key==='Enter') checkAuth()">
-<div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
-<button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
-</div>
-<div id="dashboard" style="display:none;">
-<div style="text-align: left; margin-bottom: 8px;"><span style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic; display: block;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span></div>
-<div class="card" style="padding: 10px; margin-bottom: 12px;">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-<span style="font-size: 0.8rem; font-weight: bold; color: var(--pink);">⏳ Upcoming Events</span>
-<button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:3px 8px; cursor:pointer;">+ ADD</button>
-</div>
-<div id="countdown-list" style="max-height: 120px; overflow-y: auto;"></div>
-</div>
-
-<div class="playlist-bar" id="playlist-area">
-    <span id="now-playing">🎵 Ready</span>
-    <div class="player-mini-ctrls">
-        <button class="p-btn" onclick="prevSong()">⏮</button>
-        <button class="p-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
-        <button class="p-btn" onclick="nextSong()">⏭</button>
-        <input type="range" class="vol-slider" min="0" max="1" step="0.1" value="0.5" oninput="changeVolume(this.value)">
-        <label for="song-upload" style="cursor:pointer; font-size:0.9rem;">➕</label>
-        <input type="file" id="song-upload" hidden accept="audio/*" onchange="uploadSong(this)">
+    <div class="nav-left"><button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button></div>
+    <div class="status-center-display" id="top-status-content"></div>
+    <div class="off-group">
+        <button class="off-btn" onclick="fullExit()">OFF</button>
+        <label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label>
     </div>
-    <audio id="global-player" onended="nextSong()" preload="auto"></audio>
 </div>
 
-<div class="hub-grid">
-<button class="hub-btn" onclick="openHub(1)">🔗</button><button class="hub-btn" onclick="openHub(2)">🎬</button><button class="hub-btn" onclick="openHub(3)">🎧</button><button class="hub-btn" onclick="openHub(4)">📂</button>
-<button class="hub-btn" onclick="openHub(5)">🔒</button><button class="hub-btn" onclick="openHub(6)">🖼️</button><button class="hub-btn" onclick="openHub(7)">🛰️</button><button class="hub-btn" onclick="openHub(8)">🚀</button>
-</div>
-<div class="green-board" id="board-preview" onclick="openFullBoard()"></div>
-</div>
+<div class="container">
+    <div id="login-screen" class="card">
+        <h2 style="color:var(--pink);">Secret Dunia</h2>
+        <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
+        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key==='Enter') checkAuth()">
+        <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
+        <button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
+    </div>
+
+    <div id="dashboard" style="display:none;">
+        <div style="text-align: left; margin-bottom: 8px;"><span style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic; display: block;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span></div>
+        
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.8rem; font-weight: bold; color: var(--pink);">⏳ Upcoming Events</span>
+                <button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:3px 8px; cursor:pointer;">+ ADD</button>
+            </div>
+            <div id="countdown-list" style="max-height: 120px; overflow-y: auto;"></div>
+        </div>
+
+        <div class="playlist-bar" id="playlist-area">
+            <span id="now-playing">🎵 Ready</span>
+            <div class="player-mini-ctrls">
+                <button class="p-btn" onclick="prevSong()">⏮</button>
+                <button class="p-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
+                <button class="p-btn" onclick="nextSong()">⏭</button>
+                <input type="range" class="vol-slider" min="0" max="1" step="0.1" value="0.5" oninput="changeVolume(this.value)">
+                <label for="song-upload" style="cursor:pointer; font-size:0.9rem;">➕</label>
+                <input type="file" id="song-upload" hidden accept="audio/*" onchange="uploadSong(this)">
+            </div>
+            <audio id="global-player" onended="nextSong()" preload="auto"></audio>
+        </div>
+
+        <div class="hub-grid">
+            <button class="hub-btn" onclick="openHub(1)">🔗</button><button class="hub-btn" onclick="openHub(2)">🎬</button><button class="hub-btn" onclick="openHub(3)">🎧</button><button class="hub-btn" onclick="openHub(4)">📂</button>
+            <button class="hub-btn" onclick="openHub(5)">🔒</button><button class="hub-btn" onclick="openHub(6)">🖼️</button><button class="hub-btn" onclick="openHub(7)">🛰️</button><button class="hub-btn" onclick="openHub(8)">🚀</button>
+        </div>
+
+        <div class="green-board" id="board-preview" onclick="openFullBoard()"></div>
+    </div>
 </div>
 
 <div id="board-modal" class="board-full-view">
-<div class="top-status-bar" style="position:relative; height:65px;">
-<div style="font-weight:bold; color:var(--pink); font-size: 0.9rem;">📌 GREEN BOARD</div>
-<div style="display:flex; gap:10px;"><button onclick="showNewNoteForm()" style="background:var(--green); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">+ NEW</button><button onclick="closeFullBoard()" style="background:red; color:white; border:none; padding:8px 15px; border-radius:5px;">BACK</button></div>
+    <div class="top-status-bar" style="position:relative; height:65px;">
+        <div style="font-weight:bold; color:var(--pink); font-size: 0.9rem;">📌 GREEN BOARD</div>
+        <div style="display:flex; gap:10px;"><button onclick="showNewNoteForm()" style="background:var(--green); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">+ NEW</button><button onclick="closeFullBoard()" style="background:red; border:none; padding:8px 15px; border-radius:5px;">BACK</button></div>
+    </div>
+    <div id="board-scroll-container" style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-wrap:wrap; gap:20px; justify-content:center;"></div>
 </div>
-<div id="board-scroll-container" style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-wrap:wrap; gap:20px; justify-content:center;"></div>
-</div>
-<div id="paper-full-view"><div class="lined-paper"><div id="full-paper-pin" class="full-pin"></div><button class="close-paper-btn" onclick="closePaper()">✕</button><div id="full-paper-content" style="padding-top:5px; white-space: pre-wrap;"></div><div id="full-paper-meta" class="full-meta"></div></div></div>
+
 <div id="note-form-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:6000; justify-content:center; align-items:center;">
-<div class="card" style="width:90%; max-width:350px;"><h4 id="note-form-title">New Note</h4><input type="hidden" id="edit-note-id"><textarea id="note-text" style="width:95%; height:100px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-    <label style="font-size:0.8rem;">Bg: <input type="color" id="note-color" value="#fff9c4"></label>
-    <label style="font-size:0.8rem;">Pin: <input type="color" id="pin-color" value="#ff0000"></label>
-    <label for="sticky-file" style="cursor:pointer; font-size:1.2rem; background:#eee; padding:5px; border-radius:5px;">🖼️</label>
-    <input type="file" id="sticky-file" hidden accept="image/*" onchange="previewStickyImage(this)">
+    <div class="card" style="width:90%; max-width:350px;">
+        <h4>Sticky Note</h4>
+        <textarea id="note-text" style="width:95%; height:100px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <label style="font-size:0.8rem;">Bg: <input type="color" id="note-color" value="#fff9c4"></label>
+            <label style="font-size:0.8rem;">Pin: <input type="color" id="pin-color" value="#ff0000"></label>
+            <label for="sticky-file" style="cursor:pointer; font-size:1.2rem; background:#eee; padding:5px; border-radius:5px;">🖼️</label>
+            <input type="file" id="sticky-file" hidden accept="image/*" onchange="previewStickyImage(this)">
+        </div>
+        <div id="sticky-img-preview" style="margin-bottom:10px;"></div>
+        <div style="display:flex; gap:10px;"><button onclick="saveSticky()" id="sticky-save-btn" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:8px;">SAVE</button><button onclick="hideNewNoteForm()" style="flex:1; background:grey; color:white; border:none; padding:12px; border-radius:8px;">CANCEL</button></div>
+    </div>
 </div>
-<div id="sticky-img-preview" style="margin-bottom:10px;"></div>
-<div style="display:flex; gap:10px;"><button onclick="saveSticky()" id="sticky-save-btn" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:8px;">SAVE</button><button onclick="hideNewNoteForm()" style="flex:1; background:grey; color:white; border:none; padding:12px; border-radius:8px;">CANCEL</button></div></div>
+
+<div id="paper-full-view">
+    <div class="lined-paper">
+        <div id="full-paper-pin" class="full-pin" style="width:20px; height:20px; border-radius:50%; position:absolute; top:-10px; left:50%; transform:translateX(-50%);"></div>
+        <button class="close-paper-btn" onclick="closePaper()">✕</button>
+        <div id="full-paper-content" style="padding-top:5px; white-space: pre-wrap;"></div>
+    </div>
 </div>
+
 <div class="chat-frame" id="notes-display"></div>
 <div id="wa-bar" class="wa-bottom" style="display:none;">
-<div class="wa-input-box" id="wa-input-wrapper"><div style="position:relative; display:inline-block;"><button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button><span id="notif-badge" class="msg-badge">0</span></div>
-<label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label><input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
-<input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()"></div>
-<button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
+    <div class="wa-input-box" id="wa-input-wrapper">
+        <div style="position:relative; display:inline-block;"><button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button><span id="notif-badge" class="msg-badge">0</span></div>
+        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label><input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
+        <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
+    </div>
+    <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
 </div>
+
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzwGLtv0x5SPgxp6C7uIy6YJjec25C8JAGX2R_BPtkzWQhNYDvw64dYoh7jTM0zF7cW/exec';
-let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[],tempStickyImg="", globalPlaylist=[], currentSongIdx=0;
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwE6KRr1axl6rzF-yQlfmtOEKHkx3T_fk7hnPh1ZghmGllCIY4YbGwQW_KTEQYHGxSC/exec';
+
+let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[],tempStickyImg="", globalPlaylist=[], currentSongIdx=0;
 
 function parseSafeDate(s){if(!s)return new Date();let d=new Date(s.toString().replace(/-/g,'/').replace('T',' '));return isNaN(d.getTime())?new Date():d;}
-function formatNoteDate(s){let d=parseSafeDate(s);return d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
 
 async function checkAuth(){const btn=document.getElementById('login-btn');btn.innerText="Verifying...";const n=document.getElementById('u-name').value.toUpperCase().trim(),p=document.getElementById('u-pass').value.trim();isPrivate=document.getElementById('private-mode').checked;
 try{const res=await fetch(scriptURL);const data=await res.json();if((n.includes("AWAIS")&&p==data.passwords.LoginPassAwais)||(n.includes("NISHA")&&p==data.passwords.LoginPassNisha)){currentUser=n;document.getElementById('login-screen').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('wa-bar').style.display='flex';document.getElementById('top-bar-ui').style.display='flex';
-if(isPrivate){document.getElementById('wa-input-wrapper').classList.add('private-lock');document.getElementById('wa-send-btn-main').classList.add('private-lock');}await refreshData();if(!isPrivate)updateStatus("Online",myLastSeen);setInterval(refreshData,5000);setInterval(runCountdownEngine,1000);setInterval(checkIdle,60000);}else{alert("Wrong Key!");btn.innerText="Enter World";}}catch(e){btn.innerText="Enter World";}}
+if(isPrivate){document.getElementById('wa-input-wrapper').style.opacity="0.3";document.getElementById('wa-send-btn-main').style.opacity="0.3";}await refreshData();if(!isPrivate)updateStatus("Online",myLastSeen);setInterval(refreshData,5000);setInterval(runCountdownEngine,1000);}else{alert("Wrong Key!");btn.innerText="Enter World";}}catch(e){btn.innerText="Enter World";}}
 
 async function refreshData(){try{const res=await fetch(scriptURL);const data=await res.json();let topHtml="";data.onlineUsers.forEach(u=>{let isMe=u.name.toUpperCase().includes(currentUser);if(!isMe)otherSeenCountGlobal=parseInt(u.seenCount)||0;else if(myLastSeen===-1)myLastSeen=parseInt(u.seenCount)||0;
-let lastUpdate=parseSafeDate(u.time).getTime(),isOnline=(u.status==="Online"&&(Date.now()-lastUpdate)<600000),nameInit=u.name.toUpperCase().includes("AWAIS")?"A":"N",displayStatus=isOnline?"Online":"Offline";if(isMe&&isPrivate)displayStatus="🕵️ Private";if(!isMe&&u.status==="Private")displayStatus="Offline";
-topHtml+=`<div class="user-stat"><div class="dot ${isOnline&&displayStatus!=='Offline'?'dot-online':''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span><span class="stat-time">${displayStatus==="Offline"?formatFullDate(u.time):'Active Now'}</span></div>`;});
-document.getElementById('top-status-content').innerHTML=topHtml;const chatBox=document.getElementById('notes-display'),badge=document.getElementById('notif-badge');if(data.history.length>lastMsgCount){localHistory=data.history;let unreadCount=localHistory.length-myLastSeen;if(unreadCount>0&&chatBox.style.display!=='flex'){badge.innerText=unreadCount;badge.style.display='block';if(lastMsgCount!==0&&!isSilent)document.getElementById('notif-sound').play();}else if(chatBox.style.display==='flex'){myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}lastMsgCount=localHistory.length;renderMessages(otherSeenCountGlobal);if(chatBox.style.display==='flex')chatBox.scrollTop=chatBox.scrollHeight;}else{renderMessages(otherSeenCountGlobal);}globalCountdowns=data.countdowns;syncPlaylist(data.playlist);renderBoard(data.board);}catch(e){console.error(e);}}
+let lastUpdate=parseSafeDate(u.time).getTime(),isOnline=(u.status==="Online"&&(Date.now()-lastUpdate)<600000),nameInit=u.name.toUpperCase().includes("AWAIS")?"A":"N",displayStatus=isOnline?"Online":"Offline";if(isMe&&isPrivate)displayStatus="🕵️ Private";
+topHtml+=`<div class="user-stat"><div class="dot ${isOnline&&displayStatus!=='Offline'?'dot-online':''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span></div>`;});
+document.getElementById('top-status-content').innerHTML=topHtml;const chatBox=document.getElementById('notes-display'),badge=document.getElementById('notif-badge');if(data.history.length>lastMsgCount){localHistory=data.history;let unreadCount=localHistory.length-myLastSeen;if(unreadCount>0&&chatBox.style.display!=='flex'){badge.innerText=unreadCount;badge.style.display='block';if(!isSilent)document.getElementById('notif-sound').play();}lastMsgCount=localHistory.length;renderMessages(otherSeenCountGlobal);if(chatBox.style.display==='flex')chatBox.scrollTop=chatBox.scrollHeight;}globalCountdowns=data.countdowns;syncPlaylist(data.playlist);renderBoard(data.board);}catch(e){}}
 
-/* COMPACT PLAYER LOGIC */
-function syncPlaylist(songs){if(!songs || songs.length === 0) return; let changed = JSON.stringify(songs) !== JSON.stringify(globalPlaylist); if(changed){globalPlaylist = songs; if(!document.getElementById('global-player').src) loadSong(0);}}
+/* EVENTS LOGIC */
+async function addNewEvent(){const label=prompt("Event Name:"),date=prompt("Date (YYYY-MM-DD):");if(!label || !date)return;await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addEvent",label:label,date:date})});refreshData();}
+async function deleteEvent(id){if(confirm("Delete event?")){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"deleteEvent",id:id})});refreshData();}}
+function runCountdownEngine(){const l=document.getElementById('countdown-list');if(!globalCountdowns.length){l.innerHTML="<small>No events</small>";return;}let h="";const now=new Date().getTime();globalCountdowns.forEach((ev)=>{const t=new Date(ev.date).getTime(),d=t-now;let ts=(d>0)?Math.floor(d/86400000)+"d "+Math.floor((d%86400000)/3600000)+"h":"FINISHED";
+h+=`<div class="event-item"><span><b>${ev.label}</b> (${ts})</span><button class="event-del-btn" onclick="deleteEvent(${ev.id})">✕</button></div>`;});l.innerHTML=h;}
+
+/* PLAYER LOGIC */
+function syncPlaylist(songs){if(!songs || songs.length === 0) return; if(JSON.stringify(songs) !== JSON.stringify(globalPlaylist)){globalPlaylist = songs; if(!document.getElementById('global-player').src) loadSong(0);}}
 function loadSong(idx){if(!globalPlaylist[idx]) return; currentSongIdx = idx; const player = document.getElementById('global-player'); player.src = globalPlaylist[idx].url; document.getElementById('now-playing').innerText = globalPlaylist[idx].title; player.load();}
-function togglePlay(){const player = document.getElementById('global-player'); const btn = document.getElementById('play-pause-btn'); if(!player.src && globalPlaylist.length > 0) loadSong(0); if(player.paused){player.play().catch(e=>alert("Song not found on server")); btn.innerText = "⏸";} else {player.pause(); btn.innerText = "▶";}}
-function nextSong(){if(globalPlaylist.length===0)return; currentSongIdx = (currentSongIdx + 1) % globalPlaylist.length; loadSong(currentSongIdx); togglePlay();}
-function prevSong(){if(globalPlaylist.length===0)return; currentSongIdx = (currentSongIdx - 1 + globalPlaylist.length) % globalPlaylist.length; loadSong(currentSongIdx); togglePlay();}
+function togglePlay(){const player = document.getElementById('global-player'); const btn = document.getElementById('play-pause-btn'); if(player.paused){player.play().catch(e=>alert("Error")); btn.innerText = "⏸";} else {player.pause(); btn.innerText = "▶";}}
+function nextSong(){currentSongIdx = (currentSongIdx + 1) % globalPlaylist.length; loadSong(currentSongIdx); togglePlay();}
+function prevSong(){currentSongIdx = (currentSongIdx - 1 + globalPlaylist.length) % globalPlaylist.length; loadSong(currentSongIdx); togglePlay();}
 function changeVolume(v){document.getElementById('global-player').volume = v;}
 async function uploadSong(input){if(!input.files[0]) return; const f = input.files[0]; document.getElementById('now-playing').innerText = "Uploading..."; const r = new FileReader(); r.onload = async (e) => { const b64 = e.target.result.split(',')[1]; await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSong",title:f.name,base64:b64,user:currentUser})}); refreshData(); }; r.readAsDataURL(f);}
 
+/* BOARD LOGIC */
 function renderBoard(sd){if(!sd||!Array.isArray(sd))return;currentStickyData=sd;const c=document.getElementById('board-scroll-container'),p=document.getElementById('board-preview'),sorted=[...sd].reverse();let h="",ph="";sorted.forEach(n=>{
-h+=`<div class="sticky-note" style="background:${n.color||'#fff9c4'};" onclick="viewPaper('${n.id}')">
-<div class="paper-pin" style="background:${n.pinColor||'red'}"></div>
-<div class="note-ctrls">
-<span class="note-ctrl-btn" onclick="event.stopPropagation();editSticky('${n.id}')">✏️</span>
-<span class="note-ctrl-btn" onclick="event.stopPropagation();deleteSticky('${n.id}')">❌</span>
-</div>
-${n.image?`<img src="${n.image}">`:''}
-<div style="flex:1; overflow:hidden;">${n.content.substring(0,80)}...</div>
-<div class="note-meta"><b>${n.user}</b><br>${formatNoteDate(n.created)}</div></div>`;
-ph+=`<div class="mini-note" style="background:${n.color||'#fff9c4'}"><div class="mini-note-pin" style="background:${n.pinColor||'red'}"></div><b>${n.user}:</b> ${n.content.substring(0,10)}... ${n.image?`<img src="${n.image}">`:''}</div>`;});
-c.innerHTML=h;p.innerHTML=ph||"Empty.";}
-function previewStickyImage(input){if(input.files && input.files[0]){const r=new FileReader();r.onload=e=>{tempStickyImg=e.target.result;document.getElementById('sticky-img-preview').innerHTML=`<img src="${tempStickyImg}" style="width:100%; height:60px; object-fit:cover; border-radius:5px;">`;};r.readAsDataURL(input.files[0]);}}
-function viewPaper(id){const n=currentStickyData.find(x=>x.id==id);if(!n)return;document.getElementById('full-paper-content').innerHTML=(n.image?`<img src="${n.image}">`:'')+`<div>${n.content}</div>`;document.getElementById('full-paper-pin').style.background=n.pinColor||'red';document.getElementById('full-paper-meta').innerHTML=`<b>By:</b> ${n.user}<br><b>Time:</b> ${formatNoteDate(n.created)}`;document.getElementById('paper-full-view').style.display='flex';}
+h+=`<div class="sticky-note" style="background:${n.color||'#fff9c4'};" onclick="viewPaper('${n.id}')"><div class="paper-pin" style="background:${n.pinColor||'red'}"></div><div class="note-ctrls"><span class="note-ctrl-btn" onclick="event.stopPropagation();deleteSticky('${n.id}')">❌</span></div>${n.image?`<img src="${n.image}">`:''}<div>${n.content.substring(0,80)}...</div></div>`;
+ph+=`<div class="mini-note" style="background:${n.color||'#fff9c4'}"><div class="mini-note-pin" style="background:${n.pinColor||'red'}"></div><b style="font-size:0.4rem;">${n.user}:</b> <span>${n.content.substring(0,10)}...</span>${n.image?`<img src="${n.image}">`:''}</div>`;});
+c.innerHTML=h;p.innerHTML=ph||"Empty Board";}
+function previewStickyImage(input){if(input.files && input.files[0]){const r=new FileReader();r.onload=e=>{tempStickyImg=e.target.result;document.getElementById('sticky-img-preview').innerHTML=`<img src="${tempStickyImg}" style="width:100%; height:50px; object-fit:cover;">`;};r.readAsDataURL(input.files[0]);}}
+function viewPaper(id){const n=currentStickyData.find(x=>x.id==id);if(!n)return;document.getElementById('full-paper-content').innerHTML=(n.image?`<img src="${n.image}">`:'')+`<div>${n.content}</div>`;document.getElementById('full-paper-pin').style.background=n.pinColor||'red';document.getElementById('paper-full-view').style.display='flex';}
 function closePaper(){document.getElementById('paper-full-view').style.display='none';}
-function showNewNoteForm(){document.getElementById('edit-note-id').value="";document.getElementById('note-form-title').innerText="New Note";document.getElementById('note-text').value="";document.getElementById('sticky-img-preview').innerHTML="";tempStickyImg="";document.getElementById('note-form-overlay').style.display='flex';}
+function showNewNoteForm(){document.getElementById('note-text').value="";document.getElementById('sticky-img-preview').innerHTML="";tempStickyImg="";document.getElementById('note-form-overlay').style.display='flex';}
 function hideNewNoteForm(){document.getElementById('note-form-overlay').style.display='none';}
 function openFullBoard(){document.getElementById('board-modal').style.display='flex';}
 function closeFullBoard(){document.getElementById('board-modal').style.display='none';}
-async function saveSticky(){const t=document.getElementById('note-text').value.trim(),c=document.getElementById('note-color').value,p=document.getElementById('pin-color').value,id=document.getElementById('edit-note-id').value,btn=document.getElementById('sticky-save-btn');if(!t && !tempStickyImg)return;btn.innerText="SAVING...";
-await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:id?"editSticky":"addSticky",id:id,user:currentUser,content:t,color:c,pinColor:p,image:tempStickyImg})});
-btn.innerText="SAVE";hideNewNoteForm();refreshData();}
-function editSticky(id){const n=currentStickyData.find(x=>x.id==id);if(!n)return;document.getElementById('edit-note-id').value=id;document.getElementById('note-text').value=n.content;document.getElementById('note-color').value=n.color;document.getElementById('pin-color').value=n.pinColor;tempStickyImg=n.image||"";document.getElementById('sticky-img-preview').innerHTML=tempStickyImg?`<img src="${tempStickyImg}" style="width:100%; height:60px; object-fit:cover; border-radius:5px;">`:"";document.getElementById('note-form-title').innerText="Edit Note";document.getElementById('note-form-overlay').style.display='flex';}
-async function deleteSticky(id){if(confirm("Delete this note?")){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"deleteSticky",id:id})});refreshData();}}
-function runCountdownEngine(){const l=document.getElementById('countdown-list');if(!globalCountdowns.length){l.innerHTML="<small>No events</small>";return;}let h="";const now=new Date().getTime();globalCountdowns.forEach((ev,idx)=>{const t=new Date(ev.date).getTime(),d=t-now;let ts="";if(d>0){const days=Math.floor(d/86400000),hrs=Math.floor((d%86400000)/3600000),mins=Math.floor((d%3600000)/60000),secs=Math.floor((d%60000)/1000);ts=`${days}d ${hrs}h ${mins}m ${secs}s`;}else{ts="<b>FINISHED</b>";if(Math.abs(d)>21600000)return;}h+=`<div class="event-item"><span><b>${ev.label}</b></span><span>${ts}</span></div>`;});l.innerHTML=h;}
-function openHub(id){const p=prompt("Hub Key:");if(p==="111")window.open("https://google.com",'_blank');else alert("Wrong!");}
-function renderMessages(os){let h="",ld="";localHistory.forEach((m,idx)=>{let d=parseSafeDate(m.time);if(d.toDateString()!==ld){h+=`<div style="align-self:center;font-size:0.6rem;color:#888;margin:10px 0;">${d.toDateString()}</div>`;ld=d.toDateString();}let isMe=m.name.toUpperCase().includes(currentUser),tick=isMe?(os>idx?'<span class="tick-blue">✓✓</span>':'✓'):'';let contentHTML = m.note;if(m.note.startsWith("MEDIA:")){let url = m.note.split('MEDIA:')[1];if(url.match(/\.(mp4|webm|ogg|mov)$/i) || url.includes("video")){contentHTML = `<video src="${url}" controls class="media-content"></video>`;} else {contentHTML = `<img src="${url}" class="media-content" onclick="window.open('${url}')">`;}}h+=`<div class="msg ${isMe?"msg-me":"msg-them"}">${contentHTML}<div class="msg-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${tick}</div></div>`;});document.getElementById('notes-display').innerHTML=h;}
-function sendNote(){if(isPrivate)return;let i=document.getElementById('wa-input'),m=i.value.trim();if(!m)return;localHistory.push({name:currentUser,note:m,time:new Date().toISOString()});renderMessages(otherSeenCountGlobal);const b=document.getElementById('notes-display');b.scrollTop=b.scrollHeight;i.value="";fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({name:currentUser,note:m})});myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}
+async function saveSticky(){const t=document.getElementById('note-text').value.trim(),c=document.getElementById('note-color').value,p=document.getElementById('pin-color').value;if(!t && !tempStickyImg)return;
+await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSticky",user:currentUser,content:t,color:c,pinColor:p,image:tempStickyImg})});hideNewNoteForm();refreshData();}
+async function deleteSticky(id){if(confirm("Delete note?")){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"deleteSticky",id:id})});refreshData();}}
+
+/* HUB & CHAT */
+function openHub(id){const p=prompt("Hub Key:");if(p==="111")window.open("https://google.com",'_blank');}
+function renderMessages(os){let h="",ld="";localHistory.forEach((m,idx)=>{let d=parseSafeDate(m.time);if(d.toDateString()!==ld){h+=`<div style="align-self:center;font-size:0.6rem;color:#888;margin:10px 0;">${d.toDateString()}</div>`;ld=d.toDateString();}let isMe=m.name.toUpperCase().includes(currentUser),tick=isMe?(os>idx?'<span class="tick-blue">✓✓</span>':'✓'):'';let contentHTML = m.note;if(m.note.startsWith("MEDIA:")){let url = m.note.split('MEDIA:')[1];contentHTML = `<img src="${url}" class="media-content" onclick="window.open('${url}')">`;}h+=`<div class="msg ${isMe?"msg-me":"msg-them"}">${contentHTML}<div class="msg-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${tick}</div></div>`;});document.getElementById('notes-display').innerHTML=h;}
+function sendNote(){if(isPrivate)return;let i=document.getElementById('wa-input'),m=i.value.trim();if(!m)return;i.value="";fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({name:currentUser,note:m})});refreshData();}
 function toggleChat(){if(isPrivate)return;const b=document.getElementById('notes-display'),g=document.getElementById('notif-badge'),o=(b.style.display==='flex');b.style.display=o?'none':'flex';if(!o){b.scrollTop=b.scrollHeight;g.style.display='none';myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}}
-async function uploadMedia(i){if(isPrivate)return;const f=i.files[0];if(!f)return;const btn=document.getElementById('wa-send-btn-main');const oldIcon=btn.innerHTML;btn.innerHTML="...";const r=new FileReader();r.onload=async(e)=>{const b=e.target.result.split(',')[1];await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"uploadMedia",name:currentUser,type:f.type,base64:b})});btn.innerHTML=oldIcon;refreshData();};r.readAsDataURL(f);}
-function fullExit(){if(!isPrivate)updateStatus("Offline",myLastSeen);window.location.href="about:blank";}
-function formatFullDate(s){let d=parseSafeDate(s);let days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;}
-function checkIdle(){if(!document.getElementById('stay-login').checked&&(Date.now()-lastActivity>600000))fullExit();}
+async function uploadMedia(i){if(isPrivate)return;const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=async(e)=>{const b=e.target.result.split(',')[1];await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"uploadMedia",name:currentUser,type:f.type,base64:b})});refreshData();};r.readAsDataURL(f);}
+function fullExit(){updateStatus("Offline",myLastSeen);window.location.href="about:blank";}
 function updateStatus(s,c){fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"updateStatus",name:currentUser,status:isPrivate?"Private":s,seenCount:c})});}
 function toggleTheme(){document.body.classList.toggle('dark-mode');}
 function toggleSilent(){isSilent=!isSilent;document.getElementById('silent-btn').innerHTML=isSilent?"🔕 SILENT":"🔔 SOUND";}
-window.onload=window.onmousemove=window.ontouchstart=()=>{lastActivity=Date.now();};
 </script>
 </body>
 </html>
