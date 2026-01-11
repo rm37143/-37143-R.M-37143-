@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A4.9 STICKY BOARD EVOLUTION</title>
+    <title>Secret Dunia - A4.9.1 STICKY BOARD PRO</title>
     
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
         body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
         body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
         
+        /* TOP BAR */
         .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
         .dark-mode .top-status-bar { background: rgba(30, 30, 30, 0.9); }
         .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
@@ -21,49 +22,45 @@
         .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
         .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
         .stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
-        .dark-mode .stat-label { color: white; }
-
+        
         .off-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .stay-label { font-size: 0.5rem; color: var(--dark); }
 
-        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
-        .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
-        .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
-        .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
-        .tick-blue { color: #34b7f1; font-weight: bold; }
-        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; min-width: 12px; text-align: center; }
-        
+        /* DASHBOARD CARDS */
         .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
         .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
+        
+        /* STICKY BOARD IMPROVEMENTS */
+        .green-board { background: #1b4d3e; border: 8px solid #5d4037; border-radius: 8px; margin-top: 20px; height: 300px; position: relative; overflow-y: auto; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); cursor: pointer; padding: 10px; }
+        
+        .sticky-note { position: relative; display: inline-block; vertical-align: top; width: 85px; min-height: 85px; padding: 6px; margin: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); font-family: 'Comic Sans MS', cursive; word-wrap: break-word; border-radius: 2px; font-size: 0.6rem; transition: 0.2s; text-align: left; }
+        .sticky-note:hover { transform: scale(1.05); z-index: 10; }
+        
+        .paper-pin { width: 8px; height: 8px; border-radius: 50%; position: absolute; top: 3px; left: 50%; transform: translateX(-50%); box-shadow: inset -1px -1px 2px rgba(0,0,0,0.4); z-index: 5; }
+        
+        .note-tools { position: absolute; bottom: 2px; right: 2px; display: flex; gap: 4px; opacity: 0; transition: 0.3s; }
+        .sticky-note:hover .note-tools { opacity: 1; }
+        .tool-btn { cursor: pointer; font-size: 0.7rem; background: rgba(255,255,255,0.8); border-radius: 3px; padding: 1px 3px; }
+
+        .note-meta { font-size: 0.45rem; color: #555; margin-top: 5px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 2px; line-height: 1; }
+        .note-img { width: 100%; border-radius: 2px; margin-bottom: 3px; max-height: 50px; object-fit: cover; }
+
+        /* CHAT FRAME */
+        .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); color: #000; word-wrap: break-word; }
+        .msg-me { align-self: flex-end; background: #dcf8c6; }
+        .msg-them { align-self: flex-start; background: #ffffff; }
+
+        /* HUB & PLAYLIST */
+        .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; border: 1px solid #d0e0ff; }
+
+        /* WA BOTTOM BAR */
         .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
         .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
         .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
         .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
-
-        .event-item { background: #fff5f7; border-left: 3px solid var(--pink); border-radius: 6px; padding: 6px 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
-        .dark-mode .event-item { background: #2c2c2c; color: #fff; border-left-color: var(--pink); }
-        .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
-        .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .hub-btn:active { transform: scale(0.9); }
-        .dark-mode .hub-btn { background: #333; }
-        .playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; white-space: nowrap; border: 1px solid #d0e0ff; }
-        .dark-mode .playlist-bar { background: #1e2530; border-color: #304060; }
-
-        /* --- STICKY BOARD NEW SETTING --- */
-        .green-board { background: #1b4d3e; border: 8px solid #5d4037; border-radius: 5px; margin-top: 20px; min-height: 250px; position: relative; overflow: hidden; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); cursor: pointer; }
-        .sticky-note { position: absolute; padding: 10px; box-shadow: 3px 3px 10px rgba(0,0,0,0.4); font-family: 'Comic Sans MS', cursive; word-wrap: break-word; display: flex; flex-direction: column; border-radius: 2px; width: 100px; min-height: 100px; font-size: 0.7rem; transition: 0.2s; }
-        .paper-pin { width: 10px; height: 10px; border-radius: 50%; position: absolute; top: 4px; left: 50%; transform: translateX(-50%); box-shadow: inset -2px -2px 3px rgba(0,0,0,0.4); z-index: 5; }
-        .note-delete { position: absolute; top: 0; right: 5px; color: red; font-weight: bold; font-size: 0.9rem; display: none; }
-        .sticky-note:hover .note-delete { display: block; }
-        .note-img { width: 100%; border-radius: 2px; margin-bottom: 5px; }
-        
-        /* Full Window Lined View */
-        .full-note-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; background-image: linear-gradient(#e1e1e1 1px, transparent 1px); background-size: 100% 30px; z-index: 5000; padding: 85px 25px 30px; box-sizing: border-box; overflow-y: auto; }
-        .full-note-content { font-family: 'Comic Sans MS', cursive; font-size: 1.2rem; line-height: 30px; color: #333; white-space: pre-wrap; }
-        .board-full-view { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:4000; flex-direction:column; padding:0; box-sizing:border-box; }
     </style>
 </head>
 <body>
@@ -100,14 +97,12 @@
                 <span style="font-size: 0.8rem; font-weight: bold; color: var(--pink);">⏳ Upcoming Events</span>
                 <button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:3px 8px; cursor:pointer;">+ ADD</button>
             </div>
-            <div id="countdown-list" style="max-height: 150px; overflow-y: auto;"></div>
+            <div id="countdown-list" style="max-height: 120px; overflow-y: auto;"></div>
         </div>
 
         <div class="playlist-bar" id="playlist-area">
             <span>🎵 <b>Playlist:</b></span>
-            <div id="song-items" style="display:flex; gap:10px; overflow-x:auto;">
-                <span style="color:#888;">No songs added yet...</span>
-            </div>
+            <div id="song-items" style="display:flex; gap:10px; overflow-x:auto;"></div>
             <button onclick="addNewSong()" style="border:none; background:none; font-size:1rem; cursor:pointer; margin-left:auto;">➕</button>
         </div>
 
@@ -122,40 +117,35 @@
             <button class="hub-btn" onclick="openHub(8)">🚀</button>
         </div>
 
-        <div class="green-board" id="board-preview" onclick="openFullBoard()">
-            <div style="color:rgba(255,255,255,0.3); position:absolute; top:45%; left:25%;">Click to open Chalk Board...</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; padding:0 5px;">
+            <b style="color:var(--pink); font-size:0.8rem;">📌 Sticky Board</b>
+            <button onclick="showNewNoteForm()" style="background:var(--green); color:white; border:none; padding:4px 10px; border-radius:5px; font-size:0.65rem; font-weight:bold;">+ ADD NOTE</button>
+        </div>
+        <div class="green-board" id="board-preview">
+            <div style="color:rgba(255,255,255,0.2); margin-top:120px;">No notes yet...</div>
         </div>
     </div>
-</div>
-
-<div id="board-modal" class="board-full-view">
-    <div style="display:flex; justify-content:space-between; align-items:center; padding: 15px; background: rgba(0,0,0,0.5); z-index:10;">
-        <h3 style="color:white; margin:0;">📌 Interactive Board</h3>
-        <div style="display:flex; gap:10px;">
-             <button onclick="showNewNoteForm()" style="background:var(--green); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">+ NEW NOTE</button>
-             <button onclick="closeFullBoard()" style="background:red; color:white; border:none; padding:8px 15px; border-radius:5px;">CLOSE</button>
-        </div>
-    </div>
-    <div id="board-scroll-container" style="flex:1; position:relative; overflow-y:auto; background:#1b4d3e;">
-    </div>
-</div>
-
-<div id="full-note-view" class="full-note-overlay">
-    <button onclick="closeNoteView()" style="position:fixed; top:15px; right:15px; background:var(--pink); color:white; border:none; width:40px; height:40px; border-radius:50%; font-weight:bold; z-index:6000;">✕</button>
-    <div id="full-note-content" class="full-note-content"></div>
 </div>
 
 <div id="note-form-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:6000; justify-content:center; align-items:center;">
     <div class="card" style="width:90%; max-width:350px;">
-        <h4>Create New Note</h4>
-        <textarea id="note-text" placeholder="Write your note here..." style="width:95%; height:100px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
+        <h4 id="note-form-title">Create New Note</h4>
+        <input type="hidden" id="edit-note-id">
+        <textarea id="note-text" placeholder="Write something..." style="width:95%; height:80px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
+        
         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <label style="font-size:0.8rem">Paper: <input type="color" id="note-color" value="#fff9c4"></label>
-            <label style="font-size:0.8rem">Pin: <input type="color" id="pin-color" value="#ff0000"></label>
+            <label style="font-size:0.75rem">Color: <input type="color" id="note-color" value="#fff9c4"></label>
+            <label style="font-size:0.75rem">Pin: <input type="color" id="pin-color" value="#ff0000"></label>
         </div>
-        <input type="text" id="note-pic-url" placeholder="Image URL (Optional)" style="width:95%; margin-bottom:15px; padding:8px; border-radius:5px; border:1px solid #ddd;">
+        
+        <div style="text-align:left; margin-bottom:15px;">
+            <label style="font-size:0.75rem; display:block; margin-bottom:5px;">Add Image (Optional):</label>
+            <input type="file" id="note-image-input" accept="image/*" style="font-size:0.7rem;">
+            <input type="hidden" id="note-img-base64">
+        </div>
+
         <div style="display:flex; gap:10px;">
-            <button onclick="saveSticky()" id="sticky-save-btn" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold;">SAVE NOTE</button>
+            <button onclick="saveSticky()" id="sticky-save-btn" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold;">SAVE</button>
             <button onclick="hideNewNoteForm()" style="flex:1; background:grey; color:white; border:none; padding:12px; border-radius:8px;">CANCEL</button>
         </div>
     </div>
@@ -164,33 +154,26 @@
 <div class="chat-frame" id="notes-display"></div>
 
 <div id="wa-bar" class="wa-bottom" style="display:none;">
-    <div class="wa-input-box" id="wa-input-wrapper">
-        <div style="position:relative; display:inline-block;">
-            <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
-            <span id="notif-badge" class="msg-badge">0</span>
-        </div>
+    <div class="wa-input-box">
+        <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
+        <span id="notif-badge" class="msg-badge" style="display:none; position:absolute; left:25px; top:5px; background:red; color:white; font-size:0.6rem; padding:2px 5px; border-radius:10px;">0</span>
         <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
-        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
+        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)">
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
-    <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
+    <button class="wa-send-btn" onclick="sendNote()">➤</button>
 </div>
 
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycby7HKoh0xTAOfEViqBbR0O3wXOftabI8WJMbuD9-b-5dnKSYhBZbh5yw46srz8t4P27/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyGaQJtM7FX7dqraZqNTTHaF5KkuHOuJSiFnwYX_kNEL6_qv_XGrgJT3lhVA5VsKbZC/exec';
     
     let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, lastActivity = Date.now();
     let localHistory = [], myLastSeen = -1, otherSeenCountGlobal = 0, globalCountdowns = [];
+    let currentBoardData = [];
 
-    function parseSafeDate(s) {
-        if(!s) return new Date();
-        let normalized = s.toString().replace(/-/g, '/').replace('T', ' ');
-        let d = new Date(normalized);
-        return isNaN(d.getTime()) ? new Date() : d;
-    }
-
+    // --- AUTH & REFRESH ---
     async function checkAuth() {
         const btn = document.getElementById('login-btn');
         btn.innerText = "Verifying...";
@@ -206,14 +189,12 @@
                 document.getElementById('dashboard').style.display='block';
                 document.getElementById('wa-bar').style.display='flex';
                 document.getElementById('top-bar-ui').style.display='flex';
-                if(isPrivate) { document.getElementById('wa-input-wrapper').classList.add('private-lock'); document.getElementById('wa-send-btn-main').classList.add('private-lock'); }
                 await refreshData();
-                if(!isPrivate) updateStatus("Online", myLastSeen);
                 setInterval(refreshData, 5000);
                 setInterval(runCountdownEngine, 1000);
-                setInterval(checkIdle, 60000);
+                if(!isPrivate) updateStatus("Online", myLastSeen);
             } else { alert("Wrong Key!"); btn.innerText = "Enter World"; }
-        } catch(e) { btn.innerText = "Enter World"; }
+        } catch(e) { btn.innerText = "Error!"; }
     }
 
     async function refreshData() {
@@ -221,95 +202,115 @@
             const res = await fetch(scriptURL);
             const data = await res.json();
             
-            let topHtml = ""; 
+            // Online Status
+            let topHtml = "";
             data.onlineUsers.forEach(u => {
                 let isMe = u.name.toUpperCase().includes(currentUser);
                 if(!isMe) otherSeenCountGlobal = parseInt(u.seenCount) || 0;
-                else if(myLastSeen === -1) myLastSeen = parseInt(u.seenCount) || 0;
-                let lastUpdate = parseSafeDate(u.time).getTime();
-                let isOnline = (u.status === "Online" && (Date.now() - lastUpdate) < 600000);
-                let nameInit = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
-                let displayStatus = isOnline ? "Online" : "Offline";
-                if(isMe && isPrivate) displayStatus = "🕵️ Private";
-                if(!isMe && u.status === "Private") displayStatus = "Offline";
+                let isOnline = (u.status === "Online" && (Date.now() - new Date(u.time).getTime()) < 600000);
                 topHtml += `<div class="user-stat">
-                               <div class="dot ${isOnline && displayStatus!=='Offline'?'dot-online':''}"></div>
-                               <span class="stat-label">${nameInit}: ${displayStatus}</span>
-                               <span class="stat-time">${displayStatus === "Offline" ? formatFullDate(u.time) : 'Active Now'}</span>
-                           </div>`;
+                    <div class="dot ${isOnline?'dot-online':''}"></div>
+                    <span class="stat-label">${u.name.charAt(0)}: ${isOnline?'Online':'Offline'}</span>
+                    <span class="stat-time">${isOnline?'Active Now':formatDate(u.time)}</span>
+                </div>`;
             });
             document.getElementById('top-status-content').innerHTML = topHtml;
 
-            const chatBox = document.getElementById('notes-display');
-            const badge = document.getElementById('notif-badge');
+            // Board Data
+            currentBoardData = data.board;
+            renderBoard(data.board);
+            
+            // Playlist & Events
+            renderPlaylist(data.playlist);
+            globalCountdowns = data.countdowns;
+            
+            // Chat
             if(data.history.length > lastMsgCount) {
                 localHistory = data.history;
-                let unreadCount = localHistory.length - myLastSeen;
-                if(unreadCount > 0 && chatBox.style.display !== 'flex') {
-                    badge.innerText = unreadCount; badge.style.display = 'block';
-                    if(lastMsgCount !== 0 && !isSilent) document.getElementById('notif-sound').play();
-                } else if(chatBox.style.display === 'flex') {
-                    myLastSeen = localHistory.length; updateStatus("Online", myLastSeen);
-                }
                 lastMsgCount = localHistory.length;
                 renderMessages(otherSeenCountGlobal);
-                if(chatBox.style.display === 'flex') chatBox.scrollTop = chatBox.scrollHeight;
-            } else { renderMessages(otherSeenCountGlobal); }
-
-            globalCountdowns = data.countdowns;
-            renderPlaylist(data.playlist);
-            renderBoard(data.board);
-
-        } catch(e) { console.error(e); }
+            }
+        } catch(e) { console.log(e); }
     }
 
+    // --- BOARD FUNCTIONS ---
     function renderBoard(stickyData) {
-        if(!stickyData || !Array.isArray(stickyData)) return;
+        if(!stickyData) return;
         const preview = document.getElementById('board-preview');
-        const mainContainer = document.getElementById('board-scroll-container');
         let html = "";
-        stickyData.forEach((note, idx) => {
-            const row = Math.floor(idx / 3);
-            const col = idx % 3;
-            const top = (10 + (row * 25)) + "%";
-            const left = (5 + (col * 30) + (idx % 2 * 5)) + "%";
-            const rotation = (idx % 2 === 0 ? (idx % 5) : -(idx % 5));
-            html += `<div class="sticky-note" style="background:${note.color}; top:${top}; left:${left}; transform:rotate(${rotation}deg);" onclick="openNoteDetail('${note.content.replace(/'/g, "\\'")}', event)">
-                    <div class="paper-pin" style="background:${note.pinColor}"></div>
-                    <span class="note-delete" onclick="deleteSticky('${note.id}'); event.stopPropagation();">×</span>
-                    ${note.image ? `<img src="${note.image}" class="note-img">` : ''}
-                    <div style="flex:1; overflow:hidden;">${note.content}</div>
-                </div>`;
+        stickyData.forEach(note => {
+            html += `
+            <div class="sticky-note" style="background:${note.color};">
+                <div class="paper-pin" style="background:${note.pinColor}"></div>
+                <div class="note-tools">
+                    <span class="tool-btn" onclick="editNote('${note.id}')">✏️</span>
+                    <span class="tool-btn" onclick="deleteSticky('${note.id}')">🗑️</span>
+                </div>
+                ${note.image ? `<img src="${note.image}" class="note-img">` : ''}
+                <div style="height:45px; overflow-y:auto;">${note.content}</div>
+                <div class="note-meta">
+                    <b>${note.user}</b><br>
+                    ${note.created || ''}
+                </div>
+            </div>`;
         });
-        preview.innerHTML = html;
-        mainContainer.innerHTML = html;
-        mainContainer.style.minHeight = (Math.ceil(stickyData.length / 3) * 200) + "px";
+        preview.innerHTML = html || "Board is empty";
     }
 
-    function openNoteDetail(content, event) {
-        event.stopPropagation();
-        const view = document.getElementById('full-note-view');
-        document.getElementById('full-note-content').innerText = content;
-        view.style.display = 'block';
+    function showNewNoteForm() {
+        document.getElementById('note-form-title').innerText = "Create New Note";
+        document.getElementById('edit-note-id').value = "";
+        document.getElementById('note-text').value = "";
+        document.getElementById('note-form-overlay').style.display = 'flex';
     }
 
-    function closeNoteView() { document.getElementById('full-note-view').style.display = 'none'; }
-    function showNewNoteForm() { document.getElementById('note-form-overlay').style.display = 'flex'; }
     function hideNewNoteForm() { document.getElementById('note-form-overlay').style.display = 'none'; }
-    function openFullBoard() { document.getElementById('board-modal').style.display = 'flex'; }
-    function closeFullBoard() { document.getElementById('board-modal').style.display = 'none'; }
+
+    // Convert Image to Base64 easily
+    document.getElementById('note-image-input').onchange = function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function() { document.getElementById('note-img-base64').value = reader.result; };
+        if(file) reader.readAsDataURL(file);
+    };
 
     async function saveSticky() {
         const text = document.getElementById('note-text').value.trim();
         const color = document.getElementById('note-color').value;
         const pin = document.getElementById('pin-color').value;
-        const img = document.getElementById('note-pic-url').value;
+        const img = document.getElementById('note-img-base64').value;
+        const editId = document.getElementById('edit-note-id').value;
         const btn = document.getElementById('sticky-save-btn');
-        if(!text) return alert("Write something first!");
-        btn.innerText = "SAVING..."; btn.disabled = true;
-        await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "addSticky", user: currentUser, content: text, color: color, pinColor: pin, image: img }) });
-        btn.innerText = "SAVE NOTE"; btn.disabled = false;
-        document.getElementById('note-text').value = ""; hideNewNoteForm(); refreshData();
+        
+        if(!text) return alert("Text is empty!");
+        btn.innerText = "Saving..."; btn.disabled = true;
+
+        const payload = {
+            action: editId ? "editSticky" : "addSticky",
+            id: editId,
+            user: currentUser,
+            content: text,
+            color: color,
+            pinColor: pin,
+            image: img
+        };
+
+        await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        
+        btn.innerText = "SAVE"; btn.disabled = false;
+        hideNewNoteForm();
+        refreshData();
+    }
+
+    function editNote(id) {
+        const note = currentBoardData.find(n => n.id == id);
+        if(!note) return;
+        document.getElementById('note-form-title').innerText = "Edit Note";
+        document.getElementById('edit-note-id').value = id;
+        document.getElementById('note-text').value = note.content;
+        document.getElementById('note-color').value = note.color;
+        document.getElementById('pin-color').value = note.pinColor;
+        document.getElementById('note-form-overlay').style.display = 'flex';
     }
 
     async function deleteSticky(id) {
@@ -319,105 +320,58 @@
         }
     }
 
+    // --- UTILS ---
+    function formatDate(s) {
+        if(!s) return "";
+        const d = new Date(s);
+        return `${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;
+    }
+
     function runCountdownEngine() {
         const list = document.getElementById('countdown-list');
-        if(!globalCountdowns.length) { list.innerHTML = "<small style='color:#ccc'>No active events</small>"; return; }
-        let html = ""; const now = new Date().getTime();
-        globalCountdowns.forEach((ev, idx) => {
-            const target = new Date(ev.date).getTime();
-            const diff = target - now;
-            let timeStr = (diff > 0) ? `${Math.floor(diff/(1000*60*60*24))}d ${Math.floor((diff%(1000*60*60*24))/(1000*60*60))}h ${Math.floor((diff%(1000*60*60))/(1000*60))}m ${Math.floor((diff%(1000*60))/1000)}s` : "<b style='color:green'>FINISHED</b>";
-            html += `<div class="event-item"><span><b>${ev.label}</b></span><span>${timeStr}</span></div>`;
+        if(!globalCountdowns.length) { list.innerHTML = "<small>No events</small>"; return; }
+        let html = "";
+        globalCountdowns.forEach(ev => {
+            const diff = new Date(ev.date).getTime() - Date.now();
+            let timeStr = diff > 0 ? Math.floor(diff/86400000)+"d " + Math.floor((diff%86400000)/3600000)+"h" : "FINISHED";
+            html += `<div class="event-item" style="font-size:0.65rem; padding:3px; border-bottom:1px solid #eee;"><b>${ev.label}</b>: ${timeStr}</div>`;
         });
         list.innerHTML = html;
     }
 
-    async function addNewEvent() {
-        const label = prompt("Event Name:"); const date = prompt("Date (YYYY-MM-DD HH:MM:SS)", "2026-01-15 00:00:00");
-        if(label && date) { await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addCountdown", label:label, date:date, user:currentUser})}); refreshData(); }
-    }
-
     function renderPlaylist(songs) {
-        const container = document.getElementById('song-items');
-        if(!songs || songs.length === 0) return;
-        let html = ""; songs.slice(-5).forEach(s => { html += `<a href="${s.url}" target="_blank" style="color:var(--pink); text-decoration:none; font-weight:bold;">${s.title}</a>`; });
-        container.innerHTML = html;
-    }
-
-    async function addNewSong() {
-        const title = prompt("Song Title:"); const url = prompt("Song URL:");
-        if(title && url) { await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addSong", title:title, url:url, user:currentUser})}); refreshData(); }
-    }
-
-    function openHub(id) {
-        const hubSettings = { 1: { url: "https://google.com", pass: "111" }, 2: { url: "#", pass: "222" }, 3: { url: "#", pass: "333" }, 4: { url: "#", pass: "444" }, 5: { url: "#", pass: "555" }, 6: { url: "#", pass: "666" }, 7: { url: "#", pass: "777" }, 8: { url: "#", pass: "888" } };
-        const p = prompt("Enter Hub Key:");
-        if(p === hubSettings[id].pass) { if(hubSettings[id].url === "#") alert("Link not set."); else window.open(hubSettings[id].url, '_blank'); } else { alert("Wrong Key!"); }
+        const div = document.getElementById('song-items');
+        div.innerHTML = songs ? songs.slice(-3).map(s => `<a href="${s.url}" target="_blank" style="color:var(--pink);">${s.title}</a>`).join(" | ") : "No songs";
     }
 
     function renderMessages(otherSeen) {
-        let hHtml = ""; let lastDate = "";
+        let hHtml = "";
         localHistory.forEach((h, idx) => {
-            let d = parseSafeDate(h.time);
-            if(d.toDateString() !== lastDate) {
-                hHtml += `<div style="align-self:center; font-size:0.6rem; color:#888; margin:10px 0; background:rgba(0,0,0,0.05); padding:2px 8px; border-radius:10px;">${d.toDateString()}</div>`;
-                lastDate = d.toDateString();
-            }
             let isMe = h.name.toUpperCase().includes(currentUser);
-            let tick = isMe ? (otherSeen > idx ? '<span class="tick-blue">✓✓</span>' : '✓') : '';
-            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px; margin-top:5px;">` : h.note;
-            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}<div class="msg-time">${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${tick}</div></div>`;
+            let tick = isMe ? (otherSeen > idx ? ' <span style="color:#34b7f1">✓✓</span>' : ' ✓') : '';
+            hHtml += `<div class="msg ${isMe?'msg-me':'msg-them'}">${h.note}<div style="font-size:0.5rem; text-align:right;">${formatDate(h.time)}${tick}</div></div>`;
         });
         document.getElementById('notes-display').innerHTML = hHtml;
     }
 
-    function sendNote() { 
-        if(isPrivate) return;
-        let inp = document.getElementById('wa-input'); let m = inp.value.trim(); if(!m) return;
-        let now = new Date();
-        localHistory.push({name: currentUser, note: m, time: now.toISOString()});
-        renderMessages(otherSeenCountGlobal);
-        document.getElementById('notes-display').scrollTop = document.getElementById('notes-display').scrollHeight;
+    function sendNote() {
+        const inp = document.getElementById('wa-input');
+        if(!inp.value.trim()) return;
+        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:inp.value})});
         inp.value = "";
-        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})}); 
-        myLastSeen = localHistory.length; updateStatus("Online", myLastSeen);
+        setTimeout(refreshData, 1000);
     }
 
     function toggleChat() {
-        if(isPrivate) return;
         const box = document.getElementById('notes-display');
-        const badge = document.getElementById('notif-badge');
-        const isOpen = (box.style.display === 'flex');
-        box.style.display = isOpen ? 'none' : 'flex';
-        if(!isOpen) {
-            box.scrollTop = box.scrollHeight; badge.style.display = 'none';
-            myLastSeen = localHistory.length; updateStatus("Online", myLastSeen);
-        }
+        box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+        if(box.style.display === 'flex') box.scrollTop = box.scrollHeight;
     }
 
-    async function uploadMedia(input) {
-        if(isPrivate) return;
-        const file = input.files[0]; if(!file) return;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            const base64 = e.target.result.split(',')[1];
-            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64})});
-            refreshData();
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function fullExit() { if(!isPrivate) updateStatus("Offline", myLastSeen); window.location.href = "about:blank"; }
-    function formatFullDate(s) {
-        let d = parseSafeDate(s);
-        let days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;
-    }
-    function checkIdle() { if(!document.getElementById('stay-login').checked && (Date.now() - lastActivity > 600000)) fullExit(); }
-    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:isPrivate?"Private":s, seenCount:count})}); }
+    function updateStatus(s, count) { fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:count})}); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); }
-    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerHTML = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
-    window.onload = window.onmousemove = window.ontouchstart = () => { lastActivity = Date.now(); };
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerText = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
+    function fullExit() { updateStatus("Offline", myLastSeen); window.location.href = "about:blank"; }
 </script>
 </body>
 </html>
