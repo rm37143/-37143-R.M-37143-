@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Secret Dunia - DC2html</title>
+<title>Secret Dunia - DC3html</title>
 <style>
 :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
 body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
@@ -45,20 +45,19 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 .dark-mode .hub-btn { background: #333; }
 .playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; white-space: nowrap; border: 1px solid #d0e0ff; }
 .dark-mode .playlist-bar { background: #1e2530; border-color: #304060; }
-.green-board { background: #1b4d3e; border: 8px solid #5d4037; border-radius: 5px; padding: 15px; margin-top: 20px; min-height: 120px; max-height: 200px; overflow-y: auto; text-align: left; box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3); cursor: pointer; position: relative; }
-.board-scroll-area { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; justify-content: center; perspective: 1000px; }
-.sticky-note { width: 140px; min-height: 140px; padding: 15px; position: relative; box-shadow: 5px 5px 10px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.2s; font-family: 'Comic Sans MS', cursive; font-size: 0.8rem; color: #333; word-wrap: break-word; display: flex; flex-direction: column; }
-.paper-pin { width: 12px; height: 12px; border-radius: 50%; position: absolute; top: 5px; left: 50%; transform: translateX(-50%); box-shadow: inset -2px -2px 4px rgba(0,0,0,0.4); z-index: 5; }
-.note-meta { font-size: 0.6rem; margin-top: auto; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 5px; color: #666; }
-.note-delete { position: absolute; top: 2px; right: 5px; color: red; font-weight: bold; font-size: 0.9rem; display: none; }
-.sticky-note:hover .note-delete { display: block; }
-.note-img { width: 100%; border-radius: 3px; margin: 5px 0; }
-.board-full-view { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:4000; flex-direction:column; padding:0; box-sizing:border-box; }
+/* NEW BOARD LOGIC */
+.green-board { background: #1b4d3e; border: 8px solid #5d4037; border-radius: 5px; padding: 10px; margin-top: 20px; height: 160px; overflow-y: auto; text-align: left; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); cursor: pointer; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+.mini-note { width: 70px; height: 70px; padding: 5px; font-size: 0.5rem; overflow: hidden; position: relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); border-radius: 2px; color: #333; line-height: 1.1; font-family: 'Comic Sans MS', cursive; }
+.mini-note-pin { width: 4px; height: 4px; border-radius: 50%; position: absolute; top: 2px; left: 50%; transform: translateX(-50%); }
+.sticky-note { width: 140px; min-height: 140px; padding: 15px; position: relative; box-shadow: 5px 5px 10px rgba(0,0,0,0.3); cursor: pointer; font-family: 'Comic Sans MS', cursive; font-size: 0.8rem; color: #333; display: flex; flex-direction: column; }
+.note-ctrls { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; z-index: 10; }
+.note-ctrl-btn { font-size: 0.8rem; cursor: pointer; background: rgba(255,255,255,0.7); border-radius: 3px; padding: 1px 3px; }
+.board-full-view { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1b4d3e; z-index:4000; flex-direction:column; }
 #paper-full-view { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 7000; justify-content: center; align-items: center; }
 .lined-paper { width: 85%; max-width: 350px; min-height: 500px; background: #fff; padding: 50px 25px 30px 45px; position: relative; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); background-image: linear-gradient(#94d2ff 1px, transparent 1px); background-size: 100% 28px; line-height: 28px; font-family: 'Comic Sans MS', cursive; color: #2c3e50; font-size: 1.05rem; }
 .lined-paper::before { content: ''; position: absolute; top: 0; left: 40px; width: 2px; height: 100%; background: #ffadad; }
 .full-pin { width: 22px; height: 22px; border-radius: 50%; position: absolute; top: -11px; left: 50%; transform: translateX(-50%); z-index: 7001; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-.full-meta { position: absolute; bottom: 15px; right: 20px; font-size: 0.75rem; color: #7f8c8d; line-height: 1.3; text-align: right; border-top: 1px solid #eee; width: 80%; }
+.full-meta { position: absolute; bottom: 15px; right: 20px; font-size: 0.75rem; color: #7f8c8d; text-align: right; border-top: 1px solid #eee; width: 80%; line-height: 1.2; }
 .close-paper-btn { position: absolute; top: 10px; right: 10px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; font-weight: bold; cursor: pointer; z-index: 7005; }
 </style>
 </head>
@@ -92,17 +91,19 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <button class="hub-btn" onclick="openHub(1)">🔗</button><button class="hub-btn" onclick="openHub(2)">🎬</button><button class="hub-btn" onclick="openHub(3)">🎧</button><button class="hub-btn" onclick="openHub(4)">📂</button>
 <button class="hub-btn" onclick="openHub(5)">🔒</button><button class="hub-btn" onclick="openHub(6)">🖼️</button><button class="hub-btn" onclick="openHub(7)">🛰️</button><button class="hub-btn" onclick="openHub(8)">🚀</button>
 </div>
-<div class="green-board" onclick="openFullBoard()"><div id="board-preview"></div></div>
+<div class="green-board" id="board-preview" onclick="openFullBoard()"></div>
 </div>
 </div>
 <div id="board-modal" class="board-full-view">
-<div style="display:flex; justify-content:space-between; align-items:center; padding: 15px; background: rgba(0,0,0,0.3);"><h3 style="color:white; margin:0;">📌 Interactive Board</h3>
-<div style="display:flex; gap:10px;"><button onclick="showNewNoteForm()" style="background:var(--green); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">+ NEW</button><button onclick="closeFullBoard()" style="background:red; color:white; border:none; padding:8px 15px; border-radius:5px;">CLOSE</button></div></div>
-<div id="board-scroll-container" class="board-scroll-area" style="flex:1; overflow-y:auto; background:#1b4d3e;"></div>
+<div class="top-status-bar" style="position:relative; height:65px;">
+<div style="font-weight:bold; color:var(--pink);">📌 GREEN BOARD</div>
+<div style="display:flex; gap:10px;"><button onclick="showNewNoteForm()" style="background:var(--green); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">+ NEW</button><button onclick="closeFullBoard()" style="background:red; color:white; border:none; padding:8px 15px; border-radius:5px;">BACK</button></div>
+</div>
+<div id="board-scroll-container" style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-wrap:wrap; gap:20px; justify-content:center;"></div>
 </div>
 <div id="paper-full-view"><div class="lined-paper"><div id="full-paper-pin" class="full-pin"></div><button class="close-paper-btn" onclick="closePaper()">✕</button><div id="full-paper-content" style="padding-top:5px; white-space: pre-wrap;"></div><div id="full-paper-meta" class="full-meta"></div></div></div>
 <div id="note-form-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:6000; justify-content:center; align-items:center;">
-<div class="card" style="width:90%; max-width:350px;"><h4>New Note</h4><textarea id="note-text" style="width:95%; height:100px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
+<div class="card" style="width:90%; max-width:350px;"><h4 id="note-form-title">New Note</h4><input type="hidden" id="edit-note-id"><textarea id="note-text" style="width:95%; height:100px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
 <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><label>Paper: <input type="color" id="note-color" value="#fff9c4"></label><label>Pin: <input type="color" id="pin-color" value="#ff0000"></label></div>
 <input type="text" id="note-pic-url" placeholder="Image URL" style="width:95%; margin-bottom:15px; padding:8px; border-radius:5px; border:1px solid #ddd;">
 <div style="display:flex; gap:10px;"><button onclick="saveSticky()" id="sticky-save-btn" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:8px;">SAVE</button><button onclick="hideNewNoteForm()" style="flex:1; background:grey; color:white; border:none; padding:12px; border-radius:8px;">CANCEL</button></div></div>
@@ -116,9 +117,10 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 </div>
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbziNRLoI3Rtgjq6WbtVlbe8TbXi8QhJPdr0eHtVvxfzB1ysc7JBXXtg3i0nvzdhe6bd/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbw_lN4pHsnvXpuHi-LFy2U8VOw4Qx_60gmvgGOdwZ0Q6Rp9oNya8rAIYy5_5WagsmcO/exec';
 let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[];
 function parseSafeDate(s){if(!s)return new Date();let d=new Date(s.toString().replace(/-/g,'/').replace('T',' '));return isNaN(d.getTime())?new Date():d;}
+function formatNoteDate(s){let d=parseSafeDate(s);return d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
 async function checkAuth(){const btn=document.getElementById('login-btn');btn.innerText="Verifying...";const n=document.getElementById('u-name').value.toUpperCase().trim(),p=document.getElementById('u-pass').value.trim();isPrivate=document.getElementById('private-mode').checked;
 try{const res=await fetch(scriptURL);const data=await res.json();if((n.includes("AWAIS")&&p==data.passwords.LoginPassAwais)||(n.includes("NISHA")&&p==data.passwords.LoginPassNisha)){currentUser=n;document.getElementById('login-screen').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('wa-bar').style.display='flex';document.getElementById('top-bar-ui').style.display='flex';
 if(isPrivate){document.getElementById('wa-input-wrapper').classList.add('private-lock');document.getElementById('wa-send-btn-main').classList.add('private-lock');}await refreshData();if(!isPrivate)updateStatus("Online",myLastSeen);setInterval(refreshData,5000);setInterval(runCountdownEngine,1000);setInterval(checkIdle,60000);}else{alert("Wrong Key!");btn.innerText="Enter World";}}catch(e){btn.innerText="Enter World";}}
@@ -126,15 +128,27 @@ async function refreshData(){try{const res=await fetch(scriptURL);const data=awa
 let lastUpdate=parseSafeDate(u.time).getTime(),isOnline=(u.status==="Online"&&(Date.now()-lastUpdate)<600000),nameInit=u.name.toUpperCase().includes("AWAIS")?"A":"N",displayStatus=isOnline?"Online":"Offline";if(isMe&&isPrivate)displayStatus="🕵️ Private";if(!isMe&&u.status==="Private")displayStatus="Offline";
 topHtml+=`<div class="user-stat"><div class="dot ${isOnline&&displayStatus!=='Offline'?'dot-online':''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span><span class="stat-time">${displayStatus==="Offline"?formatFullDate(u.time):'Active Now'}</span></div>`;});
 document.getElementById('top-status-content').innerHTML=topHtml;const chatBox=document.getElementById('notes-display'),badge=document.getElementById('notif-badge');if(data.history.length>lastMsgCount){localHistory=data.history;let unreadCount=localHistory.length-myLastSeen;if(unreadCount>0&&chatBox.style.display!=='flex'){badge.innerText=unreadCount;badge.style.display='block';if(lastMsgCount!==0&&!isSilent)document.getElementById('notif-sound').play();}else if(chatBox.style.display==='flex'){myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}lastMsgCount=localHistory.length;renderMessages(otherSeenCountGlobal);if(chatBox.style.display==='flex')chatBox.scrollTop=chatBox.scrollHeight;}else{renderMessages(otherSeenCountGlobal);}globalCountdowns=data.countdowns;renderPlaylist(data.playlist);renderBoard(data.board);}catch(e){console.error(e);}}
-function renderBoard(sd){if(!sd||!Array.isArray(sd))return;currentStickyData=sd;const c=document.getElementById('board-scroll-container'),p=document.getElementById('board-preview'),sorted=[...sd].reverse();let h="";sorted.forEach(n=>{const r=(Math.random()*6-3).toFixed(2);h+=`<div class="sticky-note" style="background:${n.color||'#fff9c4'};transform:rotate(${r}deg);" onclick="viewPaper('${n.id}')"><div class="paper-pin" style="background:${n.pinColor||'red'}"></div><span class="note-delete" onclick="event.stopPropagation();deleteSticky('${n.id}')">×</span>${n.image?`<img src="${n.image}" class="note-img">`:''}<div style="flex:1">${n.content.substring(0,50)}...</div><div class="note-meta">By: ${n.user}</div></div>`;});c.innerHTML=h;let ph="";sorted.slice(0,2).forEach(i=>{ph+=`<div style="font-size:0.7rem;color:white;opacity:0.8;">📌 ${i.content.substring(0,30)}...</div>`;});p.innerHTML=ph||"Empty.";}
-function viewPaper(id){const n=currentStickyData.find(x=>x.id==id);if(!n)return;document.getElementById('full-paper-content').innerText=n.content;document.getElementById('full-paper-pin').style.background=n.pinColor||'red';document.getElementById('full-paper-meta').innerHTML=`<b>By:</b> ${n.user}<br><b>Time:</b> ${n.created||''}`;document.getElementById('paper-full-view').style.display='flex';}
+function renderBoard(sd){if(!sd||!Array.isArray(sd))return;currentStickyData=sd;const c=document.getElementById('board-scroll-container'),p=document.getElementById('board-preview'),sorted=[...sd].reverse();let h="",ph="";sorted.forEach(n=>{h+=`<div class="sticky-note" style="background:${n.color||'#fff9c4'};" onclick="viewPaper('${n.id}')">
+<div class="paper-pin" style="background:${n.pinColor||'red'}"></div>
+<div class="note-ctrls">
+<span class="note-ctrl-btn" onclick="event.stopPropagation();editSticky('${n.id}')">✏️</span>
+<span class="note-ctrl-btn" onclick="event.stopPropagation();deleteSticky('${n.id}')">❌</span>
+</div>
+<div style="flex:1; overflow:hidden;">${n.content.substring(0,80)}...</div>
+<div class="note-meta"><b>${n.user}</b><br>${formatNoteDate(n.created)}</div></div>`;
+ph+=`<div class="mini-note" style="background:${n.color||'#fff9c4'}"><div class="mini-note-pin" style="background:${n.pinColor||'red'}"></div><b>${n.user}:</b> ${n.content.substring(0,20)}</div>`;});
+c.innerHTML=h;p.innerHTML=ph||"Empty.";}
+function viewPaper(id){const n=currentStickyData.find(x=>x.id==id);if(!n)return;document.getElementById('full-paper-content').innerText=n.content;document.getElementById('full-paper-pin').style.background=n.pinColor||'red';document.getElementById('full-paper-meta').innerHTML=`<b>By:</b> ${n.user}<br><b>Time:</b> ${formatNoteDate(n.created)}`;document.getElementById('paper-full-view').style.display='flex';}
 function closePaper(){document.getElementById('paper-full-view').style.display='none';}
-function showNewNoteForm(){document.getElementById('note-form-overlay').style.display='flex';}
+function showNewNoteForm(){document.getElementById('edit-note-id').value="";document.getElementById('note-form-title').innerText="New Note";document.getElementById('note-text').value="";document.getElementById('note-form-overlay').style.display='flex';}
 function hideNewNoteForm(){document.getElementById('note-form-overlay').style.display='none';}
 function openFullBoard(){document.getElementById('board-modal').style.display='flex';}
 function closeFullBoard(){document.getElementById('board-modal').style.display='none';}
-async function saveSticky(){const t=document.getElementById('note-text').value.trim(),c=document.getElementById('note-color').value,p=document.getElementById('pin-color').value,img=document.getElementById('note-pic-url').value,btn=document.getElementById('sticky-save-btn');if(!t)return;btn.innerText="SAVING...";await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSticky",user:currentUser,content:t,color:c,pinColor:p,image:img})});btn.innerText="SAVE";document.getElementById('note-text').value="";hideNewNoteForm();refreshData();}
-async function deleteSticky(id){if(confirm("Delete?")){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"deleteSticky",id:id})});refreshData();}}
+async function saveSticky(){const t=document.getElementById('note-text').value.trim(),c=document.getElementById('note-color').value,p=document.getElementById('pin-color').value,img=document.getElementById('note-pic-url').value,id=document.getElementById('edit-note-id').value,btn=document.getElementById('sticky-save-btn');if(!t)return;btn.innerText="SAVING...";
+await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:id?"editSticky":"addSticky",id:id,user:currentUser,content:t,color:c,pinColor:p,image:img})});
+btn.innerText="SAVE";hideNewNoteForm();refreshData();}
+function editSticky(id){const n=currentStickyData.find(x=>x.id==id);if(!n)return;document.getElementById('edit-note-id').value=id;document.getElementById('note-text').value=n.content;document.getElementById('note-color').value=n.color;document.getElementById('pin-color').value=n.pinColor;document.getElementById('note-pic-url').value=n.image||"";document.getElementById('note-form-title').innerText="Edit Note";document.getElementById('note-form-overlay').style.display='flex';}
+async function deleteSticky(id){if(confirm("Delete this note?")){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"deleteSticky",id:id})});refreshData();}}
 function runCountdownEngine(){const l=document.getElementById('countdown-list');if(!globalCountdowns.length){l.innerHTML="<small>No events</small>";return;}let h="";const now=new Date().getTime();globalCountdowns.forEach((ev,idx)=>{const t=new Date(ev.date).getTime(),d=t-now;let ts="";if(d>0){const days=Math.floor(d/86400000),hrs=Math.floor((d%86400000)/3600000),mins=Math.floor((d%3600000)/60000),secs=Math.floor((d%60000)/1000);ts=`${days}d ${hrs}h ${mins}m ${secs}s`;}else{ts="<b>FINISHED</b>";if(Math.abs(d)>21600000)return;}h+=`<div class="event-item"><span><b>${ev.label}</b></span><span>${ts}</span></div>`;});l.innerHTML=h;}
 function renderPlaylist(s){const c=document.getElementById('song-items');if(!s||s.length===0)return;let h="";s.slice(-5).forEach(i=>{h+=`<a href="${i.url}" target="_blank" style="color:var(--pink);font-weight:bold;">${i.title}</a>`;});c.innerHTML=h;}
 async function addNewSong(){const t=prompt("Title:"),u=prompt("URL:");if(t&&u){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSong",title:t,url:u,user:currentUser})});refreshData();}}
