@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Secret Dunia - A4.8 LOCKED</title>
+<title>Secret Dunia - DC2html</title>
 <style>
 :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
 body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
@@ -26,6 +26,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
 .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
 .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
+.media-content { width: 100%; max-width: 250px; border-radius: 8px; margin-top: 5px; display: block; cursor: pointer; }
 .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
 .tick-blue { color: #34b7f1; font-weight: bold; }
 .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; min-width: 12px; text-align: center; }
@@ -115,7 +116,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 </div>
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbxlEMocvxPMNZuSZfNHBv7YilHvUFZbk-LPGdZR0vh_X98KRofgxqE954HDoOq7MR8i/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbziNRLoI3Rtgjq6WbtVlbe8TbXi8QhJPdr0eHtVvxfzB1ysc7JBXXtg3i0nvzdhe6bd/exec';
 let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[];
 function parseSafeDate(s){if(!s)return new Date();let d=new Date(s.toString().replace(/-/g,'/').replace('T',' '));return isNaN(d.getTime())?new Date():d;}
 async function checkAuth(){const btn=document.getElementById('login-btn');btn.innerText="Verifying...";const n=document.getElementById('u-name').value.toUpperCase().trim(),p=document.getElementById('u-pass').value.trim();isPrivate=document.getElementById('private-mode').checked;
@@ -138,10 +139,10 @@ function runCountdownEngine(){const l=document.getElementById('countdown-list');
 function renderPlaylist(s){const c=document.getElementById('song-items');if(!s||s.length===0)return;let h="";s.slice(-5).forEach(i=>{h+=`<a href="${i.url}" target="_blank" style="color:var(--pink);font-weight:bold;">${i.title}</a>`;});c.innerHTML=h;}
 async function addNewSong(){const t=prompt("Title:"),u=prompt("URL:");if(t&&u){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSong",title:t,url:u,user:currentUser})});refreshData();}}
 function openHub(id){const p=prompt("Hub Key:");if(p==="111")window.open("https://google.com",'_blank');else alert("Wrong!");}
-function renderMessages(os){let h="",ld="";localHistory.forEach((m,idx)=>{let d=parseSafeDate(m.time);if(d.toDateString()!==ld){h+=`<div style="align-self:center;font-size:0.6rem;color:#888;margin:10px 0;">${d.toDateString()}</div>`;ld=d.toDateString();}let isMe=m.name.toUpperCase().includes(currentUser),tick=isMe?(os>idx?'<span class="tick-blue">✓✓</span>':'✓'):'',c=m.note.startsWith("MEDIA:")?`<img src="${m.note.split('MEDIA:')[1]}" style="width:100%;border-radius:8px;">`:m.note;h+=`<div class="msg ${isMe?"msg-me":"msg-them"}">${c}<div class="msg-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${tick}</div></div>`;});document.getElementById('notes-display').innerHTML=h;}
+function renderMessages(os){let h="",ld="";localHistory.forEach((m,idx)=>{let d=parseSafeDate(m.time);if(d.toDateString()!==ld){h+=`<div style="align-self:center;font-size:0.6rem;color:#888;margin:10px 0;">${d.toDateString()}</div>`;ld=d.toDateString();}let isMe=m.name.toUpperCase().includes(currentUser),tick=isMe?(os>idx?'<span class="tick-blue">✓✓</span>':'✓'):'';let contentHTML = m.note;if(m.note.startsWith("MEDIA:")){let url = m.note.split('MEDIA:')[1];if(url.match(/\.(mp4|webm|ogg|mov)$/i) || url.includes("video")){contentHTML = `<video src="${url}" controls class="media-content"></video>`;} else {contentHTML = `<img src="${url}" class="media-content" onclick="window.open('${url}')">`;}}h+=`<div class="msg ${isMe?"msg-me":"msg-them"}">${contentHTML}<div class="msg-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${tick}</div></div>`;});document.getElementById('notes-display').innerHTML=h;}
 function sendNote(){if(isPrivate)return;let i=document.getElementById('wa-input'),m=i.value.trim();if(!m)return;localHistory.push({name:currentUser,note:m,time:new Date().toISOString()});renderMessages(otherSeenCountGlobal);const b=document.getElementById('notes-display');b.scrollTop=b.scrollHeight;i.value="";fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({name:currentUser,note:m})});myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}
 function toggleChat(){if(isPrivate)return;const b=document.getElementById('notes-display'),g=document.getElementById('notif-badge'),o=(b.style.display==='flex');b.style.display=o?'none':'flex';if(!o){b.scrollTop=b.scrollHeight;g.style.display='none';myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}}
-async function uploadMedia(i){if(isPrivate)return;const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=async(e)=>{const b=e.target.result.split(',')[1];await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"uploadMedia",name:currentUser,type:f.type,base64:b})});refreshData();};r.readAsDataURL(f);}
+async function uploadMedia(i){if(isPrivate)return;const f=i.files[0];if(!f)return;const btn=document.getElementById('wa-send-btn-main');const oldIcon=btn.innerHTML;btn.innerHTML="...";const r=new FileReader();r.onload=async(e)=>{const b=e.target.result.split(',')[1];await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"uploadMedia",name:currentUser,type:f.type,base64:b})});btn.innerHTML=oldIcon;refreshData();};r.readAsDataURL(f);}
 function fullExit(){if(!isPrivate)updateStatus("Offline",myLastSeen);window.location.href="about:blank";}
 function formatFullDate(s){let d=parseSafeDate(s);let days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;}
 function checkIdle(){if(!document.getElementById('stay-login').checked&&(Date.now()-lastActivity>600000))fullExit();}
