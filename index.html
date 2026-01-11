@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Secret Dunia - A5 MEMORY BOARD</title>
-    
+    <title>Secret Dunia - A5 FINAL</title>
     <style>
         :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
         body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
@@ -19,71 +18,53 @@
         .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
         .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
         .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
-        .dark-mode .stat-label { color: white; }
+        .stat-time { font-size: 0.5rem; color: #777; }
 
-        /* Container & Cards */
-        .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
-        .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
-        
-        /* NEW BOARD STYLES */
+        /* Memory Board */
         .board-container { 
             background: #1b4d3e url('https://www.transparenttextures.com/patterns/felt.png'); 
             border: 8px solid #5d4037; border-radius: 12px; 
-            min-height: 400px; max-height: 600px; overflow-y: auto; 
-            padding: 20px; display: flex; flex-wrap: wrap; gap: 15px; 
-            justify-content: center; align-content: flex-start;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.6); position: relative;
+            min-height: 350px; max-height: 500px; overflow-y: auto; 
+            padding: 20px; display: flex; flex-wrap: wrap; gap: 12px; 
+            justify-content: center; box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+            margin: 15px 0;
         }
-
         .sticky-note {
-            width: 100px; min-height: 110px; padding: 10px; position: relative;
-            box-shadow: 3px 5px 10px rgba(0,0,0,0.4); transition: 0.3s;
-            cursor: pointer; display: flex; flex-direction: column; 
-            justify-content: center; overflow: hidden;
+            width: 90px; height: 95px; padding: 8px; position: relative;
+            box-shadow: 3px 4px 8px rgba(0,0,0,0.3); cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; transition: 0.2s;
         }
-        .sticky-note:hover { transform: scale(1.1) rotate(0deg) !important; z-index: 10; }
+        .push-pin { width: 10px; height: 10px; border-radius: 50%; position: absolute; top: 4px; left: 50%; transform: translateX(-50%); }
+        .note-preview { font-size: 0.6rem; text-align: center; color: #333; line-height: 1.2; font-weight: bold; }
+
+        /* Full Paper View */
+        .paper-modal { display:none; position:fixed; top:75px; left:0; width:100%; height:calc(100% - 75px); background: #fdfdfd; z-index: 3000; flex-direction: column; padding: 25px; box-sizing: border-box; overflow-y: auto; }
         
-        .push-pin {
-            width: 12px; height: 12px; border-radius: 50%; position: absolute;
-            top: 5px; left: 50%; transform: translateX(-50%);
-            box-shadow: 0 2px 3px rgba(0,0,0,0.5); z-index: 5;
-        }
-
-        .note-preview-text { font-size: 0.65rem; color: #333; font-weight: 600; text-align: center; word-wrap: break-word; }
-
-        /* Full Screen Paper Look */
-        .full-paper-view {
-            display:none; position:fixed; top:75px; left:0; width:100%; height:calc(100% - 75px);
-            background: #fdfdfd; z-index: 4000; flex-direction: column; overflow-y: auto;
-            padding: 20px; box-sizing: border-box;
-        }
-        .paper-content { background: white; max-width: 600px; margin: 0 auto; line-height: 1.8; color: #222; }
-
-        /* Chat/WA Bar */
+        /* Chat Frame */
         .chat-frame { display: none; position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; height: 380px; background: var(--wa-bg); border-radius: 20px; z-index: 1500; flex-direction: column; padding: 10px; border: 2px solid var(--pink); box-shadow: 0 -5px 15px rgba(0,0,0,0.1); overflow-y: auto; gap: 8px; box-sizing: border-box; }
-        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
-        .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
-        .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
-        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; color:#000; }
+        .msg-me { align-self: flex-end; background: #dcf8c6; }
+        .msg-them { align-self: flex-start; background: #ffffff; }
 
-        /* Hub & Playlist */
-        .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
-        .hub-btn { background: white; border: 1.5px solid var(--pink); border-radius: 12px; height: 45px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        /* Input Bar */
+        .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; }
+        .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
+        .wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; }
+        .wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; }
+        .private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+        
+        /* Utility */
+        .container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
+        .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
     </style>
 </head>
 <body>
 
-<button onclick="toggleTheme()" style="position:fixed; top:8px; left:10px; z-index:3000; background:var(--pink); color:white; border:none; padding:5px 10px; border-radius:8px; font-size:0.65rem;">🌓 MODE</button>
-
 <div class="top-status-bar" id="top-bar-ui" style="display:none;">
-    <div class="nav-left">
-        <button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button>
-    </div>
+    <div class="nav-left"><button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button></div>
     <div class="status-center-display" id="top-status-content"></div>
-    <div class="off-group">
-        <button onclick="fullExit()" style="background:#ff4d4d; color:white; border:none; width:50px; height:35px; border-radius:8px; font-weight:bold;">OFF</button>
-    </div>
+    <div class="off-group"><button onclick="fullExit()" style="background:#ff4d4d; color:white; border:none; width:50px; height:35px; border-radius:8px; font-weight:bold;">OFF</button></div>
 </div>
 
 <div class="container">
@@ -91,80 +72,69 @@
         <h2 style="color:var(--pink);">Secret Dunia</h2>
         <input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
         <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
+        <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
         <button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
     </div>
 
     <div id="dashboard" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span style="font-weight:bold; color:var(--dark);">Bulletin Board</span>
-            <button onclick="document.getElementById('new-note-modal').style.display='flex'" style="background:var(--green); color:white; border:none; border-radius:5px; padding:5px 10px;">+ New Note</button>
-        </div>
+        <div style="text-align: left; margin-bottom: 8px;"><span style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span></div>
         
-        <div class="board-container" id="board-preview">
-            </div>
-
-        <div class="hub-grid">
-            <button class="hub-btn" onclick="openHub(1)">🔗</button>
-            <button class="hub-btn" onclick="openHub(2)">🎬</button>
-            <button class="hub-btn" onclick="openHub(3)">🎧</button>
-            <button class="hub-btn" onclick="openHub(4)">📂</button>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:bold; color:var(--dark);">Bulletin Board</span>
+            <button onclick="document.getElementById('new-note-modal').style.display='flex'" style="background:var(--green); color:white; border:none; border-radius:5px; padding:4px 10px; font-size:0.7rem;">+ NEW NOTE</button>
         </div>
+        <div class="board-container" id="board-preview"></div>
+        
+        <div id="countdown-list" class="card" style="font-size:0.8rem;"></div>
+        <div id="song-items" class="card" style="display:flex; gap:10px; overflow-x:auto; font-size:0.7rem;"></div>
     </div>
 </div>
 
-<div id="full-paper-view" class="full-paper-view">
-    <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:15px; border-bottom:2px solid #eee;">
-        <div id="paper-meta" style="font-size:0.75rem; color:#666;"></div>
+<div id="full-paper-modal" class="paper-modal">
+    <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
+        <div id="paper-meta-info" style="font-size:0.75rem; color:#888;"></div>
         <button onclick="closePaper()" style="background:red; color:white; border:none; padding:5px 15px; border-radius:5px;">CLOSE</button>
     </div>
-    <div id="paper-content-area" class="paper-content"></div>
+    <div id="paper-content-area" style="font-size:1.1rem; line-height:1.6; color:#222; white-space:pre-wrap;"></div>
+    <div id="paper-footer" style="margin-top:30px;"></div>
 </div>
 
-<div id="new-note-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:5000; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
-    <div class="card" style="width:100%; max-width:350px;">
-        <h3>Create New Note</h3>
-        <textarea id="board-input" placeholder="Write something..." style="width:100%; height:100px; border:1px solid #eee; border-radius:10px; padding:10px;"></textarea>
-        <div style="display:flex; gap:10px; margin:10px 0;">
-            <div style="flex:1">
-                <small>Page Color:</small><br>
-                <input type="color" id="note-color" value="#fff9c4" style="width:100%; height:30px; border:none;">
-            </div>
-            <div style="flex:1">
-                <small>Pin Color:</small><br>
-                <input type="color" id="pin-color" value="#ff0000" style="width:100%; height:30px; border:none;">
-            </div>
+<div id="new-note-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:5000; align-items:center; justify-content:center;">
+    <div class="card" style="width:85%; max-width:350px;">
+        <h3>New Sticky Note</h3>
+        <textarea id="board-input" placeholder="Type message..." style="width:100%; height:80px; margin-bottom:10px; padding:8px;"></textarea>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div style="flex:1"><small>Paper Color:</small><input type="color" id="note-color" value="#fff9c4" style="width:100%;"></div>
+            <div style="flex:1"><small>Pin Color:</small><input type="color" id="pin-color" value="#ff0000" style="width:100%;"></div>
         </div>
-        <input type="file" id="note-file" accept="image/*" style="font-size:0.7rem;">
-        <div style="margin-top:15px; display:flex; gap:10px;">
-            <button onclick="saveToBoard()" style="flex:1; background:var(--green); color:white; border:none; padding:10px; border-radius:10px;">Save Note</button>
-            <button onclick="document.getElementById('new-note-modal').style.display='none'" style="flex:1; background:var(--grey); color:white; border:none; padding:10px; border-radius:10px;">Cancel</button>
-        </div>
+        <button onclick="saveToBoard()" style="background:var(--green); color:white; border:none; padding:10px; width:100%; border-radius:10px;">PIN TO BOARD</button>
+        <button onclick="document.getElementById('new-note-modal').style.display='none'" style="background:none; border:none; margin-top:10px; color:grey;">Cancel</button>
     </div>
 </div>
 
 <div class="chat-frame" id="notes-display"></div>
-
 <div id="wa-bar" class="wa-bottom" style="display:none;">
-    <div class="wa-input-box">
-        <div style="position:relative;">
-            <button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button>
-            <span id="notif-badge" class="msg-badge">0</span>
-        </div>
+    <div class="wa-input-box" id="wa-input-wrapper">
+        <div style="position:relative;"><button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button><span id="notif-badge" style="position:absolute; top:-5px; right:-5px; background:red; color:white; font-size:0.6rem; padding:2px 5px; border-radius:10px; display:none;">0</span></div>
+        <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label>
+        <input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*">
         <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()">
     </div>
-    <button class="wa-send-btn" onclick="sendNote()">➤</button>
+    <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
 </div>
 
+<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxqgqkOYa4nAwc2kfQCuToxiifT9mIDflDkwQdjanAwmPdsS7JUJWf6RLPw8dXolULk/exec';
-    let currentUser = "", lastMsgCount = 0, isSilent = true, localHistory = [], myLastSeen = -1;
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzGvvlMQ19FaPARMJFnucYi2y8d-uQ097teGjkxoIGJDZaDCKEzeUZeTkJ9KD0oEw61/exec';
+    let currentUser = "", lastMsgCount = 0, isSilent = true, isPrivate = false, localHistory = [], myLastSeen = -1;
 
     async function checkAuth() {
-        const btn = document.getElementById('login-btn');
         const n = document.getElementById('u-name').value.toUpperCase().trim();
         const p = document.getElementById('u-pass').value.trim();
-        if(!n || !p) return alert("Fill details!");
-        btn.innerText = "Connecting...";
+        isPrivate = document.getElementById('private-mode').checked;
+        if(!n || !p) return;
+        document.getElementById('login-btn').innerText = "Verifying...";
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
@@ -174,120 +144,110 @@
                 document.getElementById('dashboard').style.display='block';
                 document.getElementById('wa-bar').style.display='flex';
                 document.getElementById('top-bar-ui').style.display='flex';
-                refreshData();
+                if(isPrivate) { document.getElementById('wa-input-wrapper').classList.add('private-lock'); document.getElementById('wa-send-btn-main').classList.add('private-lock'); }
+                await refreshData();
+                if(!isPrivate) updateStatus("Online", myLastSeen);
                 setInterval(refreshData, 5000);
-            } else { alert("Access Denied!"); btn.innerText = "Enter World"; }
-        } catch(e) { btn.innerText = "Retry"; }
+            } else { alert("Wrong Key!"); document.getElementById('login-btn').innerText = "Enter World"; }
+        } catch(e) { console.error(e); }
     }
 
     async function refreshData() {
         try {
             const res = await fetch(scriptURL);
             const data = await res.json();
-            updateStatusBar(data.onlineUsers);
+            
+            // Status Bar
+            let topHtml = ""; 
+            data.onlineUsers.forEach(u => {
+                let isMe = u.name.toUpperCase().includes(currentUser);
+                let isOnline = (u.status === "Online" && (Date.now() - new Date(u.time.replace(/-/g, '/')).getTime()) < 600000);
+                let nameInit = u.name.toUpperCase().includes("AWAIS") ? "A" : "N";
+                let displayStatus = isOnline ? "Online" : "Offline";
+                if(isMe && isPrivate) displayStatus = "🕵️ Private";
+                if(!isMe && u.status === "Private") displayStatus = "Offline";
+                topHtml += `<div class="user-stat"><div class="dot ${isOnline && displayStatus !== 'Offline' ? 'dot-online' : ''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span></div>`;
+            });
+            document.getElementById('top-status-content').innerHTML = topHtml;
+
+            // History & Board
+            if(data.history.length > lastMsgCount) { localHistory = data.history; renderMessages(); lastMsgCount = localHistory.length; }
             renderBoard(data.board);
-            if(data.history.length > lastMsgCount) {
-                localHistory = data.history;
-                renderMessages();
-                lastMsgCount = data.history.length;
-            }
         } catch(e) {}
     }
 
     function renderBoard(boardData) {
         const board = document.getElementById('board-preview');
-        if(!boardData) return;
-        let html = "";
-        const rotations = ["-3deg", "2deg", "-2deg", "3deg", "1deg"];
-        
+        let html = ""; const rots = ["-3deg", "2deg", "-2deg", "3deg", "0deg"];
         boardData.forEach((item, idx) => {
-            let rot = rotations[idx % rotations.length];
-            html += `
-            <div class="sticky-note" style="background:${item.color || '#fff9c4'}; transform:rotate(${rot})" onclick='openPaper(${JSON.stringify(item)})'>
-                <div class="push-pin" style="background:${item.pin || 'red'}"></div>
-                <div class="note-preview-text">
-                    ${item.content.substring(0, 45)}${item.content.length > 45 ? '...' : ''}
-                </div>
-                <div style="font-size:0.5rem; position:absolute; bottom:5px; right:5px; opacity:0.6;">By ${item.user}</div>
-            </div>`;
+            html += `<div class="sticky-note" style="background:${item.color}; transform:rotate(${rots[idx%5]})" onclick='openPaper(${JSON.stringify(item)})'>
+                        <div class="push-pin" style="background:${item.pin}"></div>
+                        <div class="note-preview">${item.content.substring(0,35)}...</div>
+                    </div>`;
         });
         board.innerHTML = html;
     }
 
     function openPaper(item) {
-        const modal = document.getElementById('full-paper-view');
-        const meta = document.getElementById('paper-meta');
-        const content = document.getElementById('paper-content-area');
-        modal.style.display = "flex";
-        meta.innerHTML = `📅 Created: ${item.time}<br>👤 Written by: <b>${item.user}</b>`;
-        
-        let mediaHtml = item.media ? `<img src="${item.media}" style="width:100%; border-radius:10px; margin:20px 0;">` : "";
-        content.innerHTML = `<div style="padding:10px; font-size:1.2rem;">${item.content}</div>${mediaHtml}
-        <button onclick="deleteNote(${item.row})" style="color:red; background:none; border:none; margin-top:50px;">Delete Page [x]</button>`;
+        document.getElementById('full-paper-modal').style.display = "flex";
+        document.getElementById('paper-meta-info').innerHTML = `📅 ${item.time} | ✍️ ${item.user}`;
+        document.getElementById('paper-content-area').innerText = item.content;
+        document.getElementById('paper-footer').innerHTML = `<button onclick="deleteNote(${item.row})" style="color:red; background:none; border:none; font-size:0.75rem;">[Delete Page]</button>`;
     }
-
-    function closePaper() { document.getElementById('full-paper-view').style.display = 'none'; }
 
     async function saveToBoard() {
         const text = document.getElementById('board-input').value.trim();
         const color = document.getElementById('note-color').value;
         const pin = document.getElementById('pin-color').value;
-        const fileInp = document.getElementById('note-file');
-        
         if(!text) return;
         document.getElementById('new-note-modal').style.display = 'none';
-
-        let mediaURL = "";
-        if(fileInp.files[0]) {
-            const reader = new FileReader();
-            reader.readAsDataURL(fileInp.files[0]);
-            reader.onload = async () => {
-                const base64 = reader.result.split(',')[1];
-                // Yahan image upload logic add hogi if needed
-            };
-        }
-
-        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({
-            action: "addBoard", content: text, user: currentUser, color: color, pin: pin, type: "NOTE"
-        })});
-        
+        await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"addBoard", content:text, user:currentUser, color:color, pin:pin, type:"NOTE"})});
         document.getElementById('board-input').value = "";
         refreshData();
     }
 
     async function deleteNote(row) {
-        if(confirm("Delete this page?")) {
-            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action: "deleteBoard", row: row})});
-            closePaper();
-            refreshData();
-        }
+        if(confirm("Delete?")) { await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"deleteBoard", row:row})}); closePaper(); refreshData(); }
     }
 
-    function updateStatusBar(users) {
-        let html = "";
-        users.forEach(u => {
-            let isMe = u.name.toUpperCase().includes(currentUser);
-            let lastUpdate = new Date(u.time).getTime();
-            let isOnline = (u.status === "Online" && (Date.now() - lastUpdate) < 600000);
-            html += `<div class="user-stat">
-                <div class="dot ${isOnline ? 'dot-online' : ''}"></div>
-                <span class="stat-label">${u.name.charAt(0)}: ${isOnline ? 'Online' : 'Offline'}</span>
-            </div>`;
+    function renderMessages() {
+        let hHtml = "";
+        localHistory.forEach(h => {
+            let isMe = h.name.toUpperCase().includes(currentUser);
+            let content = h.note.startsWith("MEDIA:") ? `<img src="${h.note.split('MEDIA:')[1]}" style="width:100%; border-radius:8px;">` : h.note;
+            hHtml += `<div class="msg ${isMe ? "msg-me" : "msg-them"}">${content}</div>`;
         });
-        document.getElementById('top-status-content').innerHTML = html;
+        document.getElementById('notes-display').innerHTML = hHtml;
     }
 
-    function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+    function sendNote() {
+        if(isPrivate) return;
+        let inp = document.getElementById('wa-input'); if(!inp.value.trim()) return;
+        fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:inp.value})});
+        inp.value = ""; refreshData();
+    }
+
+    async function uploadMedia(input) {
+        if(isPrivate) return;
+        const file = input.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const base64 = e.target.result.split(',')[1];
+            await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"uploadMedia", name:currentUser, type:file.type, base64:base64})});
+            refreshData();
+        };
+        reader.readAsDataURL(file);
+    }
+
     function toggleChat() { 
-        const box = document.getElementById('notes-display');
-        box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-        if(box.style.display === 'flex') {
-            document.getElementById('notif-badge').style.display = 'none';
-            box.scrollTop = box.scrollHeight;
-        }
+        const box = document.getElementById('notes-display'); 
+        box.style.display = (box.style.display === 'flex') ? 'none' : 'flex'; 
+        if(box.style.display==='flex') box.scrollTop = box.scrollHeight;
     }
-    function fullExit() { window.location.href = "about:blank"; }
+    function closePaper() { document.getElementById('full-paper-modal').style.display = "none"; }
+    function updateStatus(s, c) { if(!isPrivate) fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({action:"updateStatus", name:currentUser, status:s, seenCount:c})}); }
+    function fullExit() { updateStatus("Offline", -1); window.location.href = "about:blank"; }
+    function toggleSilent() { isSilent = !isSilent; document.getElementById('silent-btn').innerText = isSilent ? "🔕 SILENT" : "🔔 SOUND"; }
 </script>
-
 </body>
 </html>
