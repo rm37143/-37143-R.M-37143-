@@ -3,11 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Secret Dunia - DC11.1Html</title>
+<title>Secret Dunia - DC12 Html</title>
 <style>
 :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
 body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
 body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
+
+/* Nickname Selection Styles */
+.nick-container { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
+.nick-btn { width: 70px; height: 70px; border-radius: 50%; border: 3px solid #eee; background: white; font-size: 1.5rem; font-weight: bold; color: var(--pink); cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.nick-btn.selected { border-color: var(--pink); background: #fff0f3; transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 133, 162, 0.3); }
+
 .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
 .dark-mode .top-status-bar { background: rgba(30, 30, 30, 0.9); }
 .nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
@@ -44,7 +50,6 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 .hub-btn { background: var(--pink); color: white; border: none; border-radius: 8px; height: 38px; font-size: 0.65rem; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-transform: uppercase; }
 .hub-btn:active { transform: scale(0.92); opacity: 0.9; }
 
-/* --- HUB DISPLAY STYLES --- */
 #hub-quick-view { display: none; width: 100%; height: 350px; background: white; border: 2px solid var(--pink); border-radius: 12px; margin-top: 15px; overflow: hidden; position: relative; }
 #hub-quick-view.full-size { position: fixed; top: 75px; left: 0; width: 100%; height: calc(100% - 140px); z-index: 1800; margin-top: 0; border-radius: 0; }
 #hub-iframe { width: 100%; height: 100%; border: none; }
@@ -73,20 +78,29 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 </head>
 <body>
 <button onclick="toggleTheme()" style="position:fixed; top:8px; left:10px; z-index:3000; background:var(--pink); color:white; border:none; padding:5px 10px; border-radius:8px; font-size:0.65rem;">🌓 MODE</button>
+
 <div class="top-status-bar" id="top-bar-ui" style="display:none;">
 <div class="nav-left"><button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button></div>
 <div class="status-center-display" id="top-status-content"></div>
 <div class="off-group"><button class="off-btn" onclick="fullExit()">OFF</button>
 <label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label></div>
 </div>
+
 <div class="container">
 <div id="login-screen" class="card">
 <h2 style="color:var(--pink);">Secret Dunia</h2>
-<input type="text" id="u-name" placeholder="User Name" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;">
+
+<div class="nick-container">
+    <button id="btn-nick-a" class="nick-btn" onclick="selectUser('A', 'AWAIS')">A</button>
+    <button id="btn-nick-n" class="nick-btn" onclick="selectUser('N', 'NISHA')">N</button>
+</div>
+<input type="hidden" id="u-name">
+
 <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key==='Enter') checkAuth()">
-<div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
+<div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode">🕵️ Private Mode</div>
 <button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
 </div>
+
 <div id="dashboard" style="display:none;">
 <div style="text-align: left; margin-bottom: 8px;"><span style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic; display: block;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span></div>
 <div class="card" style="padding: 10px; margin-bottom: 12px;">
@@ -120,6 +134,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <div class="green-board" id="board-preview" onclick="openFullBoard()"></div>
 </div>
 </div>
+
 <div id="board-modal" class="board-full-view">
 <div class="top-status-bar" style="position:relative; height:65px;">
 <div style="font-weight:bold; color:var(--pink); font-size: 0.9rem;">📌 GREEN BOARD</div>
@@ -127,7 +142,9 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 </div>
 <div id="board-scroll-container" style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-wrap:wrap; gap:20px; justify-content:center;"></div>
 </div>
+
 <div id="paper-full-view"><div class="lined-paper"><div id="full-paper-pin" class="full-pin"></div><button class="close-paper-btn" onclick="closePaper()">✕</button><div id="full-paper-content" style="padding-top:5px; white-space: pre-wrap;"></div><div id="full-paper-meta" class="full-meta"></div></div></div>
+
 <div id="note-form-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:6000; justify-content:center; align-items:center;">
 <div class="card" style="width:90%; max-width:350px;"><h4 id="note-form-title">New Note</h4><input type="hidden" id="edit-note-id"><textarea id="note-text" style="width:95%; height:100px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -139,35 +156,62 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <div id="sticky-img-preview" style="margin-bottom:10px;"></div>
 <div style="display:flex; gap:10px;"><button onclick="saveSticky()" id="sticky-save-btn" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:8px;">SAVE</button><button onclick="hideNewNoteForm()" style="flex:1; background:grey; color:white; border:none; padding:12px; border-radius:8px;">CANCEL</button></div></div>
 </div>
+
 <div class="chat-frame" id="notes-display"></div>
+
 <div id="wa-bar" class="wa-bottom" style="display:none;">
-<div class="wa-input-box" id="wa-input-wrapper"><div style="position:relative; display:inline-block;"><button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button><span id="notif-badge" class="msg-badge">0</span></div> 
+<div class="wa-input-box" id="wa-input-wrapper"><div style="position:relative; display:inline-block;"><button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button><span id="notif-badge" class="msg-badge">0</span></div>
 <label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label><input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
 <input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()"></div>
 <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
 </div>
+
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbxufP8IefO41vkkCfg_6ukdCy7VdGNiH-7axVzVe7WqN3pnqhFu9HYeDGsuatsw_71D/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwFUt9m9eeqe38KyUgqQKqBoMwOuaXtujUONLxT5XMc_4EG1wvs5PejK-bmmItpMzRI/exec';
 let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[],tempStickyImg="";
+
+// NEW: Selection Logic
+function selectUser(nick, realName) {
+    document.querySelectorAll('.nick-btn').forEach(b => b.classList.remove('selected'));
+    const btnId = nick === 'A' ? 'btn-nick-a' : 'btn-nick-n';
+    document.getElementById(btnId).classList.add('selected');
+    document.getElementById('u-name').value = realName;
+}
 
 function parseSafeDate(s){if(!s)return new Date();let d=new Date(s.toString().replace(/-/g,'/').replace('T',' '));return isNaN(d.getTime())?new Date():d;}
 function formatNoteDate(s){let d=parseSafeDate(s);return d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
 
-async function checkAuth(){const btn=document.getElementById('login-btn');btn.innerText="Verifying...";const n=document.getElementById('u-name').value.toUpperCase().trim(),p=document.getElementById('u-pass').value.trim();isPrivate=document.getElementById('private-mode').checked;
-try{const res=await fetch(scriptURL);const data=await res.json();if((n.includes("AWAIS")&&p==data.passwords.LoginPassAwais)||(n.includes("NISHA")&&p==data.passwords.LoginPassNisha)){currentUser=n;document.getElementById('login-screen').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('wa-bar').style.display='flex';document.getElementById('top-bar-ui').style.display='flex';
-if(isPrivate){document.getElementById('wa-input-wrapper').classList.add('private-lock');document.getElementById('wa-send-btn-main').classList.add('private-lock');}await refreshData();if(!isPrivate)updateStatus("Online",myLastSeen);setInterval(refreshData,5000);setInterval(runCountdownEngine,1000);setInterval(checkIdle,60000);}else{alert("Wrong Key!");btn.innerText="Enter World";}}catch(e){btn.innerText="Enter World";}}
+async function checkAuth(){
+    const btn=document.getElementById('login-btn');
+    const n=document.getElementById('u-name').value.trim();
+    const p=document.getElementById('u-pass').value.trim();
+    if(!n){alert("Pehle Apna Name (A ya N) Select Karen!"); return;}
+    btn.innerText="Verifying...";
+    isPrivate=document.getElementById('private-mode').checked;
+    try{
+        const res=await fetch(scriptURL);
+        const data=await res.json();
+        if((n==="AWAIS" && p==data.passwords.LoginPassAwais) || (n==="NISHA" && p==data.passwords.LoginPassNisha)){
+            currentUser=n;
+            document.getElementById('login-screen').style.display='none';
+            document.getElementById('dashboard').style.display='block';
+            document.getElementById('wa-bar').style.display='flex';
+            document.getElementById('top-bar-ui').style.display='flex';
+            if(isPrivate){document.getElementById('wa-input-wrapper').classList.add('private-lock');document.getElementById('wa-send-btn-main').classList.add('private-lock');}
+            await refreshData();
+            if(!isPrivate)updateStatus("Online",myLastSeen);
+            setInterval(refreshData,5000);
+            setInterval(runCountdownEngine,1000);
+            setInterval(checkIdle,60000);
+        }else{alert("Wrong Key!"); btn.innerText="Enter World";}
+    }catch(e){btn.innerText="Enter World";}
+}
 
-async function refreshData(){try{const res=await fetch(scriptURL);const data=await res.json();let topHtml="";data.onlineUsers.forEach(u=>{let isMe=u.name.toUpperCase().includes(currentUser);if(!isMe)otherSeenCountGlobal=parseInt(u.seenCount)||0;else if(myLastSeen===-1)myLastSeen=parseInt(u.seenCount)||0;
-let lastUpdate=parseSafeDate(u.time).getTime(),isOnline=(u.status==="Online"&&(Date.now()-lastUpdate)<600000),nameInit=u.name.toUpperCase().includes("AWAIS")?"A":"N",displayStatus=isOnline?"Online":"Offline";if(isMe&&isPrivate)displayStatus="🕵️ Private";if(!isMe&&u.status==="Private")displayStatus="Offline";
-topHtml+=`<div class="user-stat"><div class="dot ${isOnline&&displayStatus!=='Offline'?'dot-online':''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span><span class="stat-time">${displayStatus==="Offline"?formatFullDate(u.time):'Active Now'}</span></div>`;});
-document.getElementById('top-status-content').innerHTML=topHtml;const chatBox=document.getElementById('notes-display'),badge=document.getElementById('notif-badge');if(data.history.length>lastMsgCount){localHistory=data.history;let unreadCount=localHistory.length-myLastSeen;if(unreadCount>0&&chatBox.style.display!=='flex'){badge.innerText=unreadCount;badge.style.display='block';if(lastMsgCount!==0&&!isSilent)document.getElementById('notif-sound').play();}else if(chatBox.style.display==='flex'){myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}lastMsgCount=localHistory.length;renderMessages(otherSeenCountGlobal);if(chatBox.style.display==='flex')chatBox.scrollTop=chatBox.scrollHeight;}else{renderMessages(otherSeenCountGlobal);}globalCountdowns=data.countdowns;renderPlaylist(data.playlist);renderBoard(data.board);}catch(e){console.error(e);}}
+async function refreshData(){try{const res=await fetch(scriptURL);const data=await res.json();let topHtml="";data.onlineUsers.forEach(u=>{let isMe=u.name.toUpperCase()===currentUser;if(!isMe)otherSeenCountGlobal=parseInt(u.seenCount)||0;else if(myLastSeen===-1)myLastSeen=parseInt(u.seenCount)||0;let lastUpdate=parseSafeDate(u.time).getTime(),isOnline=(u.status==="Online"&&(Date.now()-lastUpdate)<600000),nameInit=u.name.toUpperCase().includes("AWAIS")?"A":"N",displayStatus=isOnline?"Online":"Offline";if(isMe&&isPrivate)displayStatus="🕵️ Private";if(!isMe&&u.status==="Private")displayStatus="Offline";topHtml+=`<div class="user-stat"><div class="dot ${isOnline&&displayStatus!=='Offline'?'dot-online':''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span><span class="stat-time">${displayStatus==="Offline"?formatFullDate(u.time):'Active Now'}</span></div>`;});document.getElementById('top-status-content').innerHTML=topHtml;const chatBox=document.getElementById('notes-display'),badge=document.getElementById('notif-badge');if(data.history.length>lastMsgCount){localHistory=data.history;let unreadCount=localHistory.length-myLastSeen;if(unreadCount>0&&chatBox.style.display!=='flex'){badge.innerText=unreadCount;badge.style.display='block';if(lastMsgCount!==0&&!isSilent)document.getElementById('notif-sound').play();}else if(chatBox.style.display==='flex'){myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}lastMsgCount=localHistory.length;renderMessages(otherSeenCountGlobal);if(chatBox.style.display==='flex')chatBox.scrollTop=chatBox.scrollHeight;}else{renderMessages(otherSeenCountGlobal);}globalCountdowns=data.countdowns;renderPlaylist(data.playlist);renderBoard(data.board);}catch(e){console.error(e);}}
 
-function renderBoard(sd){if(!sd||!Array.isArray(sd))return;currentStickyData=sd;const c=document.getElementById('board-scroll-container'),p=document.getElementById('board-preview'),sorted=[...sd].reverse();let h="",ph="";sorted.forEach(n=>{
-h+=`<div class="sticky-note" style="background:${n.color||'#fff9c4'};" onclick="viewPaper('${n.id}')"><div class="paper-pin" style="background:${n.pinColor||'red'}"></div><div class="note-ctrls"><span class="note-ctrl-btn" onclick="event.stopPropagation();editSticky('${n.id}')">✏️</span><span class="note-ctrl-btn" onclick="event.stopPropagation();deleteSticky('${n.id}')">❌</span></div>${n.image?`<img src="${n.image}">`:''}<div style="flex:1; overflow:hidden;">${n.content.substring(0,80)}...</div><div class="note-meta"><b>${n.user}</b><br>${formatNoteDate(n.created)}</div></div>`;
-ph+=`<div class="mini-note" style="background:${n.color||'#fff9c4'}"><div class="mini-note-pin" style="background:${n.pinColor||'red'}"></div><b>${n.user}:</b> ${n.content.substring(0,10)}... ${n.image?`<img src="${n.image}">`:''}</div>`;});
-c.innerHTML=h;p.innerHTML=ph||"Empty.";}
-
+function renderBoard(sd){if(!sd||!Array.isArray(sd))return;currentStickyData=sd;const c=document.getElementById('board-scroll-container'),p=document.getElementById('board-preview'),sorted=[...sd].reverse();let h="",ph="";sorted.forEach(n=>{h+=`<div class="sticky-note" style="background:${n.color||'#fff9c4'};" onclick="viewPaper('${n.id}')"><div class="paper-pin" style="background:${n.pinColor||'red'}"></div><div class="note-ctrls"><span class="note-ctrl-btn" onclick="event.stopPropagation();editSticky('${n.id}')">✏️</span><span class="note-ctrl-btn" onclick="event.stopPropagation();deleteSticky('${n.id}')">❌</span></div>${n.image?`<img src="${n.image}">`:''}<div style="flex:1; overflow:hidden;">${n.content.substring(0,80)}...</div><div class="note-meta"><b>${n.user}</b><br>${formatNoteDate(n.created)}</div></div>`;ph+=`<div class="mini-note" style="background:${n.color||'#fff9c4'}"><div class="mini-note-pin" style="background:${n.pinColor||'red'}"></div><b>${n.user}:</b> ${n.content.substring(0,10)}... ${n.image?`<img src="${n.image}">`:''}</div>`;});c.innerHTML=h;p.innerHTML=ph||"Empty.";}
 function previewStickyImage(input){if(input.files && input.files[0]){const r=new FileReader();r.onload=e=>{tempStickyImg=e.target.result;document.getElementById('sticky-img-preview').innerHTML=`<img src="${tempStickyImg}" style="width:100%; height:60px; object-fit:cover; border-radius:5px;">`;};r.readAsDataURL(input.files[0]);}}
 function viewPaper(id){const n=currentStickyData.find(x=>x.id==id);if(!n)return;document.getElementById('full-paper-content').innerHTML=(n.image?`<img src="${n.image}">`:'')+`<div>${n.content}</div>`;document.getElementById('full-paper-pin').style.background=n.pinColor||'red';document.getElementById('full-paper-meta').innerHTML=`<b>By:</b> ${n.user}<br><b>Time:</b> ${formatNoteDate(n.created)}`;document.getElementById('paper-full-view').style.display='flex';}
 function closePaper(){document.getElementById('paper-full-view').style.display='none';}
@@ -175,82 +219,42 @@ function showNewNoteForm(){document.getElementById('edit-note-id').value="";docu
 function hideNewNoteForm(){document.getElementById('note-form-overlay').style.display='none';}
 function openFullBoard(){document.getElementById('board-modal').style.display='flex';}
 function closeFullBoard(){document.getElementById('board-modal').style.display='none';}
-async function saveSticky(){const t=document.getElementById('note-text').value.trim(),c=document.getElementById('note-color').value,p=document.getElementById('pin-color').value,id=document.getElementById('edit-note-id').value,btn=document.getElementById('sticky-save-btn');if(!t && !tempStickyImg)return;btn.innerText="SAVING...";
-await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:id?"editSticky":"addSticky",id:id,user:currentUser,content:t,color:c,pinColor:p,image:tempStickyImg})});
-btn.innerText="SAVE";hideNewNoteForm();refreshData();}
+async function saveSticky(){const t=document.getElementById('note-text').value.trim(),c=document.getElementById('note-color').value,p=document.getElementById('pin-color').value,id=document.getElementById('edit-note-id').value,btn=document.getElementById('sticky-save-btn');if(!t && !tempStickyImg)return;btn.innerText="SAVING..."; await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:id?"editSticky":"addSticky",id:id,user:currentUser,content:t,color:c,pinColor:p,image:tempStickyImg})});btn.innerText="SAVE";hideNewNoteForm();refreshData();}
 function editSticky(id){const n=currentStickyData.find(x=>x.id==id);if(!n)return;document.getElementById('edit-note-id').value=id;document.getElementById('note-text').value=n.content;document.getElementById('note-color').value=n.color;document.getElementById('pin-color').value=n.pinColor;tempStickyImg=n.image||"";document.getElementById('sticky-img-preview').innerHTML=tempStickyImg?`<img src="${tempStickyImg}" style="width:100%; height:60px; object-fit:cover; border-radius:5px;">`:"";document.getElementById('note-form-title').innerText="Edit Note";document.getElementById('note-form-overlay').style.display='flex';}
 async function deleteSticky(id){if(confirm("Delete this note?")){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"deleteSticky",id:id})});refreshData();}}
-
-async function addNewEvent(){
-  const label = prompt("Event Name:");
-  const date = prompt("Date (YYYY-MM-DD):", "2026-01-01");
-  if(label && date) {
-    await fetch(scriptURL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify({action: "addEvent", label: label, date: date, user: currentUser})
-    });
-    alert("Event Sent!");
-    refreshData();
-  }
-}
-
+async function addNewEvent(){const label = prompt("Event Name:"); const date = prompt("Date (YYYY-MM-DD):", "2026-01-01"); if(label && date) { await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "addEvent", label: label, date: date, user: currentUser}) }); alert("Event Sent!"); refreshData(); }}
 function runCountdownEngine(){const l=document.getElementById('countdown-list');if(!globalCountdowns.length){l.innerHTML="<small>No events</small>";return;}let h="";const now=new Date().getTime();globalCountdowns.forEach((ev,idx)=>{const t=new Date(ev.date).getTime(),d=t-now;let ts="";if(d>0){const days=Math.floor(d/86400000),hrs=Math.floor((d%86400000)/3600000),mins=Math.floor((d%3600000)/60000),secs=Math.floor((d%60000)/1000);ts=`${days}d ${hrs}h ${mins}m ${secs}s`;}else{ts="<b>FINISHED</b>";if(Math.abs(d)>21600000)return;}h+=`<div class="event-item"><span><b>${ev.label}</b></span><span>${ts}</span></div>`;});l.innerHTML=h;}
 function renderPlaylist(s){const c=document.getElementById('song-items');if(!s||s.length===0)return;let h="";s.slice(-5).forEach(i=>{h+=`<a href="${i.url}" target="_blank" style="color:var(--pink);font-weight:bold;">${i.title}</a>`;});c.innerHTML=h;}
 async function addNewSong(){const t=prompt("Title:"),u=prompt("URL:");if(t&&u){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSong",title:t,url:u,user:currentUser})});refreshData();}}
 
-/* --- HUB LOGIC (UPDATED) --- */
+/* HUB LOGIC */
 function openHub(id){
-  const config = {
-    1: { pass: "", link: "https://hack.chat/?r.m." },
-    2: { pass: "", link: "https://www.protectedtext.com/r.m." },
-    3: { pass: "786", link: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5?usp=sharing" },
-    4: { pass: "786", link: "https://mega.nz/fm/cR9yiIYK" },
-    5: { pass: "555", link: "https://safe.com" },
-    6: { pass: "666", link: "https://pics.com" },
-    7: { pass: "777", link: "https://maps.com" },
-    8: { pass: "888", link: "https://apps.com" }
-  };
-
-  const startLoad = (url) => {
-    const view = document.getElementById('hub-quick-view');
-    const iframe = document.getElementById('hub-iframe');
-    iframe.src = url;
-    view.style.display = 'block';
-    view.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  if(config[id].pass === "") {
-    startLoad(config[id].link);
-    return;
-  }
-
-  const p = prompt("Hub Key:");
-  if (p === null) return;
-
-  if(config[id] && p === config[id].pass) {
-    startLoad(config[id].link);
-  } else {
-    alert("Wrong Key!");
-  }
+    const config = {
+        1: { pass: "", link: "https://hack.chat/?r.m." },
+        2: { pass: "", link: "https://www.protectedtext.com/r.m." },
+        3: { pass: "786", link: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5?usp=sharing" },
+        4: { pass: "786", link: "https://mega.nz/fm/cR9yiIYK" },
+        5: { pass: "555", link: "https://safe.com" },
+        6: { pass: "666", link: "https://pics.com" },
+        7: { pass: "777", link: "https://maps.com" },
+        8: { pass: "888", link: "https://apps.com" }
+    };
+    const startLoad = (url) => {
+        const view = document.getElementById('hub-quick-view');
+        const iframe = document.getElementById('hub-iframe');
+        iframe.src = url;
+        view.style.display = 'block';
+        view.scrollIntoView({ behavior: 'smooth' });
+    };
+    if(config[id].pass === "") { startLoad(config[id].link); return; }
+    const p = prompt("Hub Key:");
+    if (p === null) return;
+    if(config[id] && p === config[id].pass) { startLoad(config[id].link); } else { alert("Wrong Key!"); }
 }
+function closeHub() { const view = document.getElementById('hub-quick-view'); const iframe = document.getElementById('hub-iframe'); view.style.display = 'none'; view.classList.remove('full-size'); iframe.src = ""; }
+function toggleHubFull() { const view = document.getElementById('hub-quick-view'); view.classList.toggle('full-size'); const btn = document.querySelector('.hub-ctrl-btn'); btn.innerText = view.classList.contains('full-size') ? "NORMAL" : "FULL"; }
 
-function closeHub() {
-    const view = document.getElementById('hub-quick-view');
-    const iframe = document.getElementById('hub-iframe');
-    view.style.display = 'none';
-    view.classList.remove('full-size');
-    iframe.src = "";
-}
-
-function toggleHubFull() {
-    const view = document.getElementById('hub-quick-view');
-    view.classList.toggle('full-size');
-    const btn = document.querySelector('.hub-ctrl-btn');
-    btn.innerText = view.classList.contains('full-size') ? "NORMAL" : "FULL";
-}
-
-function renderMessages(os){let h="",ld="";localHistory.forEach((m,idx)=>{let d=parseSafeDate(m.time);if(d.toDateString()!==ld){h+=`<div style="align-self:center;font-size:0.6rem;color:#888;margin:10px 0;">${d.toDateString()}</div>`;ld=d.toDateString();}let isMe=m.name.toUpperCase().includes(currentUser),tick=isMe?(os>idx?'<span class="tick-blue">✓✓</span>':'✓'):'';let contentHTML = m.note;if(m.note.startsWith("MEDIA:")){let url = m.note.split('MEDIA:')[1];if(url.match(/\.(mp4|webm|ogg|mov)$/i) || url.includes("video")){contentHTML = `<video src="${url}" controls class="media-content"></video>`;} else {contentHTML = `<img src="${url}" class="media-content" onclick="window.open('${url}')">`;}}h+=`<div class="msg ${isMe?"msg-me":"msg-them"}">${contentHTML}<div class="msg-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${tick}</div></div>`;});document.getElementById('notes-display').innerHTML=h;}
+function renderMessages(os){let h="",ld="";localHistory.forEach((m,idx)=>{let d=parseSafeDate(m.time);if(d.toDateString()!==ld){h+=`<div style="align-self:center;font-size:0.6rem;color:#888;margin:10px 0;">${d.toDateString()}</div>`;ld=d.toDateString();}let isMe=m.name.toUpperCase()===currentUser,tick=isMe?(os>idx?'<span class="tick-blue">✓✓</span>':'✓'):'';let contentHTML = m.note;if(m.note.startsWith("MEDIA:")){let url = m.note.split('MEDIA:')[1];if(url.match(/\.(mp4|webm|ogg|mov)$/i) || url.includes("video")){contentHTML = `<video src="${url}" controls class="media-content"></video>`;} else {contentHTML = `<img src="${url}" class="media-content" onclick="window.open('${url}')">`;}}h+=`<div class="msg ${isMe?"msg-me":"msg-them"}">${contentHTML}<div class="msg-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${tick}</div></div>`;});document.getElementById('notes-display').innerHTML=h;}
 function sendNote(){if(isPrivate)return;let i=document.getElementById('wa-input'),m=i.value.trim();if(!m)return;localHistory.push({name:currentUser,note:m,time:new Date().toISOString()});renderMessages(otherSeenCountGlobal);const b=document.getElementById('notes-display');b.scrollTop=b.scrollHeight;i.value="";fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({name:currentUser,note:m})});myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}
 function toggleChat(){if(isPrivate)return;const b=document.getElementById('notes-display'),g=document.getElementById('notif-badge'),o=(b.style.display==='flex');b.style.display=o?'none':'flex';if(!o){b.scrollTop=b.scrollHeight;g.style.display='none';myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}}
 async function uploadMedia(i){if(isPrivate)return;const f=i.files[0];if(!f)return;const btn=document.getElementById('wa-send-btn-main');const oldIcon=btn.innerHTML;btn.innerHTML="...";const r=new FileReader();r.onload=async(e)=>{const b=e.target.result.split(',')[1];await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"uploadMedia",name:currentUser,type:f.type,base64:b})});btn.innerHTML=oldIcon;refreshData();};r.readAsDataURL(f);}
