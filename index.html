@@ -3,183 +3,290 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Secret Dunia - A4 Locked</title>
+<title>Secret Dunia - DC12 A4</title>
 <style>
-/* Sari purani styles barkrar hain */
 :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
 body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
 body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
 
-/* Dashboard & UI Layout */
+/* Nickname Selection Styles */
+.nick-container { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
+.nick-btn { width: 70px; height: 70px; border-radius: 50%; border: 3px solid #eee; background: white; font-size: 1.5rem; font-weight: bold; color: var(--pink); cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.nick-btn.selected { border-color: var(--pink); background: #fff0f3; transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 133, 162, 0.3); }
+
 .top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
+.dark-mode .top-status-bar { background: rgba(30, 30, 30, 0.9); }
+.nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
+.nav-btn-sm { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
 .status-center-display { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; }
 .user-stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; text-align: center; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
 .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
 .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
+.stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
+.dark-mode .stat-label { color: white; }
+.off-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.stay-label { font-size: 0.5rem; color: var(--dark); }
+.chat-frame { display: none; position: fixed; top: 75px; bottom: 65px; left: 0; right: 0; width: 100%; background: var(--wa-bg); z-index: 1500; flex-direction: column; padding: 10px; border: none; box-shadow: none; overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
+.msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
+.msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
+.msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
+.media-content { width: 100%; max-width: 250px; border-radius: 8px; margin-top: 5px; display: block; cursor: pointer; }
+.msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
+.tick-blue { color: #34b7f1; font-weight: bold; }
+.msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; min-width: 12px; text-align: center; }
+.container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
+.card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
+.wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
+.wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
+.wa-input-box input { flex: 1; border: none; outline: none; padding: 8px 0; font-size: 0.95rem; }
+.wa-send-btn { background: #075e54; color: white; width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.private-lock { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+.event-item { background: #fff5f7; border-left: 3px solid var(--pink); border-radius: 6px; padding: 6px 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+.dark-mode .event-item { background: #2c2c2c; color: #fff; border-left-color: var(--pink); }
 
-/* Hub Buttons */
 .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
 .hub-btn { background: var(--pink); color: white; border: none; border-radius: 8px; height: 38px; font-size: 0.65rem; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-transform: uppercase; }
+.hub-btn:active { transform: scale(0.92); opacity: 0.9; }
 
-/* Internal View UI */
-#hub-quick-view { display: none; width: 100%; height: 400px; background: white; border: 2px solid var(--pink); border-radius: 12px; margin-top: 15px; overflow: hidden; position: relative; }
-#hub-quick-view.full-size { position: fixed; top: 75px; left: 0; width: 100%; height: calc(100% - 75px); z-index: 1800; border-radius: 0; margin-top:0; }
+#hub-quick-view { display: none; width: 100%; height: 350px; background: white; border: 2px solid var(--pink); border-radius: 12px; margin-top: 15px; overflow: hidden; position: relative; }
+#hub-quick-view.full-size { position: fixed; top: 75px; left: 0; width: 100%; height: calc(100% - 75px); z-index: 1800; margin-top: 0; border-radius: 0; }
 #hub-iframe { width: 100%; height: 100%; border: none; }
 .hub-ctrl-bar { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; z-index: 100; }
-.hub-ctrl-btn { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; }
+.hub-ctrl-btn { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
 
-/* Green Board & Chat */
-.green-board { background: #1b4d3e; border: 6px solid #5d4037; border-radius: 5px; padding: 10px; margin-top: 20px; height: 160px; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 8px; cursor: pointer; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
-.mini-note { width: 70px; height: 75px; background: #fff9c4; font-size: 0.45rem; padding: 4px; border-radius: 2px; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); overflow: hidden; }
-.wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
-.chat-frame { display: none; position: fixed; top: 75px; bottom: 65px; left: 0; right: 0; width: 100%; background: var(--wa-bg); z-index: 1500; flex-direction: column; padding: 10px; overflow-y: auto; gap: 8px; }
-
-/* Nick Buttons */
-.nick-btn { width: 65px; height: 65px; border-radius: 50%; border: 3px solid #eee; background: white; font-size: 1.3rem; font-weight: bold; color: var(--pink); cursor: pointer; }
-.nick-btn.selected { border-color: var(--pink); background: #fff0f3; transform: scale(1.1); }
+.playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; white-space: nowrap; border: 1px solid #d0e0ff; }
+.dark-mode .playlist-bar { background: #1e2530; border-color: #304060; }
+.green-board { background: #1b4d3e; border: 8px solid #5d4037; border-radius: 5px; padding: 10px; margin-top: 20px; height: 160px; overflow-y: auto; text-align: left; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); cursor: pointer; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+.mini-note { width: 70px; height: 75px; padding: 4px; font-size: 0.45rem; overflow: hidden; position: relative; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); border-radius: 2px; color: #333; line-height: 1; font-family: 'Comic Sans MS', cursive; display: flex; flex-direction: column; }
+.mini-note img { width: 100%; height: 35px; object-fit: cover; margin-top: 2px; border-radius: 2px; }
+.mini-note-pin { width: 4px; height: 4px; border-radius: 50%; position: absolute; top: 1px; left: 50%; transform: translateX(-50%); }
+.sticky-note { width: 140px; min-height: 150px; padding: 12px; position: relative; box-shadow: 5px 5px 10px rgba(0,0,0,0.3); cursor: pointer; font-family: 'Comic Sans MS', cursive; font-size: 0.75rem; color: #333; display: flex; flex-direction: column; border-radius: 2px; }
+.sticky-note img { width: 100%; border-radius: 4px; margin-bottom: 5px; max-height: 80px; object-fit: cover; }
+.note-ctrls { position: absolute; top: 4px; right: 4px; display: flex; gap: 3px; z-index: 10; }
+.note-ctrl-btn { font-size: 0.7rem; cursor: pointer; background: rgba(255,255,255,0.8); border-radius: 3px; padding: 1px 3px; border: 1px solid #ddd; }
+.board-full-view { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1b4d3e; z-index:4000; flex-direction:column; }
+#paper-full-view { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 7000; justify-content: center; align-items: center; }
+.lined-paper { width: 85%; max-width: 350px; min-height: 500px; background: #fff; padding: 50px 25px 30px 45px; position: relative; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); background-image: linear-gradient(#94d2ff 1px, transparent 1px); background-size: 100% 28px; line-height: 28px; font-family: 'Comic Sans MS', cursive; color: #2c3e50; font-size: 0.95rem; overflow-y: auto; max-height: 80vh; }
+.lined-paper img { width: 100%; border-radius: 5px; margin: 10px 0; border: 1px solid #eee; }
+.lined-paper::before { content: ''; position: absolute; top: 0; left: 40px; width: 2px; height: 100%; background: #ffadad; }
+.full-pin { width: 20px; height: 20px; border-radius: 50%; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); z-index: 7001; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+.full-meta { margin-top: 20px; padding-top: 10px; font-size: 0.7rem; color: #7f8c8d; text-align: right; border-top: 1px solid #eee; width: 100%; line-height: 1.2; }
+.close-paper-btn { position: absolute; top: 10px; right: 10px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; font-weight: bold; cursor: pointer; z-index: 7005; }
 </style>
 </head>
 <body>
+<button onclick="toggleTheme()" style="position:fixed; top:8px; left:10px; z-index:3000; background:var(--pink); color:white; border:none; padding:5px 10px; border-radius:8px; font-size:0.65rem;">🌓 MODE</button>
 
-<div id="login-screen" style="width:100%; max-width:350px; text-align:center; margin: 50px auto;">
-    <div style="background:white; padding:20px; border-radius:15px; border:1px solid #ffd1dc;">
-        <h2 style="color:var(--pink);">Secret Dunia A4</h2>
-        <div style="display:flex; justify-content:center; gap:20px; margin:20px 0;">
-            <button id="btn-a" class="nick-btn" onclick="setUser('AWAIS','btn-a')">A</button>
-            <button id="btn-n" class="nick-btn" onclick="setUser('NISHA','btn-n')">N</button>
-        </div>
-        <input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin-bottom:15px; border-radius:20px; border:1px solid #eee; text-align:center;">
-        <button onclick="login()" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:90%;">Enter World</button>
-    </div>
+<div class="top-status-bar" id="top-bar-ui" style="display:none;">
+<div class="nav-left"><button class="nav-btn-sm" id="silent-btn" onclick="toggleSilent()">🔕 SILENT</button></div>
+<div class="status-center-display" id="top-status-content"></div>
+<div class="off-group"><button class="off-btn" onclick="fullExit()">OFF</button>
+<label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label></div>
 </div>
 
-<div id="dashboard" style="display:none; width:100%; max-width:400px; margin: 85px auto 0;">
-    <div class="top-status-bar">
-        <button onclick="document.body.classList.toggle('dark-mode')" style="background:var(--pink); color:white; border:none; padding:5px 8px; border-radius:8px; font-size:0.6rem;">MODE</button>
-        <div class="status-center-display" id="top-status-content"></div>
-        <button onclick="location.reload()" style="background:red; color:white; border:none; padding:5px 10px; border-radius:8px; font-size:0.6rem;">OFF</button>
-    </div>
+<div class="container">
+<div id="login-screen" class="card">
+<h2 style="color:var(--pink);">Secret Dunia</h2>
+<div class="nick-container">
+    <button id="btn-nick-a" class="nick-btn" onclick="selectUser('A', 'AWAIS')">A</button>
+    <button id="btn-nick-n" class="nick-btn" onclick="selectUser('N', 'NISHA')">N</button>
+</div>
+<input type="hidden" id="u-name">
+<input type="password" id="u-pass" placeholder="Enter Key" style="width:85%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #eee; text-align:center;" onkeypress="if(event.key==='Enter') checkAuth()">
+<div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode">🕵️ Private Mode</div>
+<button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
+</div>
 
-    <div class="hub-grid">
-        <button class="hub-btn" onclick="openHub(1)">Hack.Chat</button>
-        <button class="hub-btn" onclick="openHub(2)">Protected</button>
-        <button class="hub-btn" onclick="openHub(3)">Storage</button>
-        <button class="hub-btn" onclick="openHub(4)">Mega</button>
-        <button class="hub-btn" onclick="openHub(5)">Safe</button>
-        <button class="hub-btn" onclick="openHub(6)">Pics</button>
-        <button class="hub-btn" onclick="openHub(7)">Maps</button>
-        <button class="hub-btn" style="background:red;" onclick="openHub(8)">🎥 REELS</button>
-    </div>
+<div id="dashboard" style="display:none;">
+<div style="text-align: left; margin-bottom: 8px;"><span style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic; display: block;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span></div>
+<div class="card" style="padding: 10px; margin-bottom: 12px;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+<span style="font-size: 0.8rem; font-weight: bold; color: var(--pink);">⏳ Upcoming Events</span>
+<button onclick="addNewEvent()" style="background:var(--pink); color:white; border:none; border-radius:5px; font-size:0.6rem; padding:3px 8px; cursor:pointer;">+ ADD</button>
+</div>
+<div id="countdown-list" style="max-height: 150px; overflow-y: auto;"></div>
+</div>
+<div class="playlist-bar" id="playlist-area"><span>🎵 <b>Playlist:</b></span><div id="song-items" style="display:flex; gap:10px; overflow-x:auto;"></div><button onclick="addNewSong()" style="border:none; background:none; font-size:1rem; cursor:pointer; margin-left:auto;">➕</button></div>
 
-    <div id="hub-quick-view">
-        <div class="hub-ctrl-bar">
-            <button class="hub-ctrl-btn" onclick="document.getElementById('hub-quick-view').classList.toggle('full-size')">FULL</button>
-            <button class="hub-ctrl-btn" style="background:red;" onclick="closeHub()">X</button>
-        </div>
-        <iframe id="hub-iframe" src=""></iframe>
-    </div>
+<div class="hub-grid">
+<button class="hub-btn" onclick="openHub(1)">Hack.Chat</button>
+<button class="hub-btn" onclick="openHub(2)">Protected</button>
+<button class="hub-btn" onclick="openHub(3)">Storage</button>
+<button class="hub-btn" onclick="openHub(4)">Mega</button>
+<button class="hub-btn" onclick="openHub(5)">Safe</button>
+<button class="hub-btn" onclick="openHub(6)">Pics</button>
+<button class="hub-btn" onclick="openHub(7)">Maps</button>
+<button class="hub-btn" style="background:red;" onclick="openHub(8)">🎥 REELS</button>
+</div>
 
-    <div class="green-board" id="board-preview"></div>
+<div id="hub-quick-view">
+    <div class="hub-ctrl-bar">
+        <button class="hub-ctrl-btn" onclick="toggleHubFull()">FULL</button>
+        <button class="hub-ctrl-btn" style="background:#ff4d4d;" onclick="closeHub()">X</button>
+    </div>
+    <iframe id="hub-iframe" src=""></iframe>
+</div>
+
+<div class="green-board" id="board-preview" onclick="openFullBoard()"></div>
+</div>
+</div>
+
+<div id="board-modal" class="board-full-view">
+<div class="top-status-bar" style="position:relative; height:65px;">
+<div style="font-weight:bold; color:var(--pink); font-size: 0.9rem;">📌 GREEN BOARD</div>
+<div style="display:flex; gap:10px;"><button onclick="showNewNoteForm()" style="background:var(--green); color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">+ NEW</button><button onclick="closeFullBoard()" style="background:red; color:white; border:none; padding:8px 15px; border-radius:5px;">BACK</button></div>
+</div>
+<div id="board-scroll-container" style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-wrap:wrap; gap:20px; justify-content:center;"></div>
+</div>
+
+<div id="paper-full-view"><div class="lined-paper"><div id="full-paper-pin" class="full-pin"></div><button class="close-paper-btn" onclick="closePaper()">✕</button><div id="full-paper-content" style="padding-top:5px; white-space: pre-wrap;"></div><div id="full-paper-meta" class="full-meta"></div></div></div>
+
+<div id="note-form-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:6000; justify-content:center; align-items:center;">
+<div class="card" style="width:90%; max-width:350px;"><h4 id="note-form-title">New Note</h4><input type="hidden" id="edit-note-id"><textarea id="note-text" style="width:95%; height:100px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+<label style="font-size:0.8rem;">Bg: <input type="color" id="note-color" value="#fff9c4"></label>
+<label style="font-size:0.8rem;">Pin: <input type="color" id="pin-color" value="#ff0000"></label>
+<label for="sticky-file" style="cursor:pointer; font-size:1.2rem; background:#eee; padding:5px; border-radius:5px;">🖼️</label>
+<input type="file" id="sticky-file" hidden accept="image/*" onchange="previewStickyImage(this)">
+</div>
+<div id="sticky-img-preview" style="margin-bottom:10px;"></div>
+<div style="display:flex; gap:10px;"><button onclick="saveSticky()" id="sticky-save-btn" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:8px;">SAVE</button><button onclick="hideNewNoteForm()" style="flex:1; background:grey; color:white; border:none; padding:12px; border-radius:8px;">CANCEL</button></div></div>
 </div>
 
 <div class="chat-frame" id="notes-display"></div>
+
 <div id="wa-bar" class="wa-bottom" style="display:none;">
-    <button onclick="toggleChat()" style="background:none; border:none; font-size:1.5rem;">💬</button>
-    <input type="text" id="wa-input" placeholder="Message" style="flex:1; border:none; padding:10px; outline:none; border-radius:20px;">
-    <button onclick="sendNote()" style="background:#075e54; color:white; width:40px; height:40px; border-radius:50%; border:none;">➤</button>
+<div class="wa-input-box" id="wa-input-wrapper"><div style="position:relative; display:inline-block;"><button onclick="toggleChat()" style="background:none; border:none; font-size:1.4rem;">💬</button><span id="notif-badge" class="msg-badge">0</span></div>
+<label for="wa-file" style="cursor:pointer; font-size:1.2rem;">📎</label><input type="file" id="wa-file" hidden onchange="uploadMedia(this)" accept="image/*,video/*">
+<input type="text" id="wa-input" placeholder="Message" onkeydown="if(event.key==='Enter') sendNote()"></div>
+<button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
 </div>
 
+<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzDvjm4rjF1QdPuSK1lS_LeE7frKwXP1j-yAvD3F4ZSYBBL4T43v0LqVrdJXIOaEVT-/exec';
-let currentUser = "";
+const scriptURL = 'https://script.google.com/macros/s/AKfycbxOjw2NuTWVUXxk2fYJrugRZ3-7L4sj-hKwfhpIjQq5ddxwCtg6Ix7btLDshmWielqS/exec';
+let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[],tempStickyImg="";
 
-function setUser(name, id) {
-    currentUser = name;
+function selectUser(nick, realName) {
     document.querySelectorAll('.nick-btn').forEach(b => b.classList.remove('selected'));
-    document.getElementById(id).classList.add('selected');
+    const btnId = nick === 'A' ? 'btn-nick-a' : 'btn-nick-n';
+    document.getElementById(btnId).classList.add('selected');
+    document.getElementById('u-name').value = realName;
 }
 
-async function login() {
-    const p = document.getElementById('u-pass').value;
-    if(!currentUser) return alert("Select User First");
-    const res = await fetch(scriptURL);
-    const data = await res.json();
-    if(p == data.passwords.LoginPassAwais || p == data.passwords.LoginPassNisha) {
-        document.getElementById('login-screen').style.display='none';
-        document.getElementById('dashboard').style.display='block';
-        document.getElementById('wa-bar').style.display='flex';
-        init();
-    } else { alert("Wrong Key"); }
+function parseSafeDate(s){if(!s)return new Date();let d=new Date(s.toString().replace(/-/g,'/').replace('T',' '));return isNaN(d.getTime())?new Date():d;}
+function formatNoteDate(s){let d=parseSafeDate(s);return d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+
+async function checkAuth(){
+    const btn=document.getElementById('login-btn');
+    const n=document.getElementById('u-name').value.trim();
+    const p=document.getElementById('u-pass').value.trim();
+    if(!n){alert("Pehle Apna Name (A ya N) Select Karen!"); return;}
+    btn.innerText="Verifying...";
+    isPrivate=document.getElementById('private-mode').checked;
+    try{
+        const res=await fetch(scriptURL);
+        const data=await res.json();
+        if((n==="AWAIS" && p==data.passwords.LoginPassAwais) || (n==="NISHA" && p==data.passwords.LoginPassNisha)){
+            currentUser=n;
+            document.getElementById('login-screen').style.display='none';
+            document.getElementById('dashboard').style.display='block';
+            document.getElementById('wa-bar').style.display='flex';
+            document.getElementById('top-bar-ui').style.display='flex';
+            if(isPrivate){document.getElementById('wa-input-wrapper').classList.add('private-lock');document.getElementById('wa-send-btn-main').classList.add('private-lock');}
+            await refreshData();
+            if(!isPrivate)updateStatus("Online",myLastSeen);
+            setInterval(refreshData,5000);
+            setInterval(runCountdownEngine,1000);
+            setInterval(checkIdle,60000);
+        }else{alert("Wrong Key!"); btn.innerText="Enter World";}
+    }catch(e){btn.innerText="Enter World";}
 }
 
-function openHub(id) {
-    const links = {
-        1: { mode: "in", url: "https://hack.chat/?r.m." },
-        2: { mode: "out", url: "https://www.protectedtext.com/r.m." }, // External as requested
-        3: { mode: "out", url: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5" },
-        // Reels/Shorts using "Embed" mode to bypass login requirements
-        8: { mode: "in", url: "https://www.youtube.com/embed?listType=playlist&list=PUU-paxf-Y8hW_3eU-PzE8wQ" } 
+async function refreshData(){try{const res=await fetch(scriptURL);const data=await res.json();let topHtml="";data.onlineUsers.forEach(u=>{let isMe=u.name.toUpperCase()===currentUser;if(!isMe)otherSeenCountGlobal=parseInt(u.seenCount)||0;else if(myLastSeen===-1)myLastSeen=parseInt(u.seenCount)||0;let lastUpdate=parseSafeDate(u.time).getTime(),isOnline=(u.status==="Online"&&(Date.now()-lastUpdate)<600000),nameInit=u.name.toUpperCase().includes("AWAIS")?"A":"N",displayStatus=isOnline?"Online":"Offline";if(isMe&&isPrivate)displayStatus="🕵️ Private";if(!isMe&&u.status==="Private")displayStatus="Offline";topHtml+=`<div class="user-stat"><div class="dot ${isOnline&&displayStatus!=='Offline'?'dot-online':''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span><span class="stat-time">${displayStatus==="Offline"?formatFullDate(u.time):'Active Now'}</span></div>`;});document.getElementById('top-status-content').innerHTML=topHtml;const chatBox=document.getElementById('notes-display'),badge=document.getElementById('notif-badge');if(data.history.length>lastMsgCount){localHistory=data.history;let unreadCount=localHistory.length-myLastSeen;if(unreadCount>0&&chatBox.style.display!=='flex'){badge.innerText=unreadCount;badge.style.display='block';if(lastMsgCount!==0&&!isSilent)document.getElementById('notif-sound').play();}else if(chatBox.style.display==='flex'){myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}lastMsgCount=localHistory.length;renderMessages(otherSeenCountGlobal);if(chatBox.style.display==='flex')chatBox.scrollTop=chatBox.scrollHeight;}else{renderMessages(otherSeenCountGlobal);}globalCountdowns=data.countdowns;renderPlaylist(data.playlist);renderBoard(data.board);}catch(e){console.error(e);}}
+
+function renderBoard(sd){if(!sd||!Array.isArray(sd))return;currentStickyData=sd;const c=document.getElementById('board-scroll-container'),p=document.getElementById('board-preview'),sorted=[...sd].reverse();let h="",ph="";sorted.forEach(n=>{h+=`<div class="sticky-note" style="background:${n.color||'#fff9c4'};" onclick="viewPaper('${n.id}')"><div class="paper-pin" style="background:${n.pinColor||'red'}"></div><div class="note-ctrls"><span class="note-ctrl-btn" onclick="event.stopPropagation();editSticky('${n.id}')">✏️</span><span class="note-ctrl-btn" onclick="event.stopPropagation();deleteSticky('${n.id}')">❌</span></div>${n.image?`<img src="${n.image}">`:''}<div style="flex:1; overflow:hidden;">${n.content.substring(0,80)}...</div><div class="note-meta"><b>${n.user}</b><br>${formatNoteDate(n.created)}</div></div>`;ph+=`<div class="mini-note" style="background:${n.color||'#fff9c4'}"><div class="mini-note-pin" style="background:${n.pinColor||'red'}"></div><b>${n.user}:</b> ${n.content.substring(0,10)}... ${n.image?`<img src="${n.image}">`:''}</div>`;});c.innerHTML=h;p.innerHTML=ph||"Empty.";}
+function previewStickyImage(input){if(input.files && input.files[0]){const r=new FileReader();r.onload=e=>{tempStickyImg=e.target.result;document.getElementById('sticky-img-preview').innerHTML=`<img src="${tempStickyImg}" style="width:100%; height:60px; object-fit:cover; border-radius:5px;">`;};r.readAsDataURL(input.files[0]);}}
+function viewPaper(id){const n=currentStickyData.find(x=>x.id==id);if(!n)return;document.getElementById('full-paper-content').innerHTML=(n.image?`<img src="${n.image}">`:'')+`<div>${n.content}</div>`;document.getElementById('full-paper-pin').style.background=n.pinColor||'red';document.getElementById('full-paper-meta').innerHTML=`<b>By:</b> ${n.user}<br><b>Time:</b> ${formatNoteDate(n.created)}`;document.getElementById('paper-full-view').style.display='flex';}
+function closePaper(){document.getElementById('paper-full-view').style.display='none';}
+function showNewNoteForm(){document.getElementById('edit-note-id').value="";document.getElementById('note-form-title').innerText="New Note";document.getElementById('note-text').value="";document.getElementById('sticky-img-preview').innerHTML="";tempStickyImg="";document.getElementById('note-form-overlay').style.display='flex';}
+function hideNewNoteForm(){document.getElementById('note-form-overlay').style.display='none';}
+function openFullBoard(){document.getElementById('board-modal').style.display='flex';}
+function closeFullBoard(){document.getElementById('board-modal').style.display='none';}
+async function saveSticky(){const t=document.getElementById('note-text').value.trim(),c=document.getElementById('note-color').value,p=document.getElementById('pin-color').value,id=document.getElementById('edit-note-id').value,btn=document.getElementById('sticky-save-btn');if(!t && !tempStickyImg)return;btn.innerText="SAVING..."; await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:id?"editSticky":"addSticky",id:id,user:currentUser,content:t,color:c,pinColor:p,image:tempStickyImg})});btn.innerText="SAVE";hideNewNoteForm();refreshData();}
+function editSticky(id){const n=currentStickyData.find(x=>x.id==id);if(!n)return;document.getElementById('edit-note-id').value=id;document.getElementById('note-text').value=n.content;document.getElementById('note-color').value=n.color;document.getElementById('pin-color').value=n.pinColor;tempStickyImg=n.image||"";document.getElementById('sticky-img-preview').innerHTML=tempStickyImg?`<img src="${tempStickyImg}" style="width:100%; height:60px; object-fit:cover; border-radius:5px;">`:"";document.getElementById('note-form-title').innerText="Edit Note";document.getElementById('note-form-overlay').style.display='flex';}
+async function deleteSticky(id){if(confirm("Delete this note?")){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"deleteSticky",id:id})});refreshData();}}
+async function addNewEvent(){const label = prompt("Event Name:"); const date = prompt("Date (YYYY-MM-DD):", "2026-01-01"); if(label && date) { await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "addEvent", label: label, date: date, user: currentUser}) }); alert("Event Sent!"); refreshData(); }}
+function runCountdownEngine(){const l=document.getElementById('countdown-list');if(!globalCountdowns.length){l.innerHTML="<small>No events</small>";return;}let h="";const now=new Date().getTime();globalCountdowns.forEach((ev,idx)=>{const t=new Date(ev.date).getTime(),d=t-now;let ts="";if(d>0){const days=Math.floor(d/86400000),hrs=Math.floor((d%86400000)/3600000),mins=Math.floor((d%3600000)/60000),secs=Math.floor((d%60000)/1000);ts=`${days}d ${hrs}h ${mins}m ${secs}s`;}else{ts="<b>FINISHED</b>";if(Math.abs(d)>21600000)return;}h+=`<div class="event-item"><span><b>${ev.label}</b></span><span>${ts}</span></div>`;});l.innerHTML=h;}
+function renderPlaylist(s){const c=document.getElementById('song-items');if(!s||s.length===0)return;let h="";s.slice(-5).forEach(i=>{h+=`<a href="${i.url}" target="_blank" style="color:var(--pink);font-weight:bold;">${i.title}</a>`;});c.innerHTML=h;}
+async function addNewSong(){const t=prompt("Title:"),u=prompt("URL:");if(t&&u){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSong",title:t,url:u,user:currentUser})});refreshData();}}
+
+/* HUB SMART LOGIC */
+function openHub(id){
+    const config = {
+        1: { mode: "internal", pass: "", link: "https://hack.chat/?r.m." },
+        2: { mode: "external", pass: "", link: "https://www.protectedtext.com/r.m." }, // Updated to External
+        3: { mode: "external", pass: "786", link: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5?usp=sharing" },
+        4: { mode: "external", pass: "786", link: "https://mega.nz/fm/cR9yiIYK" },
+        5: { mode: "external", pass: "555", link: "https://safe.com" },
+        6: { mode: "external", pass: "666", link: "https://pics.com" },
+        7: { mode: "external", pass: "777", link: "https://maps.com" },
+        8: { mode: "internal", pass: "", link: "https://www.youtube.com/embed?listType=playlist&list=PLHdfvW0-X8IunhP-S1S_u_vL0_W6S78lC" } // Guest Mode Video Player
     };
 
-    const target = links[id] || { mode: "out", url: "https://google.com" };
+    const target = config[id];
+    if(!target) return;
 
-    if(target.mode === "in") {
-        document.getElementById('hub-iframe').src = target.url;
-        document.getElementById('hub-quick-view').style.display = 'block';
-        // Hide UI Components
+    if(target.pass !== ""){
+        const p = prompt("Hub Key:");
+        if (p === null) return;
+        if(p !== target.pass) { alert("Wrong Key!"); return; }
+    }
+
+    if(target.mode === "internal") {
+        const view = document.getElementById('hub-quick-view');
+        const iframe = document.getElementById('hub-iframe');
+        iframe.src = target.link;
+        view.style.display = 'block';
         document.getElementById('wa-bar').style.display = 'none';
         document.getElementById('board-preview').style.display = 'none';
+        view.scrollIntoView({ behavior: 'smooth' });
     } else {
-        window.open(target.url, '_blank');
+        window.open(target.link, '_blank');
     }
 }
 
-function closeHub() {
-    document.getElementById('hub-quick-view').style.display = 'none';
-    document.getElementById('hub-iframe').src = "";
+function closeHub() { 
+    const view = document.getElementById('hub-quick-view'); 
+    const iframe = document.getElementById('hub-iframe'); 
+    view.style.display = 'none'; 
+    view.classList.remove('full-size'); 
+    iframe.src = ""; 
     document.getElementById('wa-bar').style.display = 'flex';
     document.getElementById('board-preview').style.display = 'flex';
 }
 
-async function init() {
-    refresh();
-    setInterval(refresh, 5000);
+function toggleHubFull() { 
+    const view = document.getElementById('hub-quick-view'); 
+    view.classList.toggle('full-size'); 
+    const btn = document.querySelector('.hub-ctrl-btn'); 
+    btn.innerText = view.classList.contains('full-size') ? "NORMAL" : "FULL"; 
 }
 
-async function refresh() {
-    try {
-        const res = await fetch(scriptURL);
-        const data = await res.json();
-        // Update Stats
-        let st = "";
-        data.onlineUsers.forEach(u => {
-            st += `<div class="user-stat"><div class="dot ${u.status==='Online'?'dot-online':''}"></div><span class="stat-label">${u.name[0]}: ${u.status}</span></div>`;
-        });
-        document.getElementById('top-status-content').innerHTML = st;
-        // Board Update
-        if(data.board) {
-            let bh = "";
-            data.board.slice(-4).forEach(n => {
-                bh += `<div class="mini-note"><b>${n.user}:</b><br>${n.content.substring(0,25)}...</div>`;
-            });
-            document.getElementById('board-preview').innerHTML = bh;
-        }
-    } catch(e) {}
-}
-
-function toggleChat() {
-    const c = document.getElementById('notes-display');
-    c.style.display = (c.style.display === 'flex') ? 'none' : 'flex';
-}
-
-async function sendNote() {
-    const i = document.getElementById('wa-input');
-    const m = i.value.trim();
-    if(!m) return;
-    i.value = "";
-    await fetch(scriptURL, {method:'POST', mode:'no-cors', body:JSON.stringify({name:currentUser, note:m})});
-}
+function renderMessages(os){let h="",ld="";localHistory.forEach((m,idx)=>{let d=parseSafeDate(m.time);if(d.toDateString()!==ld){h+=`<div style="align-self:center;font-size:0.6rem;color:#888;margin:10px 0;">${d.toDateString()}</div>`;ld=d.toDateString();}let isMe=m.name.toUpperCase()===currentUser,tick=isMe?(os>idx?'<span class="tick-blue">✓✓</span>':'✓'):'';let contentHTML = m.note;if(m.note.startsWith("MEDIA:")){let url = m.note.split('MEDIA:')[1];if(url.match(/\.(mp4|webm|ogg|mov)$/i) || url.includes("video")){contentHTML = `<video src="${url}" controls class="media-content"></video>`;} else {contentHTML = `<img src="${url}" class="media-content" onclick="window.open('${url}')">`;}}h+=`<div class="msg ${isMe?"msg-me":"msg-them"}">${contentHTML}<div class="msg-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${tick}</div></div>`;});document.getElementById('notes-display').innerHTML=h;}
+function sendNote(){if(isPrivate)return;let i=document.getElementById('wa-input'),m=i.value.trim();if(!m)return;localHistory.push({name:currentUser,note:m,time:new Date().toISOString()});renderMessages(otherSeenCountGlobal);const b=document.getElementById('notes-display');b.scrollTop=b.scrollHeight;i.value="";fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({name:currentUser,note:m})});myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}
+function toggleChat(){if(isPrivate)return;const b=document.getElementById('notes-display'),g=document.getElementById('notif-badge'),o=(b.style.display==='flex');b.style.display=o?'none':'flex';if(!o){b.scrollTop=b.scrollHeight;g.style.display='none';myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}}
+async function uploadMedia(i){if(isPrivate)return;const f=i.files[0];if(!f)return;const btn=document.getElementById('wa-send-btn-main');const oldIcon=btn.innerHTML;btn.innerHTML="...";const r=new FileReader();r.onload=async(e)=>{const b=e.target.result.split(',')[1];await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"uploadMedia",name:currentUser,type:f.type,base64:b})});btn.innerHTML=oldIcon;refreshData();};r.readAsDataURL(f);}
+function fullExit(){if(!isPrivate)updateStatus("Offline",myLastSeen);window.location.href="about:blank";}
+function formatFullDate(s){let d=parseSafeDate(s);let days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;}
+function checkIdle(){if(!document.getElementById('stay-login').checked&&(Date.now()-lastActivity>600000))fullExit();}
+function updateStatus(s,c){fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"updateStatus",name:currentUser,status:isPrivate?"Private":s,seenCount:c})});}
+function toggleTheme(){document.body.classList.toggle('dark-mode');}
+function toggleSilent(){isSilent=!isSilent;document.getElementById('silent-btn').innerHTML=isSilent?"🔕 SILENT":"🔔 SOUND";}
+window.onload=window.onmousemove=window.ontouchstart=()=>{lastActivity=Date.now();};
 </script>
 </body>
 </html>
