@@ -169,10 +169,10 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwFUt9m9eeqe38KyUgqQKqBoMwOuaXtujUONLxT5XMc_4EG1wvs5PejK-bmmItpMzRI/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbxQ6KX8o-WkRRAkK3uBsnNjDXjPC8ioI83SKmuQX2ODHbN9MyzSK2Frh0FhfTZpRarW/exec';
 let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[],tempStickyImg="";
 
-// NEW: Selection Logic
+// Nickname Selection
 function selectUser(nick, realName) {
     document.querySelectorAll('.nick-btn').forEach(b => b.classList.remove('selected'));
     const btnId = nick === 'A' ? 'btn-nick-a' : 'btn-nick-n';
@@ -227,30 +227,44 @@ function runCountdownEngine(){const l=document.getElementById('countdown-list');
 function renderPlaylist(s){const c=document.getElementById('song-items');if(!s||s.length===0)return;let h="";s.slice(-5).forEach(i=>{h+=`<a href="${i.url}" target="_blank" style="color:var(--pink);font-weight:bold;">${i.title}</a>`;});c.innerHTML=h;}
 async function addNewSong(){const t=prompt("Title:"),u=prompt("URL:");if(t&&u){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSong",title:t,url:u,user:currentUser})});refreshData();}}
 
-/* HUB LOGIC */
+/* HUB SMART LOGIC */
 function openHub(id){
     const config = {
-        1: { pass: "", link: "https://hack.chat/?r.m." },
-        2: { pass: "", link: "https://www.protectedtext.com/r.m." },
-        3: { pass: "786", link: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5?usp=sharing" },
-        4: { pass: "786", link: "https://mega.nz/fm/cR9yiIYK" },
-        5: { pass: "555", link: "https://safe.com" },
-        6: { pass: "666", link: "https://pics.com" },
-        7: { pass: "777", link: "https://maps.com" },
-        8: { pass: "888", link: "https://apps.com" }
+        // Internal: Dashboard mein khulega
+        1: { mode: "internal", pass: "", link: "https://hack.chat/?r.m." },
+        2: { mode: "internal", pass: "", link: "https://www.protectedtext.com/r.m." },
+        
+        // External: New Tab mein khulega
+        3: { mode: "external", pass: "786", link: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5?usp=sharing" },
+        4: { mode: "external", pass: "786", link: "https://mega.nz/fm/cR9yiIYK" },
+        5: { mode: "external", pass: "555", link: "https://safe.com" },
+        6: { mode: "external", pass: "666", link: "https://pics.com" },
+        7: { mode: "external", pass: "777", link: "https://maps.com" },
+        8: { mode: "external", pass: "888", link: "https://apps.com" }
     };
-    const startLoad = (url) => {
+
+    const target = config[id];
+    if(!target) return;
+
+    // Password Check
+    if(target.pass !== ""){
+        const p = prompt("Hub Key:");
+        if (p === null) return;
+        if(p !== target.pass) { alert("Wrong Key!"); return; }
+    }
+
+    // Opening Mode Logic
+    if(target.mode === "internal") {
         const view = document.getElementById('hub-quick-view');
         const iframe = document.getElementById('hub-iframe');
-        iframe.src = url;
+        iframe.src = target.link;
         view.style.display = 'block';
         view.scrollIntoView({ behavior: 'smooth' });
-    };
-    if(config[id].pass === "") { startLoad(config[id].link); return; }
-    const p = prompt("Hub Key:");
-    if (p === null) return;
-    if(config[id] && p === config[id].pass) { startLoad(config[id].link); } else { alert("Wrong Key!"); }
+    } else {
+        window.open(target.link, '_blank');
+    }
 }
+
 function closeHub() { const view = document.getElementById('hub-quick-view'); const iframe = document.getElementById('hub-iframe'); view.style.display = 'none'; view.classList.remove('full-size'); iframe.src = ""; }
 function toggleHubFull() { const view = document.getElementById('hub-quick-view'); view.classList.toggle('full-size'); const btn = document.querySelector('.hub-ctrl-btn'); btn.innerText = view.classList.contains('full-size') ? "NORMAL" : "FULL"; }
 
