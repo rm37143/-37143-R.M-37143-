@@ -44,7 +44,6 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 .hub-btn { background: var(--pink); color: white; border: none; border-radius: 8px; height: 38px; font-size: 0.65rem; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-transform: uppercase; }
 .hub-btn:active { transform: scale(0.92); opacity: 0.9; }
 
-/* --- HUB DISPLAY STYLES --- */
 #hub-quick-view { display: none; width: 100%; height: 350px; background: white; border: 2px solid var(--pink); border-radius: 12px; margin-top: 15px; overflow: hidden; position: relative; }
 #hub-quick-view.full-size { position: fixed; top: 75px; left: 0; width: 100%; height: calc(100% - 140px); z-index: 1800; margin-top: 0; border-radius: 0; }
 #hub-iframe { width: 100%; height: 100%; border: none; }
@@ -79,6 +78,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <div class="off-group"><button class="off-btn" onclick="fullExit()">OFF</button>
 <label class="stay-label"><input type="checkbox" id="stay-login" style="transform:scale(0.8)"> Stay</label></div>
 </div>
+
 <div class="container">
 <div id="login-screen" class="card">
 <h2 style="color:var(--pink);">Secret Dunia</h2>
@@ -87,6 +87,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <div style="margin:10px 0; font-size:0.8rem;"><input type="checkbox" id="private-mode"> 🕵️ Private Mode</div>
 <button id="login-btn" style="background:var(--pink); color:white; border:none; padding:12px; border-radius:20px; font-weight:bold; width:100%;" onclick="checkAuth()">Enter World</button>
 </div>
+
 <div id="dashboard" style="display:none;">
 <div style="text-align: left; margin-bottom: 8px;"><span style="color:#d63384; font-size:0.75rem; font-weight: bold; font-style:italic; display: block;">N sb Apna Wada Yaad Rakhna Hai Hamesha.</span></div>
 <div class="card" style="padding: 10px; margin-bottom: 12px;">
@@ -101,7 +102,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <div class="hub-grid">
 <button class="hub-btn" onclick="openHub(1)">Hack.Chat</button>
 <button class="hub-btn" onclick="openHub(2)">Protected Text</button>
-<button class="hub-btn" onclick="openHub(3)">Pc Storage</button>
+<button class="hub-btn" onclick="openHub(3)">PC Storage</button>
 <button class="hub-btn" onclick="openHub(4)">Mega</button>
 <button class="hub-btn" onclick="openHub(5)">Safe</button>
 <button class="hub-btn" onclick="openHub(6)">Pics</button>
@@ -120,6 +121,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <div class="green-board" id="board-preview" onclick="openFullBoard()"></div>
 </div>
 </div>
+
 <div id="board-modal" class="board-full-view">
 <div class="top-status-bar" style="position:relative; height:65px;">
 <div style="font-weight:bold; color:var(--pink); font-size: 0.9rem;">📌 GREEN BOARD</div>
@@ -147,8 +149,9 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <button class="wa-send-btn" id="wa-send-btn-main" onclick="sendNote()">➤</button>
 </div>
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbx6W3gng3OHa5HTX9MASWdb6gTKF2CWU_W-1DtISnoILwjbY0PK--EuiUz536xzhM7W/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwRdwJma98bIH5bhf9RSWogv7DCPCx219H2Yn9aKlb4RGp_AGQN9HylEEb97_-HR2cz/exec';
 let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[],tempStickyImg="";
 
 function parseSafeDate(s){if(!s)return new Date();let d=new Date(s.toString().replace(/-/g,'/').replace('T',' '));return isNaN(d.getTime())?new Date():d;}
@@ -185,11 +188,7 @@ async function addNewEvent(){
   const label = prompt("Event Name:");
   const date = prompt("Date (YYYY-MM-DD):", "2026-01-01");
   if(label && date) {
-    await fetch(scriptURL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify({action: "addEvent", label: label, date: date, user: currentUser})
-    });
+    await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "addEvent", label: label, date: date, user: currentUser}) });
     alert("Event Sent!");
     refreshData();
   }
@@ -199,29 +198,33 @@ function runCountdownEngine(){const l=document.getElementById('countdown-list');
 function renderPlaylist(s){const c=document.getElementById('song-items');if(!s||s.length===0)return;let h="";s.slice(-5).forEach(i=>{h+=`<a href="${i.url}" target="_blank" style="color:var(--pink);font-weight:bold;">${i.title}</a>`;});c.innerHTML=h;}
 async function addNewSong(){const t=prompt("Title:"),u=prompt("URL:");if(t&&u){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSong",title:t,url:u,user:currentUser})});refreshData();}}
 
-/* --- HUB LOGIC (UPDATED) --- */
+/* --- HUB LOGIC (FIXED FOR DRIVE & PROTECTED TEXT) --- */
 function openHub(id){
   const config = {
-    1: { pass: "", link: "https://hack.chat/?r.m." },
-    2: { pass: "", link: "https://www.protectedtext.com/r.m." },
-    3: { pass: "786", link: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5?usp=sharing" },
-    4: { pass: "786", link: "https://mega.nz/fm/cR9yiIYK" },
-    5: { pass: "555", link: "https://safe.com" },
-    6: { pass: "666", link: "https://pics.com" },
-    7: { pass: "777", link: "https://maps.com" },
-    8: { pass: "888", link: "https://apps.com" }
+    1: { pass: "", link: "https://hack.chat/?r.m.", target: "iframe" },
+    2: { pass: "", link: "https://www.protectedtext.com/r.m.", target: "new" }, // Mobile Grey fix
+    3: { pass: "786", link: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5?usp=sharing", target: "new" }, // 403 Error fix
+    4: { pass: "444", link: "https://mega.nz/folder/YOUR_LINK", target: "new" }, // Mega alag tab mein secure hai
+    5: { pass: "555", link: "https://safe.com", target: "iframe" },
+    6: { pass: "666", link: "https://pics.com", target: "iframe" },
+    7: { pass: "777", link: "https://maps.com", target: "iframe" },
+    8: { pass: "888", link: "https://apps.com", target: "iframe" }
   };
 
-  const startLoad = (url) => {
-    const view = document.getElementById('hub-quick-view');
-    const iframe = document.getElementById('hub-iframe');
-    iframe.src = url;
-    view.style.display = 'block';
-    view.scrollIntoView({ behavior: 'smooth' });
+  const startLoad = (cfg) => {
+    if(cfg.target === "new") {
+      window.open(cfg.link, '_blank');
+    } else {
+      const view = document.getElementById('hub-quick-view');
+      const iframe = document.getElementById('hub-iframe');
+      iframe.src = cfg.link;
+      view.style.display = 'block';
+      view.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   if(config[id].pass === "") {
-    startLoad(config[id].link);
+    startLoad(config[id]);
     return;
   }
 
@@ -229,7 +232,7 @@ function openHub(id){
   if (p === null) return;
 
   if(config[id] && p === config[id].pass) {
-    startLoad(config[id].link);
+    startLoad(config[id]);
   } else {
     alert("Wrong Key!");
   }
