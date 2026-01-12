@@ -167,7 +167,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbxaDCJO_kGQAN3EA2SG432H1e0uLVDL1Z3XVjscYO7Mk5BRUDtanJtQeaSSQTRHAeH-/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbz_3U-V29G3I-uLr98auy0RwzWFnGA4tWgjWeNFUsCicZvGrm2ururdx6gD5cdLimPR/exec';
 let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[],tempStickyImg="";
 
 function selectUser(nick, realName) {
@@ -234,8 +234,8 @@ function openHub(id){
         5: { mode: "external", pass: "555", link: "https://safe.com" },
         6: { mode: "external", pass: "666", link: "https://pics.com" },
         7: { mode: "external", pass: "777", link: "https://maps.com" },
-        // LATEST REELS GUEST MODE
-        8: { mode: "internal", pass: "", link: "https://www.youtube.com/embed?listType=playlist&list=PLU12uITxBEPFMvshv_O2un7S_at0_u4V4&autoplay=1" }
+        // REELS: Using Instagram Explore for better stability
+        8: { mode: "internal", pass: "", link: "https://www.instagram.com/explore/reels/?hl=en" }
     };
 
     const target = config[id];
@@ -252,8 +252,11 @@ function openHub(id){
         const iframe = document.getElementById('hub-iframe');
         iframe.src = target.link;
         view.style.display = 'block';
-        // HIDE Message Bar
+        
+        // HIDE Message Bar AND Green Board Preview
         document.getElementById('wa-bar').style.display = 'none';
+        document.getElementById('board-preview').style.display = 'none';
+        
         view.scrollIntoView({ behavior: 'smooth' });
     } else {
         window.open(target.link, '_blank');
@@ -266,8 +269,10 @@ function closeHub() {
     view.style.display = 'none'; 
     view.classList.remove('full-size'); 
     iframe.src = ""; 
-    // RESTORE Message Bar
+    
+    // RESTORE Message Bar AND Green Board Preview
     document.getElementById('wa-bar').style.display = 'flex';
+    document.getElementById('board-preview').style.display = 'flex';
 }
 
 function toggleHubFull() { 
