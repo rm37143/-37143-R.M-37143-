@@ -8,21 +8,22 @@
 :root { --pink: #ff85a2; --glass: rgba(255, 255, 255, 0.95); --green: #2ecc71; --grey: #bdc3c7; --blue: #a2d2ff; --dark: #444; --wa-bg: #e5ddd5; }
 body.dark-mode { background: #1a1a1a; --wa-bg: #0b141a; color: white; }
 body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
-.top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 75px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
+.top-status-bar { position: fixed; top: 0; left: 0; right: 0; height: 85px; background: var(--glass); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; z-index: 2000; border-bottom: 2px solid var(--pink); }
 .dark-mode .top-status-bar { background: rgba(30, 30, 30, 0.9); }
-.nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
+.nav-left { display: flex; flex-direction: column; gap: 4px; padding-top: 10px; }
 .nav-btn-sm { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
 .status-center-display { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; }
-.user-stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; text-align: center; }
+.user-stat { display: flex; flex-direction: column; align-items: center; min-width: 90px; text-align: center; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey); margin-bottom: 2px; }
 .dot-online { background: var(--green); box-shadow: 0 0 8px var(--green); }
 .stat-label { font-size: 0.7rem; font-weight: bold; color: var(--dark); }
 .stat-time { font-size: 0.5rem; color: #777; line-height: 1.1; }
+.stat-activity { font-size: 0.65rem; color: var(--green); font-weight: bold; margin-top: 2px; min-height: 12px; }
 .dark-mode .stat-label { color: white; }
 .off-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .off-btn { background: #ff4d4d; color: white; border: none; width: 55px; height: 35px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 .stay-label { font-size: 0.5rem; color: var(--dark); }
-.chat-frame { display: none; position: fixed; top: 75px; bottom: 65px; left: 0; right: 0; width: 100%; background: var(--wa-bg); z-index: 1500; flex-direction: column; padding: 10px; border: none; box-shadow: none; overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
+.chat-frame { display: none; position: fixed; top: 85px; bottom: 65px; left: 0; right: 0; width: 100%; background: var(--wa-bg); z-index: 1500; flex-direction: column; padding: 10px; border: none; box-shadow: none; overflow-y: auto; gap: 8px; box-sizing: border-box; scroll-behavior: smooth; }
 .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; color: #000; word-wrap: break-word; }
 .msg-me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
 .msg-them { align-self: flex-start; background: #ffffff; border-bottom-left-radius: 2px; }
@@ -30,7 +31,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 .msg-time { font-size: 0.6rem; opacity: 0.5; margin-top: 5px; display: block; text-align: right;}
 .tick-blue { color: #34b7f1; font-weight: bold; }
 .msg-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; display: none; border: 1px solid white; min-width: 12px; text-align: center; }
-.container { width: 100%; max-width: 400px; text-align: center; margin-top: 90px; }
+.container { width: 100%; max-width: 400px; text-align: center; margin-top: 100px; }
 .card { background: white; border-radius: 15px; padding: 10px; margin-bottom: 10px; border: 1px solid #ffd1dc; color:#000; }
 .wa-bottom { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: 400px; margin: 0 auto; background: #f0f0f0; padding: 10px 8px; display: flex; align-items: center; gap: 8px; z-index: 2000; border-top: 1px solid #ddd; }
 .wa-input-box { flex: 1; background: white; border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 8px; }
@@ -45,7 +46,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 .hub-btn:active { transform: scale(0.92); opacity: 0.9; }
 
 #hub-quick-view { display: none; width: 100%; height: 350px; background: white; border: 2px solid var(--pink); border-radius: 12px; margin-top: 15px; overflow: hidden; position: relative; }
-#hub-quick-view.full-size { position: fixed; top: 75px; left: 0; width: 100%; height: calc(100% - 140px); z-index: 1800; margin-top: 0; border-radius: 0; }
+#hub-quick-view.full-size { position: fixed; top: 85px; left: 0; width: 100%; height: calc(100% - 150px); z-index: 1800; margin-top: 0; border-radius: 0; }
 #hub-iframe { width: 100%; height: 100%; border: none; }
 .hub-ctrl-bar { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; z-index: 100; }
 .hub-ctrl-btn { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
@@ -151,8 +152,9 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwRdwJma98bIH5bhf9RSWogv7DCPCx219H2Yn9aKlb4RGp_AGQN9HylEEb97_-HR2cz/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzFezxRjZvcQOlbvGDzYPNUuZSndaxR3iC7J_JI7QlvK9HR5fPme-AfsS5hu9BCZOpE/exec';
 let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[],tempStickyImg="";
+let currentHubName = "";
 
 function parseSafeDate(s){if(!s)return new Date();let d=new Date(s.toString().replace(/-/g,'/').replace('T',' '));return isNaN(d.getTime())?new Date():d;}
 function formatNoteDate(s){let d=parseSafeDate(s);return d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
@@ -163,7 +165,8 @@ if(isPrivate){document.getElementById('wa-input-wrapper').classList.add('private
 
 async function refreshData(){try{const res=await fetch(scriptURL);const data=await res.json();let topHtml="";data.onlineUsers.forEach(u=>{let isMe=u.name.toUpperCase().includes(currentUser);if(!isMe)otherSeenCountGlobal=parseInt(u.seenCount)||0;else if(myLastSeen===-1)myLastSeen=parseInt(u.seenCount)||0;
 let lastUpdate=parseSafeDate(u.time).getTime(),isOnline=(u.status==="Online"&&(Date.now()-lastUpdate)<600000),nameInit=u.name.toUpperCase().includes("AWAIS")?"A":"N",displayStatus=isOnline?"Online":"Offline";if(isMe&&isPrivate)displayStatus="🕵️ Private";if(!isMe&&u.status==="Private")displayStatus="Offline";
-topHtml+=`<div class="user-stat"><div class="dot ${isOnline&&displayStatus!=='Offline'?'dot-online':''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span><span class="stat-time">${displayStatus==="Offline"?formatFullDate(u.time):'Active Now'}</span></div>`;});
+let currentActivity = (isOnline && u.hub && u.status !== "Private" && displayStatus !== "Offline") ? u.hub : "";
+topHtml+=`<div class="user-stat"><div class="dot ${isOnline&&displayStatus!=='Offline'?'dot-online':''}"></div><span class="stat-label">${nameInit}: ${displayStatus}</span><span class="stat-time">${displayStatus==="Offline"?formatFullDate(u.time):'Active Now'}</span><div class="stat-activity">${currentActivity}</div></div>`;});
 document.getElementById('top-status-content').innerHTML=topHtml;const chatBox=document.getElementById('notes-display'),badge=document.getElementById('notif-badge');if(data.history.length>lastMsgCount){localHistory=data.history;let unreadCount=localHistory.length-myLastSeen;if(unreadCount>0&&chatBox.style.display!=='flex'){badge.innerText=unreadCount;badge.style.display='block';if(lastMsgCount!==0&&!isSilent)document.getElementById('notif-sound').play();}else if(chatBox.style.display==='flex'){myLastSeen=localHistory.length;updateStatus("Online",myLastSeen);}lastMsgCount=localHistory.length;renderMessages(otherSeenCountGlobal);if(chatBox.style.display==='flex')chatBox.scrollTop=chatBox.scrollHeight;}else{renderMessages(otherSeenCountGlobal);}globalCountdowns=data.countdowns;renderPlaylist(data.playlist);renderBoard(data.board);}catch(e){console.error(e);}}
 
 function renderBoard(sd){if(!sd||!Array.isArray(sd))return;currentStickyData=sd;const c=document.getElementById('board-scroll-container'),p=document.getElementById('board-preview'),sorted=[...sd].reverse();let h="",ph="";sorted.forEach(n=>{
@@ -198,20 +201,25 @@ function runCountdownEngine(){const l=document.getElementById('countdown-list');
 function renderPlaylist(s){const c=document.getElementById('song-items');if(!s||s.length===0)return;let h="";s.slice(-5).forEach(i=>{h+=`<a href="${i.url}" target="_blank" style="color:var(--pink);font-weight:bold;">${i.title}</a>`;});c.innerHTML=h;}
 async function addNewSong(){const t=prompt("Title:"),u=prompt("URL:");if(t&&u){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSong",title:t,url:u,user:currentUser})});refreshData();}}
 
-/* --- HUB LOGIC (FIXED FOR DRIVE & PROTECTED TEXT) --- */
+/* --- HUB LOGIC (TRACKING ADDED) --- */
 function openHub(id){
+  const buttons = document.querySelectorAll('.hub-btn');
+  const clickedName = buttons[id-1] ? buttons[id-1].innerText : "Unknown Hub";
+  
   const config = {
     1: { pass: "", link: "https://hack.chat/?r.m.", target: "iframe" },
-    2: { pass: "", link: "https://www.protectedtext.com/r.m.", target: "new" }, // Mobile Grey fix
-    3: { pass: "786", link: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5?usp=sharing", target: "new" }, // 403 Error fix
-    4: { pass: "444", link: "https://mega.nz/folder/YOUR_LINK", target: "new" }, // Mega alag tab mein secure hai
+    2: { pass: "", link: "https://www.protectedtext.com/r.m.", target: "new" },
+    3: { pass: "786", link: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5?usp=sharing", target: "new" },
+    4: { pass: "444", link: "https://mega.nz/folder/YOUR_LINK", target: "new" },
     5: { pass: "555", link: "https://safe.com", target: "iframe" },
     6: { pass: "666", link: "https://pics.com", target: "iframe" },
     7: { pass: "777", link: "https://maps.com", target: "iframe" },
     8: { pass: "888", link: "https://apps.com", target: "iframe" }
   };
 
-  const startLoad = (cfg) => {
+  const startLoad = (cfg, name) => {
+    currentHubName = name;
+    updateStatus("Online", myLastSeen); // Tracking Current Hub
     if(cfg.target === "new") {
       window.open(cfg.link, '_blank');
     } else {
@@ -224,15 +232,14 @@ function openHub(id){
   };
 
   if(config[id].pass === "") {
-    startLoad(config[id]);
+    startLoad(config[id], clickedName);
     return;
   }
 
   const p = prompt("Hub Key:");
   if (p === null) return;
-
   if(config[id] && p === config[id].pass) {
-    startLoad(config[id]);
+    startLoad(config[id], clickedName);
   } else {
     alert("Wrong Key!");
   }
@@ -244,6 +251,8 @@ function closeHub() {
     view.style.display = 'none';
     view.classList.remove('full-size');
     iframe.src = "";
+    currentHubName = ""; // Reset Tracking
+    updateStatus("Online", myLastSeen);
 }
 
 function toggleHubFull() {
@@ -260,7 +269,21 @@ async function uploadMedia(i){if(isPrivate)return;const f=i.files[0];if(!f)retur
 function fullExit(){if(!isPrivate)updateStatus("Offline",myLastSeen);window.location.href="about:blank";}
 function formatFullDate(s){let d=parseSafeDate(s);let days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}<br>${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}${d.getHours()>=12?'pm':'am'}`;}
 function checkIdle(){if(!document.getElementById('stay-login').checked&&(Date.now()-lastActivity>600000))fullExit();}
-function updateStatus(s,c){fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"updateStatus",name:currentUser,status:isPrivate?"Private":s,seenCount:c})});}
+
+function updateStatus(s,c){
+  fetch(scriptURL,{
+    method:'POST',
+    mode:'no-cors',
+    body:JSON.stringify({
+      action:"updateStatus",
+      name:currentUser,
+      status:isPrivate?"Private":s,
+      seenCount:c,
+      hub: (isPrivate || s === "Offline") ? "" : currentHubName // Privacy & Offline Check
+    })
+  });
+}
+
 function toggleTheme(){document.body.classList.toggle('dark-mode');}
 function toggleSilent(){isSilent=!isSilent;document.getElementById('silent-btn').innerHTML=isSilent?"🔕 SILENT":"🔔 SOUND";}
 window.onload=window.onmousemove=window.ontouchstart=()=>{lastActivity=Date.now();};
