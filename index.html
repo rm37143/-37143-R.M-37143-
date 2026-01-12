@@ -42,24 +42,16 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 
 /* --- REVISED HUB BUTTONS --- */
 .hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
-.hub-btn { 
-    background: var(--pink); 
-    color: white; 
-    border: none; 
-    border-radius: 8px; 
-    height: 38px; 
-    font-size: 0.65rem; 
-    font-weight: bold; 
-    cursor: pointer; 
-    transition: 0.2s; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-transform: uppercase;
-}
+.hub-btn { background: var(--pink); color: white; border: none; border-radius: 8px; height: 38px; font-size: 0.65rem; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-transform: uppercase; }
 .hub-btn:active { transform: scale(0.92); opacity: 0.9; }
 .dark-mode .hub-btn { background: var(--pink); color: white; }
+
+/* --- HUB QUICK VIEW STYLES --- */
+#hub-quick-view { display: none; width: 100%; height: 350px; background: white; border: 2px solid var(--pink); border-radius: 12px; margin-top: 15px; overflow: hidden; position: relative; transition: 0.3s; }
+#hub-quick-view.full-size { position: fixed; top: 75px; left: 0; width: 100%; height: calc(100% - 140px); z-index: 1800; margin-top: 0; border-radius: 0; }
+#hub-iframe { width: 100%; height: 100%; border: none; }
+.hub-ctrl-bar { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; z-index: 100; }
+.hub-ctrl-btn { background: var(--pink); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
 
 .playlist-bar { background: #f0f4ff; border-radius: 10px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; align-items: center; gap: 10px; overflow-x: auto; white-space: nowrap; border: 1px solid #d0e0ff; }
 .dark-mode .playlist-bar { background: #1e2530; border-color: #304060; }
@@ -119,6 +111,14 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <button class="hub-btn" onclick="openHub(8)">Apps</button>
 </div>
 
+<div id="hub-quick-view">
+    <div class="hub-ctrl-bar">
+        <button class="hub-ctrl-btn" onclick="toggleHubFull()">FULL</button>
+        <button class="hub-ctrl-btn" style="background:#ff4d4d;" onclick="closeHub()">X</button>
+    </div>
+    <iframe id="hub-iframe" src=""></iframe>
+</div>
+
 <div class="green-board" id="board-preview" onclick="openFullBoard()"></div>
 </div>
 </div>
@@ -150,7 +150,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 </div>
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbyGXVn5BZwc9rAaEsy_4DE49RaLRMGM4HmDb0r9Irq4g5c4Uj4wy831j22jRJaVIckz/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbx66JfZ3pfA6x2yZrKkqWmwnsOjhCB8GFhz4T31zDd_GeC3kDuzEsWHQjmgvlAoFQZn/exec';
 let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[],tempStickyImg="";
 
 function parseSafeDate(s){if(!s)return new Date();let d=new Date(s.toString().replace(/-/g,'/').replace('T',' '));return isNaN(d.getTime())?new Date():d;}
@@ -201,9 +201,8 @@ function runCountdownEngine(){const l=document.getElementById('countdown-list');
 function renderPlaylist(s){const c=document.getElementById('song-items');if(!s||s.length===0)return;let h="";s.slice(-5).forEach(i=>{h+=`<a href="${i.url}" target="_blank" style="color:var(--pink);font-weight:bold;">${i.title}</a>`;});c.innerHTML=h;}
 async function addNewSong(){const t=prompt("Title:"),u=prompt("URL:");if(t&&u){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSong",title:t,url:u,user:currentUser})});refreshData();}}
 
-/* --- EASY HUB LOGIC --- */
+/* --- UPDATED HUB LOGIC WITH QUICK VIEW --- */
 function openHub(id){
-  // Yahan passwords aur links asani se badlein
   const config = {
     1: { pass: "786", link: "https://hack.chat/?r.m." },
     2: { pass: "786", link: "https://www.protectedtext.com/r.m." },
@@ -216,13 +215,32 @@ function openHub(id){
   };
 
   const p = prompt("Hub Key:");
-  if (p === null) return; // Cancel press karne par kuch na ho
+  if (p === null) return;
 
   if(config[id] && p === config[id].pass) {
-    window.open(config[id].link, '_blank');
+    const view = document.getElementById('hub-quick-view');
+    const iframe = document.getElementById('hub-iframe');
+    iframe.src = config[id].link;
+    view.style.display = 'block';
+    view.scrollIntoView({ behavior: 'smooth' });
   } else {
     alert("Wrong Key!");
   }
+}
+
+function closeHub() {
+    const view = document.getElementById('hub-quick-view');
+    const iframe = document.getElementById('hub-iframe');
+    view.style.display = 'none';
+    view.classList.remove('full-size');
+    iframe.src = "";
+}
+
+function toggleHubFull() {
+    const view = document.getElementById('hub-quick-view');
+    view.classList.toggle('full-size');
+    const btn = document.querySelector('.hub-ctrl-btn');
+    btn.innerText = view.classList.contains('full-size') ? "NORMAL" : "FULL";
 }
 
 function renderMessages(os){let h="",ld="";localHistory.forEach((m,idx)=>{let d=parseSafeDate(m.time);if(d.toDateString()!==ld){h+=`<div style="align-self:center;font-size:0.6rem;color:#888;margin:10px 0;">${d.toDateString()}</div>`;ld=d.toDateString();}let isMe=m.name.toUpperCase().includes(currentUser),tick=isMe?(os>idx?'<span class="tick-blue">✓✓</span>':'✓'):'';let contentHTML = m.note;if(m.note.startsWith("MEDIA:")){let url = m.note.split('MEDIA:')[1];if(url.match(/\.(mp4|webm|ogg|mov)$/i) || url.includes("video")){contentHTML = `<video src="${url}" controls class="media-content"></video>`;} else {contentHTML = `<img src="${url}" class="media-content" onclick="window.open('${url}')">`;}}h+=`<div class="msg ${isMe?"msg-me":"msg-them"}">${contentHTML}<div class="msg-time">${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${tick}</div></div>`;});document.getElementById('notes-display').innerHTML=h;}
