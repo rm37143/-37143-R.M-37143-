@@ -117,7 +117,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <button class="hub-btn" onclick="openHub(4)">Mega</button>
 <button class="hub-btn" onclick="openHub(5)">Safe</button>
 <button class="hub-btn" onclick="openHub(6)">Pics</button>
-<button class="hub-btn" onclick="openHub(7)">Maps</button>
+<button class="hub-btn" onclick="openHub(7)">FREE TV</button>
 <button class="hub-btn" style="background:red;" onclick="openHub(8)">🎥 REELS</button>
 </div>
 
@@ -167,7 +167,7 @@ body { background: #fce4ec; font-family: 'Segoe UI', Arial, sans-serif; margin: 
 <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbyVzhW4xAHqKprZgDpWDQRi0UOtNl39CLyQldjEF498YegoSoTLNYI3tBARVVQ9Q8g/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwp7bp-dzO3xZQoCxxuvGahKG9DZhMuQuTMUqSmeaBsWQg7Y-huz8I2yjdqwijKEJsc/exec';
 let currentUser="",lastMsgCount=0,isSilent=true,isPrivate=false,lastActivity=Date.now(),localHistory=[],myLastSeen=-1,otherSeenCountGlobal=0,currentStickyData=[],globalCountdowns=[],tempStickyImg="";
 
 function selectUser(nick, realName) {
@@ -224,17 +224,17 @@ function runCountdownEngine(){const l=document.getElementById('countdown-list');
 function renderPlaylist(s){const c=document.getElementById('song-items');if(!s||s.length===0)return;let h="";s.slice(-5).forEach(i=>{h+=`<a href="${i.url}" target="_blank" style="color:var(--pink);font-weight:bold;">${i.title}</a>`;});c.innerHTML=h;}
 async function addNewSong(){const t=prompt("Title:"),u=prompt("URL:");if(t&&u){await fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"addSong",title:t,url:u,user:currentUser})});refreshData();}}
 
-/* HUB SMART LOGIC */
+/* HUB SMART LOGIC - UPDATED A4 */
 function openHub(id){
     const config = {
         1: { mode: "internal", pass: "", link: "https://hack.chat/?r.m." },
-        2: { mode: "external", pass: "", link: "https://www.protectedtext.com/r.m." }, // Updated to External
+        2: { mode: "external", pass: "", link: "https://www.protectedtext.com/r.m." },
         3: { mode: "external", pass: "", link: "https://drive.google.com/drive/folders/1yHexmY0ha8D0oFJcFVRO3IXc2GgI-ZX5?usp=sharing" },
         4: { mode: "external", pass: "", link: "https://mega.nz/fm/cR9yiIYK" },
         5: { mode: "external", pass: "", link: "https://safe.com" },
         6: { mode: "external", pass: "", link: "https://pics.com" },
-        7: { mode: "external", pass: "", link: "https://maps.com" },
-        8: { mode: "internal", pass: "", link: "https://www.youtube.com/embed?listType=playlist&list=PLHdfvW0-X8IunhP-S1S_u_vL0_W6S78lC" } // Guest Mode Video Player
+        7: { mode: "external", pass: "", link: "https://www.squidtv.net/" }, // WORLD FREE TV LINK
+        8: { mode: "external", pass: "", link: "https://www.youtube.com/playlist?list=PLHdfvW0-X8IunhP-S1S_u_vL0_W6S78lC" }, // REELS FIX
     };
 
     const target = config[id];
